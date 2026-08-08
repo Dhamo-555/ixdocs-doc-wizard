@@ -27,7 +27,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { toolPath, type Tool, type ToolOption } from "@/lib/tools";
+import { TOOL_MAP, toolPath, type Tool, type ToolOption } from "@/lib/tools";
 import { RUNNERS } from "@/lib/tool-runners";
 import { ToolError, formatBytes, openRenderDoc, renderPageToCanvas, type RunResult } from "@/lib/pdf-engine";
 
@@ -80,20 +80,9 @@ export function RelatedTools({ tool }: { tool: Tool }) {
 }
 
 function RelatedCard({ slug }: { slug: string }) {
-  // Imported lazily through the map to avoid a circular import at module scope.
-  const { TOOL_MAP } = require_tools();
   const tool = TOOL_MAP[slug];
   if (!tool) return null;
   return <ToolCard tool={tool} />;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-function require_tools() {
-  return { TOOL_MAP: TOOL_MAP_REF };
-}
-let TOOL_MAP_REF: Record<string, Tool> = {};
-export function registerToolMap(map: Record<string, Tool>) {
-  TOOL_MAP_REF = map;
 }
 
 /* ----------------------------------------------------------------- upload */
