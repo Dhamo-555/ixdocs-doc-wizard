@@ -53,10 +53,10 @@ const jpgToPdf: Runner = async ({ files, options, onProgress }) => {
   const { PDFDocument } = await import("pdf-lib");
   if (!files.length) throw new ToolError("Add at least one image.");
   const doc = await PDFDocument.create();
-  const margin = num(options.margin, 24);
-  const sizeKey = str(options.pageSize, "a4");
-  const landscape = str(options.orientation, "portrait") === "landscape";
-  const cover = str(options.fit, "contain") === "cover";
+  const margin = num(options["margin"], 24);
+  const sizeKey = str(options["pageSize"], "a4");
+  const landscape = str(options["orientation"], "portrait") === "landscape";
+  const cover = str(options["fit"], "contain") === "cover";
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!;
@@ -78,7 +78,7 @@ const jpgToPdf: Runner = async ({ files, options, onProgress }) => {
       const page = doc.addPage([embedded.width + margin * 2, embedded.height + margin * 2]);
       page.drawImage(embedded, { x: margin, y: margin, width: embedded.width, height: embedded.height });
     } else {
-      const base = PAGE_SIZES[sizeKey] ?? PAGE_SIZES.a4!;
+      const base = PAGE_SIZES[sizeKey] ?? PAGE_SIZES["a4"]!;
       const [w, h] = landscape ? [base[1], base[0]] : base;
       const page = doc.addPage([w, h]);
       const availW = w - margin * 2;
@@ -106,8 +106,8 @@ const jpgToPdf: Runner = async ({ files, options, onProgress }) => {
 function renderRunner(format: "image/jpeg" | "image/png"): Runner {
   return async ({ files, options, selectedPages, onProgress }) => {
     const file = requireOne({ files } as RunContext);
-    const scale = num(options.scale, 2);
-    const quality = num(options.quality, 85) / 100;
+    const scale = num(options["scale"], 2);
+    const quality = num(options["quality"], 85) / 100;
     const doc = await openRenderDoc(file);
     const pages = selectedPages.length ? selectedPages : Array.from({ length: doc.numPages }, (_, i) => i + 1);
     const ext = format === "image/png" ? "png" : "jpg";
@@ -163,11 +163,11 @@ const splitPdf: Runner = async (ctx) => {
   const file = requireOne(ctx);
   const src = await loadPdfDoc(file);
   const total = src.getPageCount();
-  const mode = str(ctx.options.mode, "ranges");
+  const mode = str(ctx.options["mode"], "ranges");
   const groups =
     mode === "every"
       ? Array.from({ length: total }, (_, i) => [i + 1])
-      : parseRanges(str(ctx.options.ranges, ""), total);
+      : parseRanges(str(ctx.options["ranges"], ""), total);
 
   const outputs: OutputFile[] = [];
   for (let i = 0; i < groups.length; i++) {
@@ -189,7 +189,7 @@ const rotatePdf: Runner = async (ctx) => {
   const { degrees } = await import("pdf-lib");
   const file = requireOne(ctx);
   const doc = await loadPdfDoc(file);
-  const angle = num(ctx.options.angle, 90);
+  const angle = num(ctx.options["angle"], 90);
   const pages = doc.getPages();
   const selected = ctx.selectedPages.length ? ctx.selectedPages : pages.map((_, i) => i + 1);
   selected.forEach((n) => {
@@ -207,7 +207,7 @@ const extractPages: Runner = async (ctx) => {
   const src = await loadPdfDoc(file);
   const selected = ctx.selectedPages;
   if (!selected.length) throw new ToolError("Select at least one page to extract.");
-  const separate = str(ctx.options.output, "single") === "separate";
+  const separate = str(ctx.options["output"], "single") === "separate";
   const outputs: OutputFile[] = [];
   if (separate) {
     for (let i = 0; i < selected.length; i++) {
@@ -268,13 +268,13 @@ const watermarkPdf: Runner = async (ctx) => {
   const { StandardFonts, degrees, rgb } = await import("pdf-lib");
   const file = requireOne(ctx);
   const doc = await loadPdfDoc(file);
-  const text = str(ctx.options.text, "").trim();
+  const text = str(ctx.options["text"], "").trim();
   if (!text) throw new ToolError("Enter the watermark text you want to apply.");
   const font = await doc.embedFont(StandardFonts.HelveticaBold);
-  const size = num(ctx.options.size, 48);
-  const opacity = num(ctx.options.opacity, 20) / 100;
-  const rotation = num(ctx.options.rotation, 45);
-  const position = str(ctx.options.position, "center");
+  const size = num(ctx.options["size"], 48);
+  const opacity = num(ctx.options["opacity"], 20) / 100;
+  const rotation = num(ctx.options["rotation"], 45);
+  const position = str(ctx.options["position"], "center");
   const pages = doc.getPages();
   const selected = ctx.selectedPages.length ? ctx.selectedPages : pages.map((_, i) => i + 1);
 
@@ -305,10 +305,10 @@ const pageNumbering: Runner = async (ctx) => {
   const file = requireOne(ctx);
   const doc = await loadPdfDoc(file);
   const font = await doc.embedFont(StandardFonts.Helvetica);
-  const size = num(ctx.options.size, 11);
-  const start = num(ctx.options.start, 1);
-  const format = str(ctx.options.format, "n");
-  const position = str(ctx.options.position, "bottom-center");
+  const size = num(ctx.options["size"], 11);
+  const start = num(ctx.options["start"], 1);
+  const format = str(ctx.options["format"], "n");
+  const position = str(ctx.options["position"], "bottom-center");
   const pages = doc.getPages();
   const selected = ctx.selectedPages.length ? ctx.selectedPages : pages.map((_, i) => i + 1);
 
@@ -350,13 +350,13 @@ const LEVELS: Record<string, { scale: number; quality: number }> = {
 
 const compressPdf: Runner = async (ctx) => {
   const file = requireOne(ctx);
-  const level = str(ctx.options.level, "balanced");
+  const level = str(ctx.options["level"], "balanced");
   let bytes: Uint8Array;
   if (level === "lossless") {
     const doc = await loadPdfDoc(file);
     bytes = await doc.save({ useObjectStreams: true });
   } else {
-    const preset = LEVELS[level] ?? LEVELS.balanced!;
+    const preset = LEVELS[level] ?? LEVELS["balanced"]!;
     bytes = await rasterCompress(file, { ...preset, onProgress: (p) => ctx.onProgress(p) });
   }
   const out = pdfBlobOutput(bytes, `${baseName(file.name)}-compressed.pdf`);
@@ -365,16 +365,19 @@ const compressPdf: Runner = async (ctx) => {
     outputs: grew ? [] : [out],
     stats: sizeStats(file.size, out.size),
     partial: grew,
-    message: grew
-      ? "This document is already well optimised — every setting we tried produced a larger file, so there is nothing to download. Your original is the smallest version."
-      : undefined,
+    ...(grew
+      ? {
+          message:
+            "This document is already well optimised — every setting we tried produced a larger file, so there is nothing to download. Your original is the smallest version.",
+        }
+      : {}),
   };
 };
 
 const compressToTarget: Runner = async (ctx) => {
   const file = requireOne(ctx);
-  const targetOption = str(ctx.options.target, "200");
-  const targetKb = targetOption === "custom" ? num(ctx.options.customKb, 300) : num(targetOption, 200);
+  const targetOption = str(ctx.options["target"], "200");
+  const targetKb = targetOption === "custom" ? num(ctx.options["customKb"], 300) : num(targetOption, 200);
   const targetBytes = targetKb * 1024;
 
   const attempts = [
@@ -489,7 +492,7 @@ async function resizeDoc(
   for (let i = 0; i < count; i++) {
     const [embedded] = await out.embedPdf(srcBytes, [i]);
     if (!embedded) continue;
-    const base = PAGE_SIZES[opts.sizeKey] ?? PAGE_SIZES.a4!;
+    const base = PAGE_SIZES[opts.sizeKey] ?? PAGE_SIZES["a4"]!;
     const wantLandscape =
       opts.orientation === "landscape" ||
       (opts.orientation === "keep" && embedded.width > embedded.height);
@@ -512,14 +515,14 @@ const pageSizeConverter: Runner = async (ctx) => {
   const bytes = await resizeDoc(
     file,
     {
-      sizeKey: str(ctx.options.pageSize, "a4"),
-      orientation: str(ctx.options.orientation, "portrait"),
+      sizeKey: str(ctx.options["pageSize"], "a4"),
+      orientation: str(ctx.options["orientation"], "portrait"),
       margin: 0,
       align: "center",
     },
     (p) => ctx.onProgress(p),
   );
-  const out = pdfBlobOutput(bytes, `${baseName(file.name)}-${str(ctx.options.pageSize, "a4")}.pdf`);
+  const out = pdfBlobOutput(bytes, `${baseName(file.name)}-${str(ctx.options["pageSize"], "a4")}.pdf`);
   return { outputs: [out], stats: sizeStats(file.size, out.size) };
 };
 
@@ -528,10 +531,10 @@ const printReady: Runner = async (ctx) => {
   const bytes = await resizeDoc(
     file,
     {
-      sizeKey: str(ctx.options.pageSize, "a4"),
-      orientation: str(ctx.options.orientation, "portrait"),
-      margin: num(ctx.options.margin, 36),
-      align: str(ctx.options.align, "center"),
+      sizeKey: str(ctx.options["pageSize"], "a4"),
+      orientation: str(ctx.options["orientation"], "portrait"),
+      margin: num(ctx.options["margin"], 36),
+      align: str(ctx.options["align"], "center"),
     },
     (p) => ctx.onProgress(p),
   );
@@ -539,8 +542,8 @@ const printReady: Runner = async (ctx) => {
   return {
     outputs: [out],
     stats: [
-      { label: "Paper", value: str(ctx.options.pageSize, "a4").toUpperCase() },
-      { label: "Margin", value: `${num(ctx.options.margin, 36)} pt` },
+      { label: "Paper", value: str(ctx.options["pageSize"], "a4").toUpperCase() },
+      { label: "Margin", value: `${num(ctx.options["margin"], 36)} pt` },
       { label: "Size", value: formatBytes(out.size) },
     ],
   };
@@ -580,9 +583,9 @@ const metadataCleaner: Runner = async (ctx) => {
 
 const applicationOptimizer: Runner = async (ctx) => {
   const file = requireOne(ctx);
-  const sizeKey = str(ctx.options.pageSize, "a4");
-  const targetOption = str(ctx.options.target, "500");
-  const targetKb = targetOption === "custom" ? num(ctx.options.customKb, 300) : num(targetOption, 500);
+  const sizeKey = str(ctx.options["pageSize"], "a4");
+  const targetOption = str(ctx.options["target"], "500");
+  const targetKb = targetOption === "custom" ? num(ctx.options["customKb"], 300) : num(targetOption, 500);
   const targetBytes = targetKb * 1024;
 
   let working = file;
@@ -630,19 +633,19 @@ const passportSheet: Runner = async (ctx) => {
   const { PDFDocument, rgb } = await import("pdf-lib");
   const file = requireOne(ctx);
   const img = await fileToImage(file);
-  const [pw, ph] = {
+  const [pw, ph] = ({
     "35x45": [35, 45],
     "51x51": [51, 51],
     "50x70": [50, 70],
     "25x35": [25, 35],
-  }[str(ctx.options.photoSize, "35x45")] ?? [35, 45];
+  } as Record<string, [number, number]>)[str(ctx.options["photoSize"], "35x45")] ?? [35, 45];
   const mmToPt = 72 / 25.4;
   const cellW = pw * mmToPt;
   const cellH = ph * mmToPt;
-  const sheetKey = str(ctx.options.sheet, "a4");
-  const [sw, sh] = PAGE_SIZES[sheetKey] ?? PAGE_SIZES.a4!;
-  const copies = Math.max(1, num(ctx.options.copies, 8));
-  const guides = ctx.options.guides !== false;
+  const sheetKey = str(ctx.options["sheet"], "a4");
+  const [sw, sh] = PAGE_SIZES[sheetKey] ?? PAGE_SIZES["a4"]!;
+  const copies = Math.max(1, num(ctx.options["copies"], 8));
+  const guides = ctx.options["guides"] !== false;
 
   // Normalise the photo to the exact aspect ratio with a centre crop.
   const canvas = document.createElement("canvas");
@@ -713,8 +716,8 @@ const passportSheet: Runner = async (ctx) => {
 const documentScanner: Runner = async (ctx) => {
   const { PDFDocument } = await import("pdf-lib");
   if (!ctx.files.length) throw new ToolError("Capture or add at least one page.");
-  const enhance = str(ctx.options.enhance, "scan");
-  const sizeKey = str(ctx.options.pageSize, "a4");
+  const enhance = str(ctx.options["enhance"], "scan");
+  const sizeKey = str(ctx.options["pageSize"], "a4");
   const doc = await PDFDocument.create();
 
   for (let i = 0; i < ctx.files.length; i++) {
@@ -735,7 +738,7 @@ const documentScanner: Runner = async (ctx) => {
       const page = doc.addPage([embedded.width, embedded.height]);
       page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
     } else {
-      const base = PAGE_SIZES[sizeKey] ?? PAGE_SIZES.a4!;
+      const base = PAGE_SIZES[sizeKey] ?? PAGE_SIZES["a4"]!;
       const [w, h] = embedded.width > embedded.height ? [base[1], base[0]] : base;
       const page = doc.addPage([w, h]);
       const scale = Math.min(w / embedded.width, h / embedded.height);

@@ -43,7 +43,8 @@ export interface RunResult {
 
 export interface RunContext {
   files: File[];
-  options: Record<string, string | number | boolean>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: any;
   /** 1-based page numbers currently selected (page tools only). */
   selectedPages: number[];
   /** 0-based page indices in display order (reorder tools only). */
