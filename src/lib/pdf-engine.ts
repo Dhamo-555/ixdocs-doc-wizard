@@ -138,7 +138,7 @@ export async function openRenderDoc(file: File) {
   const pdfjs = await getPdfjs();
   const data = new Uint8Array(await file.arrayBuffer());
   try {
-    return await pdfjs.getDocument({ data, isEvalSupported: false }).promise;
+    return await pdfjs.getDocument({ data }).promise;
   } catch {
     throw new ToolError("This PDF could not be opened for rendering. It may be corrupt or password protected.");
   }
