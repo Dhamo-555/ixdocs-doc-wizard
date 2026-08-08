@@ -9,7 +9,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { POPULAR_TOOLS, TOOLS, searchTools } from "@/lib/tools";
+import { POPULAR_TOOLS, TOOLS, searchTools, toolPath } from "@/lib/tools";
 import { cn } from "@/lib/utils";
 
 export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon" }) {
@@ -33,7 +33,7 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
   const go = (slug: string) => {
     setOpen(false);
     setQuery("");
-    navigate({ to: "/$slug", params: { slug } });
+    navigate({ to: toolPath(slug) });
   };
 
   return (
@@ -58,7 +58,7 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
         ) : null}
       </button>
 
-      <CommandDialog open={open} onOpenChange={setOpen} title="Search tools" description="Find an IXDocs tool">
+      <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Search tools — try 'compress' or 'convert'" value={query} onValueChange={setQuery} />
         <CommandList>
           <CommandEmpty>No tool matches that search.</CommandEmpty>

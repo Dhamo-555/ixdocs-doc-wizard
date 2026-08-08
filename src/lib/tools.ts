@@ -1,10 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  ArrowDownToLine,
   ArrowLeftRight,
   Camera,
   Combine,
-  Crop,
   FileArchive,
   FileCheck2,
   FileCog,
@@ -1460,4 +1458,7 @@ export const CATEGORY_BLURB: Record<ToolCategory, string> = {
   Advanced: "Scanning, recognition and document preparation tools.",
 };
 
-export const UNUSED_ICONS = { ArrowDownToLine, Crop };
+/** Tool routes are static files (e.g. /compress-pdf); this keeps Link typing happy. */
+export function toolPath(slug: string) {
+  return `/${slug}` as unknown as "/";
+}
