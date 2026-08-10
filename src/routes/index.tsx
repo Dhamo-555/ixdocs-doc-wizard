@@ -71,7 +71,7 @@ function Home() {
             See all {TOOLS.length} document tools
           </Link>
         </div>
-        <div className="mt-6 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {POPULAR_TOOLS.map((tool) => (
             <ToolCard key={tool.slug} tool={tool} />
           ))}
@@ -93,7 +93,7 @@ function Home() {
                 submit it, or prepping a document for an application form.
               </p>
             </div>
-            <ul className="grid gap-2 min-[420px]:grid-cols-2">
+            <ul className="grid gap-2 sm:grid-cols-2">
               {smartTools.map((tool) => (
                 <li key={tool.slug}>
                   <Link
@@ -134,7 +134,7 @@ function Home() {
             <div key={category}>
               <h3 className="text-sm font-semibold tracking-wide uppercase">{category}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{CATEGORY_BLURB[category]}</p>
-              <div className="mt-4 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                 {toolsByCategory(category).map((tool) => (
                   <ToolCard key={tool.slug} tool={tool} />
                 ))}
