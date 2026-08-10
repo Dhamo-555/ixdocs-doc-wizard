@@ -1378,11 +1378,11 @@ export const POPULAR_SLUGS = [
   "compress-pdf",
   "merge-pdf",
   "split-pdf",
-  "jpg-to-pdf",
+  "pdf-to-word",
+  "word-to-pdf",
   "pdf-to-jpg",
   "pdf-to-png",
   "rotate-pdf",
-  "pdf-to-word",
 ];
 
 export const POPULAR_TOOLS = POPULAR_SLUGS.map((s) => getTool(s));
