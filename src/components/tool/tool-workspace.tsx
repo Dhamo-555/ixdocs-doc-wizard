@@ -37,16 +37,17 @@ export function ToolCard({ tool }: { tool: Tool }) {
   return (
     <Link
       to={toolPath(tool.slug)}
-      className="surface-card group flex min-w-0 flex-col gap-2 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[var(--shadow-lift)]"
+      className="surface-card group flex min-w-0 flex-col gap-2 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-lift)] focus-visible:-translate-y-0.5 sm:p-5"
     >
-      <span className="grid size-10 place-items-center rounded-xl bg-accent text-accent-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-        <tool.icon className="size-5" />
+      <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+        <tool.icon className="size-5" strokeWidth={1.75} />
       </span>
-      <span className="mt-1 text-sm font-semibold text-foreground">{tool.name}</span>
-      <span className="text-xs leading-relaxed text-muted-foreground">{tool.short}</span>
+      <span className="mt-1 truncate text-sm font-semibold text-foreground sm:text-[0.95rem]">{tool.name}</span>
+      <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{tool.short}</span>
     </Link>
   );
 }
+
 
 export function AdSlot({ label = "Advertisement", className }: { label?: string; className?: string }) {
   return (
