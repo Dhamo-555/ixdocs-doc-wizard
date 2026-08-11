@@ -750,26 +750,35 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           ) : null}
 
           {visibleOptions.length ? (
-            <div className="grid gap-5 sm:grid-cols-2">
-              {visibleOptions.map((option) => (
-                <OptionField
-                  key={option.key}
-                  option={option}
-                  value={options[option.key] ?? option.default}
-                  onChange={(v) => setOptions((prev) => ({ ...prev, [option.key]: v }))}
-                />
-              ))}
+            <div>
+              <h2 className="text-sm font-semibold">Options</h2>
+              <div className="mt-3 grid gap-5 sm:grid-cols-2">
+                {visibleOptions.map((option) => (
+                  <OptionField
+                    key={option.key}
+                    option={option}
+                    value={options[option.key] ?? option.default}
+                    onChange={(v) => setOptions((prev) => ({ ...prev, [option.key]: v }))}
+                  />
+                ))}
+              </div>
             </div>
           ) : null}
 
-          <div className="flex flex-wrap gap-2">
-            <Button size="lg" className="min-h-12 flex-1 sm:flex-none" disabled={!tool.ready} onClick={process}>
+          <div className="flex flex-col gap-2 border-t border-border pt-5 sm:flex-row sm:items-center">
+            <Button
+              size="lg"
+              className="min-h-12 w-full sm:w-auto"
+              disabled={!tool.ready || phase === "processing"}
+              onClick={process}
+            >
               {tool.actionLabel}
             </Button>
-            <Button variant="outline" size="lg" className="min-h-12" onClick={reset}>
+            <Button variant="ghost" size="lg" className="min-h-12 w-full sm:w-auto" onClick={reset}>
               Start over
             </Button>
           </div>
+
           {!tool.ready ? (
             <p className="text-xs text-muted-foreground">
               Processing is disabled for this tool until the engine is connected — IXDocs will not return a file that
