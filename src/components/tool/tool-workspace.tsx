@@ -553,40 +553,51 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           ))}
 
           {result.outputs.length ? (
-            <ul className="mt-5 space-y-2">
-              {result.outputs.map((output) => (
-                <li
-                  key={output.name}
-                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-border p-3"
+            <div className="mt-5 rounded-2xl border border-primary/30 bg-accent/40 p-3 sm:p-4">
+              <h3 className="px-1 text-sm font-semibold text-accent-foreground">
+                {result.outputs.length > 1 ? `${result.outputs.length} files ready to download` : "Your file"}
+              </h3>
+              <ul className="mt-3 space-y-2">
+                {result.outputs.map((output) => (
+                  <li
+                    key={output.name}
+                    className="grid gap-3 rounded-xl border border-border bg-background p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium" title={output.name}>
+                        {output.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{formatBytes(output.size)}</p>
+                    </div>
+                    <Button
+                      className="min-h-12 w-full sm:w-auto"
+                      onClick={() => download(output.name, output.blob)}
+                    >
+                      <Download className="size-4" />
+                      <span>Download</span>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+              {result.outputs.length > 1 ? (
+                <Button
+                  className="mt-3 min-h-12 w-full sm:w-auto"
+                  onClick={() => result.outputs.forEach((o, i) => setTimeout(() => download(o.name, o.blob), i * 300))}
                 >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{output.name}</p>
-                    <p className="text-xs text-muted-foreground">{formatBytes(output.size)}</p>
-                  </div>
-                  <Button size="sm" className="min-h-11" onClick={() => download(output.name, output.blob)}>
-                    <Download className="size-4" />
-                    <span>Download</span>
-                  </Button>
-                </li>
-              ))}
-            </ul>
+                  <Download className="size-4" />
+                  <span>Download all</span>
+                </Button>
+              ) : null}
+            </div>
           ) : null}
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {result.outputs.length > 1 ? (
-              <Button
-                className="min-h-11"
-                onClick={() => result.outputs.forEach((o, i) => setTimeout(() => download(o.name, o.blob), i * 300))}
-              >
-                <Download className="size-4" />
-                <span>Download all</span>
-              </Button>
-            ) : null}
-            <Button variant="outline" className="min-h-11" onClick={reset}>
+          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+            <Button variant="outline" className="min-h-12 w-full sm:w-auto" onClick={reset}>
               <RotateCcw className="size-4" />
               <span>Process another file</span>
             </Button>
           </div>
+
         </div>
       ) : files.length === 0 ? (
         <UploadBox tool={tool} onFiles={addFiles} />
