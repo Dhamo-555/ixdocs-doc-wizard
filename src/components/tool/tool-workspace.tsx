@@ -769,7 +769,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
             <Button
               size="lg"
               className="min-h-12 w-full sm:w-auto"
-              disabled={!tool.ready || phase === "processing"}
+              disabled={!tool.ready}
               onClick={process}
             >
               {tool.actionLabel}
