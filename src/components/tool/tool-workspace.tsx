@@ -448,7 +448,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   };
 
   return (
-    <div className="surface-card p-4 sm:p-6">
+    <div className="surface-card min-w-0 p-4 sm:p-6" aria-busy={phase === "processing"}>
       {!tool.ready ? (
         <div className="mb-5 flex gap-3 rounded-xl border border-warning/40 bg-warning/10 p-4">
           <Info className="mt-0.5 size-5 shrink-0 text-warning-foreground" aria-hidden="true" />
@@ -462,27 +462,44 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
       ) : null}
 
       {error ? (
-        <div role="alert" className="mb-5 flex gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+        <div
+          role="alert"
+          className="mb-5 grid gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 sm:grid-cols-[auto_minmax(0,1fr)]"
+        >
           <AlertTriangle className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
-          <p className="text-sm text-foreground">{error}</p>
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-foreground">Something didn&apos;t work</p>
+            <p className="mt-1 text-sm break-words text-muted-foreground">{error}</p>
+            {phase === "error" ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button size="sm" variant="outline" className="min-h-11" onClick={() => setPhase("ready")}>
+                  Try again
+                </Button>
+                <Button size="sm" variant="ghost" className="min-h-11" onClick={reset}>
+                  Start over
+                </Button>
+              </div>
+            ) : null}
+          </div>
         </div>
       ) : null}
 
       {phase === "processing" ? (
-        <div className="py-14 text-center">
+        <div className="py-14 text-center" role="status">
           <Loader2 className="mx-auto size-8 animate-spin text-primary" aria-hidden="true" />
-          <p className="mt-4 text-base font-semibold">Processing your document…</p>
+          <p className="mt-4 text-base font-semibold">Working on your document…</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {progressLabel || "Working locally in your browser. Keep this tab open."}
+            {progressLabel || "Running locally in your browser. Keep this tab open."}
           </p>
-          {progress !== null ? (
-            <div className="mx-auto mt-5 max-w-sm">
-              <Progress value={Math.round(progress * 100)} />
-              <p className="mt-2 text-xs text-muted-foreground">{Math.round(progress * 100)}% complete</p>
-            </div>
-          ) : null}
+          <div className="mx-auto mt-5 max-w-sm">
+            <Progress value={progress !== null ? Math.round(progress * 100) : undefined} />
+            <p className="mt-2 text-xs text-muted-foreground">
+              {progress !== null ? `${Math.round(progress * 100)}% complete` : "This usually takes a few seconds"}
+            </p>
+          </div>
         </div>
       ) : phase === "done" && result ? (
+
         <div>
           <div className="flex items-start gap-3">
             <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-success" aria-hidden="true" />
