@@ -333,13 +333,18 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           (wantsImage && isImage) ||
           (wantsDoc && /\.docx?$/i.test(file.name));
         if (!ok) {
-          setError(`"${file.name}" is not supported by this tool. Expected ${tool.acceptLabel}.`);
+          setError(
+            `That file type isn't supported here. ${tool.name} works with ${tool.acceptLabel} — pick a different file and try again.`,
+          );
           continue;
         }
         if (file.size > 100 * 1024 * 1024) {
-          setError(`"${file.name}" is larger than the 100 MB limit for browser processing.`);
+          setError(
+            `That file is too large. IXDocs handles files up to 100 MB in the browser — try compressing or splitting it first.`,
+          );
           continue;
         }
+
         accepted.push(file);
       }
       if (!accepted.length) return;
