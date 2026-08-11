@@ -71,8 +71,9 @@ export function RelatedTools({ tool }: { tool: Tool }) {
       <h2 id="related-tools" className="text-lg font-bold">
         Related tools
       </h2>
+      <p className="mt-1 text-sm text-muted-foreground">Other IXDocs tools people use with {tool.name}.</p>
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {tool.related.map((slug) => (
+        {tool.related.slice(0, 4).map((slug) => (
           <RelatedCard key={slug} slug={slug} />
         ))}
       </div>
@@ -91,9 +92,11 @@ function RelatedCard({ slug }: { slug: string }) {
 function UploadBox({
   tool,
   onFiles,
+  compact = false,
 }: {
   tool: Tool;
   onFiles: (files: File[]) => void;
+  compact?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
@@ -112,27 +115,48 @@ function UploadBox({
         onFiles(Array.from(e.dataTransfer.files));
       }}
       className={cn(
-        "rounded-2xl border-2 border-dashed bg-surface px-5 py-10 text-center transition-colors sm:py-14",
+        "rounded-2xl border-2 border-dashed bg-surface px-4 text-center transition-colors sm:px-6",
+        compact ? "py-6" : "py-10 sm:py-16",
         dragging ? "border-primary bg-accent" : "border-border",
       )}
     >
-      <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-background text-primary shadow-[var(--shadow-soft)]">
-        <UploadCloud className="size-7" />
+      <span
+        className={cn(
+          "mx-auto grid place-items-center rounded-2xl bg-background text-primary shadow-[var(--shadow-soft)]",
+          compact ? "size-10" : "size-14",
+        )}
+      >
+        <UploadCloud className={compact ? "size-5" : "size-7"} />
       </span>
-      <p className="mt-4 text-base font-semibold">Drop your {tool.multiple ? "files" : "file"} here</p>
-      <p className="mt-1 text-sm text-muted-foreground">or choose from your device</p>
-      <div className="mt-5 flex flex-wrap justify-center gap-2">
-        <Button type="button" onClick={() => inputRef.current?.click()} className="min-h-11">
-          Choose {tool.multiple ? "files" : "file"}
+      <p className={cn("mt-4 font-semibold", compact ? "text-sm" : "text-base sm:text-lg")}>
+        {compact
+          ? `Add more ${tool.multiple ? "files" : "files"}`
+          : `Drag & drop your ${tool.multiple ? "files" : "file"} here`}
+      </p>
+      {!compact ? <p className="mt-1 text-sm text-muted-foreground">Nothing is uploaded to a server</p> : null}
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
+        <Button
+          type="button"
+          size={compact ? "default" : "lg"}
+          onClick={() => inputRef.current?.click()}
+          className="min-h-12 w-full sm:w-auto"
+        >
+          <UploadCloud className="size-4" />
+          <span>Select {tool.multiple ? "files" : "file"}</span>
         </Button>
         {tool.slug === "document-scanner" ? (
-          <Button type="button" variant="outline" className="min-h-11" onClick={() => cameraRef.current?.click()}>
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-12 w-full sm:w-auto"
+            onClick={() => cameraRef.current?.click()}
+          >
             Use camera
           </Button>
         ) : null}
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">
-        Supported: {tool.acceptLabel} · Processed on your device, in this browser tab
+      <p className="mx-auto mt-4 max-w-sm text-xs break-words text-muted-foreground">
+        Supported: {tool.acceptLabel} · up to 100 MB · no account needed
       </p>
       <input
         ref={inputRef}
@@ -140,7 +164,10 @@ function UploadBox({
         className="sr-only"
         accept={tool.accept}
         multiple={tool.multiple}
-        onChange={(e) => onFiles(Array.from(e.target.files ?? []))}
+        onChange={(e) => {
+          onFiles(Array.from(e.target.files ?? []));
+          e.target.value = "";
+        }}
       />
       <input
         ref={cameraRef}
@@ -149,11 +176,15 @@ function UploadBox({
         accept="image/*"
         capture="environment"
         multiple
-        onChange={(e) => onFiles(Array.from(e.target.files ?? []))}
+        onChange={(e) => {
+          onFiles(Array.from(e.target.files ?? []));
+          e.target.value = "";
+        }}
       />
     </div>
   );
 }
+
 
 /* ---------------------------------------------------------------- options */
 
