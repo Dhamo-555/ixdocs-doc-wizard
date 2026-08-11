@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FileCheck2, Gauge, ShieldCheck } from "lucide-react";
 import { AdSlot, RelatedTools, ToolWorkspace } from "./tool-workspace";
 import { getTool } from "@/lib/tools";
 import {
