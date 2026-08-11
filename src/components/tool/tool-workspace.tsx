@@ -71,8 +71,9 @@ export function RelatedTools({ tool }: { tool: Tool }) {
       <h2 id="related-tools" className="text-lg font-bold">
         Related tools
       </h2>
+      <p className="mt-1 text-sm text-muted-foreground">Other IXDocs tools people use with {tool.name}.</p>
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {tool.related.map((slug) => (
+        {tool.related.slice(0, 4).map((slug) => (
           <RelatedCard key={slug} slug={slug} />
         ))}
       </div>
@@ -91,9 +92,11 @@ function RelatedCard({ slug }: { slug: string }) {
 function UploadBox({
   tool,
   onFiles,
+  compact = false,
 }: {
   tool: Tool;
   onFiles: (files: File[]) => void;
+  compact?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
@@ -112,27 +115,48 @@ function UploadBox({
         onFiles(Array.from(e.dataTransfer.files));
       }}
       className={cn(
-        "rounded-2xl border-2 border-dashed bg-surface px-5 py-10 text-center transition-colors sm:py-14",
+        "rounded-2xl border-2 border-dashed bg-surface px-4 text-center transition-colors sm:px-6",
+        compact ? "py-6" : "py-10 sm:py-16",
         dragging ? "border-primary bg-accent" : "border-border",
       )}
     >
-      <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-background text-primary shadow-[var(--shadow-soft)]">
-        <UploadCloud className="size-7" />
+      <span
+        className={cn(
+          "mx-auto grid place-items-center rounded-2xl bg-background text-primary shadow-[var(--shadow-soft)]",
+          compact ? "size-10" : "size-14",
+        )}
+      >
+        <UploadCloud className={compact ? "size-5" : "size-7"} />
       </span>
-      <p className="mt-4 text-base font-semibold">Drop your {tool.multiple ? "files" : "file"} here</p>
-      <p className="mt-1 text-sm text-muted-foreground">or choose from your device</p>
-      <div className="mt-5 flex flex-wrap justify-center gap-2">
-        <Button type="button" onClick={() => inputRef.current?.click()} className="min-h-11">
-          Choose {tool.multiple ? "files" : "file"}
+      <p className={cn("mt-4 font-semibold", compact ? "text-sm" : "text-base sm:text-lg")}>
+        {compact
+          ? `Add more ${tool.multiple ? "files" : "files"}`
+          : `Drag & drop your ${tool.multiple ? "files" : "file"} here`}
+      </p>
+      {!compact ? <p className="mt-1 text-sm text-muted-foreground">Nothing is uploaded to a server</p> : null}
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
+        <Button
+          type="button"
+          size={compact ? "default" : "lg"}
+          onClick={() => inputRef.current?.click()}
+          className="min-h-12 w-full sm:w-auto"
+        >
+          <UploadCloud className="size-4" />
+          <span>Select {tool.multiple ? "files" : "file"}</span>
         </Button>
         {tool.slug === "document-scanner" ? (
-          <Button type="button" variant="outline" className="min-h-11" onClick={() => cameraRef.current?.click()}>
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-12 w-full sm:w-auto"
+            onClick={() => cameraRef.current?.click()}
+          >
             Use camera
           </Button>
         ) : null}
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">
-        Supported: {tool.acceptLabel} · Processed on your device, in this browser tab
+      <p className="mx-auto mt-4 max-w-sm text-xs break-words text-muted-foreground">
+        Supported: {tool.acceptLabel} · up to 100 MB · no account needed
       </p>
       <input
         ref={inputRef}
@@ -140,7 +164,10 @@ function UploadBox({
         className="sr-only"
         accept={tool.accept}
         multiple={tool.multiple}
-        onChange={(e) => onFiles(Array.from(e.target.files ?? []))}
+        onChange={(e) => {
+          onFiles(Array.from(e.target.files ?? []));
+          e.target.value = "";
+        }}
       />
       <input
         ref={cameraRef}
@@ -149,11 +176,15 @@ function UploadBox({
         accept="image/*"
         capture="environment"
         multiple
-        onChange={(e) => onFiles(Array.from(e.target.files ?? []))}
+        onChange={(e) => {
+          onFiles(Array.from(e.target.files ?? []));
+          e.target.value = "";
+        }}
       />
     </div>
   );
 }
+
 
 /* ---------------------------------------------------------------- options */
 
@@ -302,13 +333,18 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           (wantsImage && isImage) ||
           (wantsDoc && /\.docx?$/i.test(file.name));
         if (!ok) {
-          setError(`"${file.name}" is not supported by this tool. Expected ${tool.acceptLabel}.`);
+          setError(
+            `That file type isn't supported here. ${tool.name} works with ${tool.acceptLabel} — pick a different file and try again.`,
+          );
           continue;
         }
         if (file.size > 100 * 1024 * 1024) {
-          setError(`"${file.name}" is larger than the 100 MB limit for browser processing.`);
+          setError(
+            `That file is too large. IXDocs handles files up to 100 MB in the browser — try compressing or splitting it first.`,
+          );
           continue;
         }
+
         accepted.push(file);
       }
       if (!accepted.length) return;
@@ -412,7 +448,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   };
 
   return (
-    <div className="surface-card p-4 sm:p-6">
+    <div className="surface-card min-w-0 p-4 sm:p-6" aria-busy={phase === "processing"}>
       {!tool.ready ? (
         <div className="mb-5 flex gap-3 rounded-xl border border-warning/40 bg-warning/10 p-4">
           <Info className="mt-0.5 size-5 shrink-0 text-warning-foreground" aria-hidden="true" />
@@ -426,27 +462,44 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
       ) : null}
 
       {error ? (
-        <div role="alert" className="mb-5 flex gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+        <div
+          role="alert"
+          className="mb-5 grid gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 sm:grid-cols-[auto_minmax(0,1fr)]"
+        >
           <AlertTriangle className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
-          <p className="text-sm text-foreground">{error}</p>
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-foreground">Something didn&apos;t work</p>
+            <p className="mt-1 text-sm break-words text-muted-foreground">{error}</p>
+            {phase === "error" ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button size="sm" variant="outline" className="min-h-11" onClick={() => setPhase("ready")}>
+                  Try again
+                </Button>
+                <Button size="sm" variant="ghost" className="min-h-11" onClick={reset}>
+                  Start over
+                </Button>
+              </div>
+            ) : null}
+          </div>
         </div>
       ) : null}
 
       {phase === "processing" ? (
-        <div className="py-14 text-center">
+        <div className="py-14 text-center" role="status">
           <Loader2 className="mx-auto size-8 animate-spin text-primary" aria-hidden="true" />
-          <p className="mt-4 text-base font-semibold">Processing your document…</p>
+          <p className="mt-4 text-base font-semibold">Working on your document…</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {progressLabel || "Working locally in your browser. Keep this tab open."}
+            {progressLabel || "Running locally in your browser. Keep this tab open."}
           </p>
-          {progress !== null ? (
-            <div className="mx-auto mt-5 max-w-sm">
-              <Progress value={Math.round(progress * 100)} />
-              <p className="mt-2 text-xs text-muted-foreground">{Math.round(progress * 100)}% complete</p>
-            </div>
-          ) : null}
+          <div className="mx-auto mt-5 max-w-sm">
+            <Progress value={progress !== null ? Math.round(progress * 100) : undefined} />
+            <p className="mt-2 text-xs text-muted-foreground">
+              {progress !== null ? `${Math.round(progress * 100)}% complete` : "This usually takes a few seconds"}
+            </p>
+          </div>
         </div>
       ) : phase === "done" && result ? (
+
         <div>
           <div className="flex items-start gap-3">
             <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-success" aria-hidden="true" />
@@ -500,98 +553,121 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           ))}
 
           {result.outputs.length ? (
-            <ul className="mt-5 space-y-2">
-              {result.outputs.map((output) => (
-                <li
-                  key={output.name}
-                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-border p-3"
+            <div className="mt-5 rounded-2xl border border-primary/30 bg-accent/40 p-3 sm:p-4">
+              <h3 className="px-1 text-sm font-semibold text-accent-foreground">
+                {result.outputs.length > 1 ? `${result.outputs.length} files ready to download` : "Your file"}
+              </h3>
+              <ul className="mt-3 space-y-2">
+                {result.outputs.map((output) => (
+                  <li
+                    key={output.name}
+                    className="grid gap-3 rounded-xl border border-border bg-background p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium" title={output.name}>
+                        {output.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{formatBytes(output.size)}</p>
+                    </div>
+                    <Button
+                      className="min-h-12 w-full sm:w-auto"
+                      onClick={() => download(output.name, output.blob)}
+                    >
+                      <Download className="size-4" />
+                      <span>Download</span>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+              {result.outputs.length > 1 ? (
+                <Button
+                  className="mt-3 min-h-12 w-full sm:w-auto"
+                  onClick={() => result.outputs.forEach((o, i) => setTimeout(() => download(o.name, o.blob), i * 300))}
                 >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{output.name}</p>
-                    <p className="text-xs text-muted-foreground">{formatBytes(output.size)}</p>
-                  </div>
-                  <Button size="sm" className="min-h-11" onClick={() => download(output.name, output.blob)}>
-                    <Download className="size-4" />
-                    <span>Download</span>
-                  </Button>
-                </li>
-              ))}
-            </ul>
+                  <Download className="size-4" />
+                  <span>Download all</span>
+                </Button>
+              ) : null}
+            </div>
           ) : null}
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {result.outputs.length > 1 ? (
-              <Button
-                className="min-h-11"
-                onClick={() => result.outputs.forEach((o, i) => setTimeout(() => download(o.name, o.blob), i * 300))}
-              >
-                <Download className="size-4" />
-                <span>Download all</span>
-              </Button>
-            ) : null}
-            <Button variant="outline" className="min-h-11" onClick={reset}>
+          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+            <Button variant="outline" className="min-h-12 w-full sm:w-auto" onClick={reset}>
               <RotateCcw className="size-4" />
               <span>Process another file</span>
             </Button>
           </div>
+
         </div>
       ) : files.length === 0 ? (
         <UploadBox tool={tool} onFiles={addFiles} />
       ) : (
         <div className="space-y-6">
-          <ul className="space-y-2">
-            {files.map((file, index) => (
-              <li
-                key={`${file.name}-${index}`}
-                className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-border p-3"
-              >
-                <div className="flex min-w-0 items-center gap-3">
-                  <FileText className="size-5 shrink-0 text-primary" aria-hidden="true" />
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{file.name}</p>
-                    <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
+          <div>
+            <h2 className="text-sm font-semibold">
+              {files.length > 1 ? `${files.length} files selected` : "Selected file"}
+            </h2>
+            <ul className="mt-3 space-y-2">
+              {files.map((file, index) => (
+                <li
+                  key={`${file.name}-${index}`}
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-xl border border-border p-3"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <FileText className="size-5 shrink-0 text-primary" aria-hidden="true" />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium" title={file.name}>
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  {tool.multiple && files.length > 1 ? (
-                    <>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Move ${file.name} up`}
-                        className="min-h-11 min-w-11"
-                        onClick={() => moveFile(index, -1)}
-                      >
-                        <ArrowLeft className="size-4 rotate-90" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Move ${file.name} down`}
-                        className="min-h-11 min-w-11"
-                        onClick={() => moveFile(index, 1)}
-                      >
-                        <ArrowRight className="size-4 rotate-90" />
-                      </Button>
-                    </>
-                  ) : null}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label={`Remove ${file.name}`}
-                    className="min-h-11 min-w-11"
-                    onClick={() => setFiles((prev) => prev.filter((_, i) => i !== index))}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  <div className="flex shrink-0 items-center">
+                    {tool.multiple && files.length > 1 ? (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Move ${file.name} up`}
+                          className="size-11"
+                          onClick={() => moveFile(index, -1)}
+                        >
+                          <ArrowLeft className="size-4 rotate-90" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Move ${file.name} down`}
+                          className="size-11"
+                          onClick={() => moveFile(index, 1)}
+                        >
+                          <ArrowRight className="size-4 rotate-90" />
+                        </Button>
+                      </>
+                    ) : null}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Remove ${file.name}`}
+                      className="size-11"
+                      onClick={() =>
+                        setFiles((prev) => {
+                          const next = prev.filter((_, i) => i !== index);
+                          if (!next.length) setPhase("idle");
+                          return next;
+                        })
+                      }
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          {tool.multiple ? (
-            <UploadBox tool={tool} onFiles={addFiles} />
-          ) : null}
+          {tool.multiple ? <UploadBox tool={tool} onFiles={addFiles} compact /> : null}
+
 
           {thumbs.length && tool.pageMode === "select" ? (
             <div>
@@ -674,26 +750,35 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           ) : null}
 
           {visibleOptions.length ? (
-            <div className="grid gap-5 sm:grid-cols-2">
-              {visibleOptions.map((option) => (
-                <OptionField
-                  key={option.key}
-                  option={option}
-                  value={options[option.key] ?? option.default}
-                  onChange={(v) => setOptions((prev) => ({ ...prev, [option.key]: v }))}
-                />
-              ))}
+            <div>
+              <h2 className="text-sm font-semibold">Options</h2>
+              <div className="mt-3 grid gap-5 sm:grid-cols-2">
+                {visibleOptions.map((option) => (
+                  <OptionField
+                    key={option.key}
+                    option={option}
+                    value={options[option.key] ?? option.default}
+                    onChange={(v) => setOptions((prev) => ({ ...prev, [option.key]: v }))}
+                  />
+                ))}
+              </div>
             </div>
           ) : null}
 
-          <div className="flex flex-wrap gap-2">
-            <Button size="lg" className="min-h-12 flex-1 sm:flex-none" disabled={!tool.ready} onClick={process}>
+          <div className="flex flex-col gap-2 border-t border-border pt-5 sm:flex-row sm:items-center">
+            <Button
+              size="lg"
+              className="min-h-12 w-full sm:w-auto"
+              disabled={!tool.ready}
+              onClick={process}
+            >
               {tool.actionLabel}
             </Button>
-            <Button variant="outline" size="lg" className="min-h-12" onClick={reset}>
+            <Button variant="ghost" size="lg" className="min-h-12 w-full sm:w-auto" onClick={reset}>
               Start over
             </Button>
           </div>
+
           {!tool.ready ? (
             <p className="text-xs text-muted-foreground">
               Processing is disabled for this tool until the engine is connected — IXDocs will not return a file that
