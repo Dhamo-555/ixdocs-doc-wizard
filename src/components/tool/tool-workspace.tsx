@@ -603,59 +603,71 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
         <UploadBox tool={tool} onFiles={addFiles} />
       ) : (
         <div className="space-y-6">
-          <ul className="space-y-2">
-            {files.map((file, index) => (
-              <li
-                key={`${file.name}-${index}`}
-                className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-border p-3"
-              >
-                <div className="flex min-w-0 items-center gap-3">
-                  <FileText className="size-5 shrink-0 text-primary" aria-hidden="true" />
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{file.name}</p>
-                    <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
+          <div>
+            <h2 className="text-sm font-semibold">
+              {files.length > 1 ? `${files.length} files selected` : "Selected file"}
+            </h2>
+            <ul className="mt-3 space-y-2">
+              {files.map((file, index) => (
+                <li
+                  key={`${file.name}-${index}`}
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-xl border border-border p-3"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <FileText className="size-5 shrink-0 text-primary" aria-hidden="true" />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium" title={file.name}>
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  {tool.multiple && files.length > 1 ? (
-                    <>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Move ${file.name} up`}
-                        className="min-h-11 min-w-11"
-                        onClick={() => moveFile(index, -1)}
-                      >
-                        <ArrowLeft className="size-4 rotate-90" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Move ${file.name} down`}
-                        className="min-h-11 min-w-11"
-                        onClick={() => moveFile(index, 1)}
-                      >
-                        <ArrowRight className="size-4 rotate-90" />
-                      </Button>
-                    </>
-                  ) : null}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label={`Remove ${file.name}`}
-                    className="min-h-11 min-w-11"
-                    onClick={() => setFiles((prev) => prev.filter((_, i) => i !== index))}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  <div className="flex shrink-0 items-center">
+                    {tool.multiple && files.length > 1 ? (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Move ${file.name} up`}
+                          className="size-11"
+                          onClick={() => moveFile(index, -1)}
+                        >
+                          <ArrowLeft className="size-4 rotate-90" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Move ${file.name} down`}
+                          className="size-11"
+                          onClick={() => moveFile(index, 1)}
+                        >
+                          <ArrowRight className="size-4 rotate-90" />
+                        </Button>
+                      </>
+                    ) : null}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Remove ${file.name}`}
+                      className="size-11"
+                      onClick={() =>
+                        setFiles((prev) => {
+                          const next = prev.filter((_, i) => i !== index);
+                          if (!next.length) setPhase("idle");
+                          return next;
+                        })
+                      }
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          {tool.multiple ? (
-            <UploadBox tool={tool} onFiles={addFiles} />
-          ) : null}
+          {tool.multiple ? <UploadBox tool={tool} onFiles={addFiles} compact /> : null}
+
 
           {thumbs.length && tool.pageMode === "select" ? (
             <div>
