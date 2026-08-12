@@ -61,7 +61,9 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Search tools — try 'compress' or 'convert'" value={query} onValueChange={setQuery} />
         <CommandList>
-          <CommandEmpty>No tool matches that search.</CommandEmpty>
+          <CommandEmpty>
+            No tool matches that search. Try “compress”, “merge”, “convert” or “size”.
+          </CommandEmpty>
           <CommandGroup heading={query.trim() ? "Results" : "Popular tools"}>
             {results.map((tool) => (
               <CommandItem key={tool.slug} value={tool.slug} onSelect={() => go(tool.slug)} className="gap-3">
@@ -70,9 +72,13 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
                   <span className="truncate font-medium">{tool.name}</span>
                   <span className="truncate text-xs text-muted-foreground">{tool.short}</span>
                 </span>
+                <span className="ml-auto hidden shrink-0 text-[0.65rem] font-semibold tracking-wide text-muted-foreground uppercase sm:inline">
+                  {tool.category}
+                </span>
               </CommandItem>
             ))}
           </CommandGroup>
+
         </CommandList>
       </CommandDialog>
     </>
