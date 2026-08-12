@@ -33,7 +33,7 @@ import { ToolError, formatBytes, openRenderDoc, renderPageToCanvas, type RunResu
 
 /* ------------------------------------------------------------ shared cards */
 
-export function ToolCard({ tool }: { tool: Tool }) {
+export function ToolCard({ tool, showCategory = false }: { tool: Tool; showCategory?: boolean }) {
   return (
     <Link
       to={toolPath(tool.slug)}
@@ -44,9 +44,15 @@ export function ToolCard({ tool }: { tool: Tool }) {
       </span>
       <span className="mt-1 truncate text-sm font-semibold text-foreground sm:text-[0.95rem]">{tool.name}</span>
       <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{tool.short}</span>
+      {showCategory ? (
+        <span className="mt-1 truncate text-[0.65rem] font-semibold tracking-wide text-muted-foreground uppercase">
+          {tool.category}
+        </span>
+      ) : null}
     </Link>
   );
 }
+
 
 
 export function AdSlot({ label = "Advertisement", className }: { label?: string; className?: string }) {
