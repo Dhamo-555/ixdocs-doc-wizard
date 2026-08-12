@@ -1392,53 +1392,63 @@ export function toolsByCategory(category: ToolCategory) {
 }
 
 const SEARCH_ALIASES: Record<string, string[]> = {
-  "compress-pdf": ["compress", "reduce", "smaller", "shrink", "size"],
-  "compress-pdf-to-target-size": ["compress", "200 kb", "100 kb", "target", "exact", "limit", "size"],
-  "pdf-health-checker": ["compress", "check", "inspect", "report", "size", "diagnose"],
-  "application-pdf-optimizer": ["compress", "application", "form", "upload", "size", "optimize"],
-  "jpg-to-pdf": ["convert", "image", "photo", "jpeg", "png"],
-  "pdf-to-jpg": ["convert", "image", "export", "jpeg"],
-  "pdf-to-png": ["convert", "image", "export"],
-  "pdf-to-word": ["convert", "docx", "edit", "word"],
-  "word-to-pdf": ["convert", "docx", "doc", "word"],
-  "merge-pdf": ["combine", "join", "merge"],
-  "split-pdf": ["separate", "divide", "cut"],
-  "rotate-pdf": ["turn", "orientation", "sideways"],
-  "extract-pdf-pages": ["select", "pages", "save"],
-  "delete-pdf-pages": ["remove", "pages"],
-  "reorder-pdf-pages": ["rearrange", "order", "sort", "pages"],
-  "watermark-pdf": ["stamp", "confidential", "draft"],
-  "password-protect-pdf": ["encrypt", "lock", "secure", "password"],
-  "pdf-page-numbering": ["numbers", "pagination", "footer"],
-  "pdf-page-size-converter": ["a4", "letter", "legal", "resize", "paper"],
-  "print-ready-pdf": ["print", "margins", "paper"],
-  "pdf-metadata-cleaner": ["privacy", "author", "metadata", "clean"],
-  "pdf-ocr": ["scan", "text", "recognition", "searchable"],
-  "passport-photo": ["id", "photo", "visa", "print"],
-  "document-scanner": ["scan", "camera", "mobile", "photo"],
-  "smart-pdf-analyzer": ["analyze", "analyse", "inspect", "structure"],
+  "compress-pdf": ["compress", "reduce", "smaller", "shrink", "size", "too big", "optimize", "optimise", "mb", "kb"],
+  "compress-pdf-to-target-size": [
+    "compress", "200 kb", "100 kb", "target", "exact", "limit", "size", "under", "max size", "upload limit", "portal", "reject",
+  ],
+  "pdf-health-checker": ["compress", "check", "inspect", "report", "size", "diagnose", "inspector", "why is my pdf big", "portal", "reject", "problem"],
+  "application-pdf-optimizer": ["compress", "application", "form", "upload", "size", "optimize", "portal", "reject", "submission", "government"],
+  "jpg-to-pdf": ["convert", "image", "images", "photo", "picture", "jpeg", "jpg", "png", "webp", "screenshot", "receipt", "id card", "scan to pdf"],
+  "pdf-to-jpg": ["convert", "image", "export", "jpeg", "jpg", "picture", "pdf to image"],
+  "pdf-to-png": ["convert", "image", "export", "png", "picture", "transparent", "pdf to image"],
+  "pdf-to-word": ["convert", "docx", "doc", "edit", "word", "editable", "text", "markdown", "extract text"],
+  "word-to-pdf": ["convert", "docx", "doc", "word", "office", "resume", "cv"],
+  "merge-pdf": ["combine", "join", "merge", "append", "one file", "grid", "receipt", "batch"],
+  "split-pdf": ["separate", "divide", "cut", "split", "chapters", "pages"],
+  "rotate-pdf": ["turn", "orientation", "sideways", "upside down", "landscape", "portrait", "rotate"],
+  "extract-pdf-pages": ["select", "pages", "save", "extract", "pick pages", "range", "split"],
+  "delete-pdf-pages": ["remove", "pages", "delete", "erase page", "blank page"],
+  "reorder-pdf-pages": ["rearrange", "order", "sort", "pages", "move pages", "organize", "organise"],
+  "watermark-pdf": ["stamp", "confidential", "draft", "watermark", "brand", "copyright"],
+  "password-protect-pdf": ["encrypt", "lock", "secure", "password", "protect", "unlock", "security", "private"],
+  "pdf-page-numbering": ["numbers", "pagination", "footer", "page number", "header"],
+  "pdf-page-size-converter": ["a4", "letter", "legal", "resize", "paper", "size", "page size", "scale"],
+  "print-ready-pdf": ["print", "margins", "paper", "bleed", "printer", "print ready"],
+  "pdf-metadata-cleaner": ["privacy", "author", "metadata", "clean", "redact", "whiteout", "blackout", "hidden data", "strip", "anonymous"],
+  "pdf-ocr": ["scan", "scanned", "text", "recognition", "searchable", "ocr", "copy text", "extract text", "image to text"],
+  "passport-photo": ["id", "photo", "visa", "print", "passport", "portrait", "biometric"],
+  "document-scanner": ["scan", "camera", "mobile", "photo", "scanner", "receipt", "id card", "dark mode", "contrast"],
+  "smart-pdf-analyzer": ["analyze", "analyse", "inspect", "structure", "report", "fonts", "images", "audit", "problem"],
 };
 
-export function searchTools(query: string): Tool[] {
+export function searchTools(query: string, limit = 8): Tool[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
+  const words = q.split(/\s+/).filter(Boolean);
   return TOOLS.map((tool) => {
-    const haystack = [tool.name, tool.short, tool.category, ...(SEARCH_ALIASES[tool.slug] ?? [])]
+    const aliases = SEARCH_ALIASES[tool.slug] ?? [];
+    const haystack = [tool.name, tool.short, tool.category, tool.slug.replace(/-/g, " "), ...aliases]
       .join(" ")
       .toLowerCase();
+    const name = tool.name.toLowerCase();
     let score = 0;
-    if (tool.name.toLowerCase().startsWith(q)) score += 100;
-    if (tool.name.toLowerCase().includes(q)) score += 50;
+    if (name.startsWith(q)) score += 100;
+    if (name.includes(q)) score += 50;
+    if (aliases.some((a) => a === q)) score += 40;
     if (haystack.includes(q)) score += 20;
-    const words = q.split(/\s+/);
-    if (words.every((w) => haystack.includes(w))) score += 10;
+    if (words.length > 1 && words.every((w) => haystack.includes(w))) score += 15;
+    // partial word matches: "compres" -> "compress"
+    if (score === 0 && words.every((w) => w.length >= 3 && haystack.includes(w.slice(0, Math.max(3, w.length - 1))))) {
+      score += 5;
+    }
     return { tool, score };
   })
     .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 8)
+    .slice(0, limit)
     .map((r) => r.tool);
 }
+
 
 export const CATEGORY_ICONS: Record<ToolCategory, LucideIcon> = {
   Convert: ArrowLeftRight,
