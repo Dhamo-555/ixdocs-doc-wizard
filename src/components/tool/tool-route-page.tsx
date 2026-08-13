@@ -58,12 +58,23 @@ export function ToolRoutePage({ slug }: { slug: string }) {
       </nav>
 
       <header className="mt-4 max-w-2xl">
-        <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-          <tool.icon className="size-3.5" aria-hidden="true" />
-          {tool.category}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
+            <tool.icon className="size-3.5" aria-hidden="true" />
+            {tool.category}
+          </span>
+          {smart ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 px-3 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="size-3.5" aria-hidden="true" /> Smart tool
+            </span>
+          ) : null}
+        </div>
         <h1 className="mt-3 text-3xl font-extrabold text-balance sm:text-4xl">{tool.name}</h1>
-        <p className="mt-3 text-base text-muted-foreground">{tool.intro}</p>
+        {smart ? (
+          <p className="mt-3 text-base font-semibold text-pretty text-foreground">{smart.problem}</p>
+        ) : null}
+        <p className="mt-2 text-base text-muted-foreground">{smart ? smart.benefit : tool.intro}</p>
+        {smart ? <p className="mt-2 text-sm text-muted-foreground">{tool.intro}</p> : null}
       </header>
 
       <div className="mt-8">
