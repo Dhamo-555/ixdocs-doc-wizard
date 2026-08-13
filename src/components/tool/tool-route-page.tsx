@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, FileCheck2, Gauge, ShieldCheck } from "lucide-react";
+import { ChevronRight, FileCheck2, Gauge, ShieldCheck, Sparkles } from "lucide-react";
 import { AdSlot, RelatedTools, ToolWorkspace } from "./tool-workspace";
-import { getTool } from "@/lib/tools";
+import { getTool, smartMeta } from "@/lib/tools";
 import {
   Accordion,
   AccordionContent,
@@ -42,6 +42,7 @@ export function toolRouteHead(slug: string) {
 
 export function ToolRoutePage({ slug }: { slug: string }) {
   const tool = getTool(slug);
+  const smart = smartMeta(slug);
 
   return (
     <div className="container-page py-8 sm:py-12">
@@ -58,12 +59,23 @@ export function ToolRoutePage({ slug }: { slug: string }) {
       </nav>
 
       <header className="mt-4 max-w-2xl">
-        <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-          <tool.icon className="size-3.5" aria-hidden="true" />
-          {tool.category}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
+            <tool.icon className="size-3.5" aria-hidden="true" />
+            {tool.category}
+          </span>
+          {smart ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 px-3 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="size-3.5" aria-hidden="true" /> Smart tool
+            </span>
+          ) : null}
+        </div>
         <h1 className="mt-3 text-3xl font-extrabold text-balance sm:text-4xl">{tool.name}</h1>
-        <p className="mt-3 text-base text-muted-foreground">{tool.intro}</p>
+        {smart ? (
+          <p className="mt-3 text-base font-semibold text-pretty text-foreground">{smart.problem}</p>
+        ) : null}
+        <p className="mt-2 text-base text-muted-foreground">{smart ? smart.benefit : tool.intro}</p>
+        {smart ? <p className="mt-2 text-sm text-muted-foreground">{tool.intro}</p> : null}
       </header>
 
       <div className="mt-8">
@@ -84,6 +96,12 @@ export function ToolRoutePage({ slug }: { slug: string }) {
           <span className="min-w-0">Free, no sign-up required</span>
         </li>
       </ul>
+
+      <p className="mt-3 text-xs text-muted-foreground">
+        Your file is used for this task only and is not stored by IXDocs after you leave the page. Please only upload
+        documents you have permission to process.
+      </p>
+
 
       <section aria-labelledby="how-to" className="mt-14">
         <h2 id="how-to" className="text-lg font-bold">

@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Gauge, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import { AdSlot, ToolCard } from "@/components/tool/tool-workspace";
+import { SmartToolCard } from "@/components/tool/smart-tool-card";
 import { Button } from "@/components/ui/button";
 import {
   CATEGORY_BLURB,
   CATEGORY_ORDER,
   POPULAR_TOOLS,
+  SMART_TOOLS,
   TOOLS,
-  toolPath,
   toolsByCategory,
 } from "@/lib/tools";
 
@@ -27,11 +28,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const SMART_SLUGS = ["compress-pdf-to-target-size", "pdf-health-checker", "smart-pdf-analyzer", "application-pdf-optimizer"];
-
 function Home() {
-  const smartTools = TOOLS.filter((t) => SMART_SLUGS.includes(t.slug));
-
   return (
     <div>
       <section className="border-b border-border bg-surface">
@@ -81,33 +78,24 @@ function Home() {
       <AdSlot className="container-page" />
 
       <section aria-labelledby="smart" className="container-page py-14 sm:py-16">
-        <div className="surface-card p-6 sm:p-8">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_1.4fr] lg:items-center lg:gap-10">
-            <div className="min-w-0">
-              <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-                <Sparkles className="size-3.5" aria-hidden="true" /> Smart tools
-              </span>
-              <h2 id="smart" className="mt-4 text-2xl font-bold sm:text-3xl">Beyond the basics</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                IXDocs also handles the fiddly jobs — hitting an exact upload size limit, checking a file before you
-                submit it, or prepping a document for an application form.
-              </p>
-            </div>
-            <ul className="grid gap-2 sm:grid-cols-2">
-              {smartTools.map((tool) => (
-                <li key={tool.slug}>
-                  <Link
-                    to={toolPath(tool.slug)}
-                    className="flex min-w-0 items-center gap-3 rounded-xl border border-border px-3.5 py-3 transition-colors hover:border-primary/40 hover:bg-surface"
-                  >
-                    <tool.icon className="size-4.5 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
-                    <span className="truncate text-sm font-medium text-foreground">{tool.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="max-w-2xl">
+          <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+            <Sparkles className="size-3.5" aria-hidden="true" /> Smart tools
+          </span>
+          <h2 id="smart" className="mt-4 text-2xl font-bold sm:text-3xl">Tools for the problems, not just the file</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Specialised tools for the awkward document jobs — an exact upload limit, a form that keeps rejecting your
+            file, or a photo that needs to become a proper document.
+          </p>
         </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          {SMART_TOOLS.map((tool) => (
+            <SmartToolCard key={tool.slug} tool={tool} />
+          ))}
+        </div>
+        <p className="mt-4 text-xs text-muted-foreground">
+          Your document is processed for this task only. Please only upload documents you have permission to process.
+        </p>
       </section>
 
       <section aria-labelledby="why" className="container-page py-14 sm:py-16">
