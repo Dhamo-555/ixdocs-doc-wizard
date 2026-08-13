@@ -1,11 +1,13 @@
 import { useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Search, X } from "lucide-react";
+import { Search, Sparkles, X } from "lucide-react";
 import { AdSlot, ToolCard } from "@/components/tool/tool-workspace";
+import { SmartToolCard } from "@/components/tool/smart-tool-card";
 import {
   CATEGORY_BLURB,
   CATEGORY_ICONS,
   CATEGORY_ORDER,
+  SMART_TOOLS,
   TOOLS,
   searchTools,
   toolsByCategory,
