@@ -27,11 +27,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const SMART_SLUGS = ["compress-pdf-to-target-size", "pdf-health-checker", "smart-pdf-analyzer", "application-pdf-optimizer"];
-
 function Home() {
-  const smartTools = TOOLS.filter((t) => SMART_SLUGS.includes(t.slug));
-
   return (
     <div>
       <section className="border-b border-border bg-surface">
