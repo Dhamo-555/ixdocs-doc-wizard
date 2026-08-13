@@ -166,6 +166,21 @@ function ToolsPage() {
         </section>
       ) : (
         <div className="mt-12 space-y-12">
+          <section aria-labelledby="smart-tools">
+            <h2 id="smart-tools" className="flex items-center gap-2 text-xl font-bold">
+              <Sparkles className="size-5 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+              <span className="min-w-0">Smart tools</span>
+              <span className="text-sm font-medium text-muted-foreground">({SMART_TOOLS.length})</span>
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Specialised tools for specific document problems — upload limits, rejected forms and messy scans.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {SMART_TOOLS.map((tool) => (
+                <SmartToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          </section>
           {CATEGORY_ORDER.map((c, index) => {
             const id = c.replace(/\W/g, "-");
             const Icon = CATEGORY_ICONS[c];
