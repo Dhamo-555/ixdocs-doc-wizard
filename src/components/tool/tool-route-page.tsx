@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, FileCheck2, Gauge, ShieldCheck } from "lucide-react";
+import { ChevronRight, FileCheck2, Gauge, ShieldCheck, Sparkles } from "lucide-react";
 import { AdSlot, RelatedTools, ToolWorkspace } from "./tool-workspace";
-import { getTool } from "@/lib/tools";
+import { getTool, smartMeta } from "@/lib/tools";
 import {
   Accordion,
   AccordionContent,
@@ -42,6 +42,7 @@ export function toolRouteHead(slug: string) {
 
 export function ToolRoutePage({ slug }: { slug: string }) {
   const tool = getTool(slug);
+  const smart = smartMeta(slug);
 
   return (
     <div className="container-page py-8 sm:py-12">
