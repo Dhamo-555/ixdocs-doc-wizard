@@ -1427,7 +1427,16 @@ export function searchTools(query: string, limit = 8): Tool[] {
   const words = q.split(/\s+/).filter(Boolean);
   return TOOLS.map((tool) => {
     const aliases = SEARCH_ALIASES[tool.slug] ?? [];
-    const haystack = [tool.name, tool.short, tool.category, tool.slug.replace(/-/g, " "), ...aliases]
+    const smart = SMART_TOOL_META[tool.slug];
+    const haystack = [
+      tool.name,
+      tool.short,
+      tool.category,
+      tool.slug.replace(/-/g, " "),
+      smart?.problem ?? "",
+      smart?.benefit ?? "",
+      ...aliases,
+    ]
       .join(" ")
       .toLowerCase();
     const name = tool.name.toLowerCase();
