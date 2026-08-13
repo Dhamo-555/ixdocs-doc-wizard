@@ -1450,6 +1450,51 @@ export function searchTools(query: string, limit = 8): Tool[] {
 }
 
 
+/* ------------------------------------------------------------- smart tools */
+
+export interface SmartToolMeta {
+  /** Problem-first headline, phrased the way a user would describe the issue. */
+  problem: string;
+  /** One-line, benefit-focused explanation of what the tool actually does. */
+  benefit: string;
+}
+
+/** Specialised, problem-solving tools. Keys must be existing tool slugs. */
+export const SMART_TOOL_META: Record<string, SmartToolMeta> = {
+  "compress-pdf-to-target-size": {
+    problem: "Need your PDF under 200 KB?",
+    benefit: "Reduce a PDF towards a specific file-size limit for applications and upload portals.",
+  },
+  "application-pdf-optimizer": {
+    problem: "Upload portal rejecting your document?",
+    benefit: "Apply the page size and size cap a form asks for, then check the measured result.",
+  },
+  "pdf-health-checker": {
+    problem: "Not sure why your PDF won't upload?",
+    benefit: "Detect common PDF problems and identify potential compatibility issues before you submit.",
+  },
+  "smart-pdf-analyzer": {
+    problem: "Want to know what's actually inside a file?",
+    benefit: "Check size, page count and useful file information before you send a document on.",
+  },
+  "document-scanner": {
+    problem: "Only have a phone photo of a document?",
+    benefit: "Clean up and straighten document photos into a readable, shareable PDF.",
+  },
+  "passport-photo": {
+    problem: "Need several ID photos on one sheet?",
+    benefit: "Arrange copies of one photo neatly onto a printable page at a chosen size.",
+  },
+};
+
+export const SMART_SLUGS = Object.keys(SMART_TOOL_META);
+
+export const SMART_TOOLS = SMART_SLUGS.map((s) => getTool(s));
+
+export function smartMeta(slug: string): SmartToolMeta | undefined {
+  return SMART_TOOL_META[slug];
+}
+
 export const CATEGORY_ICONS: Record<ToolCategory, LucideIcon> = {
   Convert: ArrowLeftRight,
   Organize: SquareStack,
