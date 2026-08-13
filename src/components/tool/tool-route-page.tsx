@@ -97,6 +97,12 @@ export function ToolRoutePage({ slug }: { slug: string }) {
         </li>
       </ul>
 
+      <p className="mt-3 text-xs text-muted-foreground">
+        Your file is used for this task only and is not stored by IXDocs after you leave the page. Please only upload
+        documents you have permission to process.
+      </p>
+
+
       <section aria-labelledby="how-to" className="mt-14">
         <h2 id="how-to" className="text-lg font-bold">
           How to use {tool.name}
