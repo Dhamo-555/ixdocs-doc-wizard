@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Gauge, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import { AdSlot, ToolCard } from "@/components/tool/tool-workspace";
+import { SmartToolCard } from "@/components/tool/smart-tool-card";
 import { Button } from "@/components/ui/button";
 import {
   CATEGORY_BLURB,
   CATEGORY_ORDER,
   POPULAR_TOOLS,
+  SMART_TOOLS,
   TOOLS,
-  toolPath,
   toolsByCategory,
 } from "@/lib/tools";
 
