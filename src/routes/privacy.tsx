@@ -8,10 +8,10 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: "Privacy Policy \u2014 IXDocs" },
       { property: "og:description", content: "How IXDocs handles your documents, what runs in your browser, what data is collected and how advertising and cookies are used." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/privacy" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/privacy" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/privacy" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/privacy" }],
   }),
   component: Page,
 });

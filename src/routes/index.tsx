@@ -20,10 +20,10 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "IXDocs \u2014 Free PDF Tools: Compress, Merge, Split & Convert" },
       { property: "og:description", content: "Free, fast PDF and document tools. Compress, merge, split, rotate and convert files in your browser \u2014 no signup, no clutter." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/" }],
   }),
   component: Home,
 });

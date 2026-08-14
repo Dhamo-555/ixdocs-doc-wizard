@@ -8,10 +8,10 @@ export const Route = createFileRoute("/about")({
       { property: "og:title", content: "About IXDocs \u2014 Documents. Simplified." },
       { property: "og:description", content: "IXDocs is a free platform of document and PDF tools built around simplicity, speed and honesty about what each tool actually does." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/about" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/about" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/about" }],
   }),
   component: Page,
 });

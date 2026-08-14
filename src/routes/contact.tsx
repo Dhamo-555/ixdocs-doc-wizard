@@ -8,10 +8,10 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact IXDocs \u2014 Support and Feedback" },
       { property: "og:description", content: "Get in touch with IXDocs about a tool problem, a feature request or general feedback." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/contact" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/contact" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/contact" }],
   }),
   component: Page,
 });

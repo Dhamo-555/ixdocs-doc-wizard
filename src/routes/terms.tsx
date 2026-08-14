@@ -8,10 +8,10 @@ export const Route = createFileRoute("/terms")({
       { property: "og:title", content: "Terms of Service \u2014 IXDocs" },
       { property: "og:description", content: "The terms that apply when you use IXDocs document and PDF tools." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/terms" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/terms" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/terms" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/terms" }],
   }),
   component: Page,
 });

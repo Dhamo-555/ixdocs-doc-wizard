@@ -8,10 +8,10 @@ export const Route = createFileRoute("/how-it-works")({
       { property: "og:title", content: "How IXDocs Works \u2014 Five Simple Steps" },
       { property: "og:description", content: "Choose a tool, upload your file, configure the options, process and download. See how document processing works on IXDocs." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/how-it-works" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/how-it-works" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/how-it-works" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/how-it-works" }],
   }),
   component: Page,
 });
