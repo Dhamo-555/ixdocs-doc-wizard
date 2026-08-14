@@ -23,10 +23,10 @@ export const Route = createFileRoute("/tools")({
       { property: "og:title", content: "All Tools \u2014 Every IXDocs PDF & Document Tool" },
       { property: "og:description", content: "Search or browse every IXDocs tool: convert, organise, edit, compress, protect and analyse PDFs and documents." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/tools" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/tools" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/tools" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/tools" }],
   }),
   component: ToolsPage,
 });

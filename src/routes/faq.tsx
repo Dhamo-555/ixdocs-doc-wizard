@@ -22,10 +22,10 @@ export const Route = createFileRoute("/faq")({
       { property: "og:title", content: "FAQ \u2014 Common Questions About IXDocs" },
       { property: "og:description", content: "Answers about pricing, accounts, supported files, file storage, compression, mobile use and file limits on IXDocs." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/faq" },
+      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/faq" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/faq" }],
+    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/faq" }],
   scripts: [
       {
         type: "application/ld+json",
