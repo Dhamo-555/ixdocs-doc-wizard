@@ -104,6 +104,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "IXDocs",
+          url: "https://ixdocs-doc-wizard.lovable.app/",
+          description: "Free, fast and easy-to-use tools for your documents and PDFs.",
+          publisher: {
+            "@type": "Organization",
+            name: "IXDocs",
+            url: "https://ixdocs-doc-wizard.lovable.app/",
+          },
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
