@@ -9,9 +9,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const SITE_URL = "https://ixdocs-doc-wizard.lovable.app";
+
 export function toolRouteHead(slug: string) {
   const tool = getTool(slug);
-  const url = `/${slug}`;
+  const url = `${SITE_URL}/${slug}`;
   return {
     meta: [
       { title: tool.metaTitle },
