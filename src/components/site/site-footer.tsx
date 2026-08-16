@@ -3,10 +3,12 @@ import { LogoMark } from "./logo";
 import { CATEGORY_ORDER, toolPath, toolsByCategory } from "@/lib/tools";
 
 const LEGAL = [
-  { label: "About", to: "/about" },
+  { label: "About IXDocs", to: "/about" },
   { label: "Contact", to: "/contact" },
-  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Privacy Policy", to: "/privacy-policy" },
   { label: "Terms of Service", to: "/terms" },
+  { label: "Cookie Policy", to: "/cookie-policy" },
+  { label: "Disclaimer", to: "/disclaimer" },
   { label: "How It Works", to: "/how-it-works" },
   { label: "FAQ", to: "/faq" },
 ] as const;
@@ -22,15 +24,17 @@ export function SiteFooter() {
               <span className="text-base font-extrabold tracking-tight">IXDocs</span>
             </div>
             <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Documents. Simplified. Free tools for PDFs and documents, built to be fast, clear and honest about what
-              they do.
+              Documents. Simplified. Free tools for PDFs and documents, built to be fast, clear and
+              honest about what they do.
             </p>
           </div>
 
           <div className="grid gap-8 sm:grid-cols-3">
             {CATEGORY_ORDER.slice(0, 3).map((category) => (
               <div key={category} className="min-w-0">
-                <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">{category}</h2>
+                <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+                  {category}
+                </h2>
                 <ul className="mt-3 space-y-2">
                   {toolsByCategory(category).map((tool) => (
                     <li key={tool.slug}>
@@ -51,7 +55,9 @@ export function SiteFooter() {
         <div className="mt-10 grid gap-8 sm:grid-cols-3">
           {CATEGORY_ORDER.slice(3).map((category) => (
             <div key={category} className="min-w-0">
-              <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">{category}</h2>
+              <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+                {category}
+              </h2>
               <ul className="mt-3 space-y-2">
                 {toolsByCategory(category).map((tool) => (
                   <li key={tool.slug}>
@@ -79,8 +85,16 @@ export function SiteFooter() {
                 {item.label}
               </Link>
             ))}
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("open-cookie-preferences"))}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground cursor-pointer focus:outline-none focus:underline"
+            >
+              Cookie Preferences
+            </button>
           </nav>
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} IXDocs. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} IXDocs. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

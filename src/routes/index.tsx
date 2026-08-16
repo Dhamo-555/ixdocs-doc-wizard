@@ -16,14 +16,25 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "IXDocs \u2014 Free PDF Tools: Compress, Merge, Split & Convert" },
-      { name: "description", content: "IXDocs gives you free, fast PDF and document tools. Compress, merge, split, rotate and convert PDFs to Word, JPG or PNG right in your browser \u2014 no signup." },
-      { property: "og:title", content: "IXDocs \u2014 Free PDF Tools: Compress, Merge, Split & Convert" },
-      { property: "og:description", content: "Free, fast PDF and document tools. Compress, merge, split, rotate and convert files in your browser \u2014 no signup, no clutter." },
+      {
+        name: "description",
+        content:
+          "IXDocs gives you free, fast PDF and document tools. Compress, merge, split, rotate and convert PDFs to Word, JPG or PNG right in your browser \u2014 no signup.",
+      },
+      {
+        property: "og:title",
+        content: "IXDocs \u2014 Free PDF Tools: Compress, Merge, Split & Convert",
+      },
+      {
+        property: "og:description",
+        content:
+          "Free, fast PDF and document tools. Compress, merge, split, rotate and convert files in your browser \u2014 no signup, no clutter.",
+      },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/" },
+      { property: "og:url", content: "https://ixdocs.com/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://ixdocs.com/" }],
   }),
   component: Home,
 });
@@ -41,8 +52,8 @@ function Home() {
             Every PDF tool you need, in one place.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground text-pretty sm:mt-5 sm:text-lg">
-            <span className="font-semibold text-foreground">Documents. Simplified.</span> Compress, merge, split,
-            rotate and convert PDFs — most tools run right in your browser.
+            <span className="font-semibold text-foreground">Documents. Simplified.</span> Compress,
+            merge, split, rotate and convert PDFs — most tools run right in your browser.
           </p>
           <div className="mx-auto mt-8 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
             <Button asChild size="lg" className="min-h-12 w-full sm:w-auto">
@@ -54,15 +65,21 @@ function Home() {
               <Link to="/tools">Browse all tools</Link>
             </Button>
           </div>
-          <p className="mt-6 text-xs font-medium text-muted-foreground">Fast • Simple • Privacy-focused</p>
+          <p className="mt-6 text-xs font-medium text-muted-foreground">
+            Fast • Simple • Privacy-focused
+          </p>
         </div>
       </section>
 
       <section aria-labelledby="popular" className="container-page py-14 sm:py-16">
         <div className="grid gap-2 sm:flex sm:flex-wrap sm:items-end sm:justify-between">
           <div className="min-w-0">
-            <h2 id="popular" className="text-2xl font-bold sm:text-3xl">Popular tools</h2>
-            <p className="mt-1.5 text-sm text-muted-foreground">The document tasks people reach for most.</p>
+            <h2 id="popular" className="text-2xl font-bold sm:text-3xl">
+              Popular tools
+            </h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              The document tasks people reach for most.
+            </p>
           </div>
           <Link to="/tools" className="text-sm font-medium text-primary hover:underline">
             See all {TOOLS.length} document tools
@@ -82,10 +99,12 @@ function Home() {
           <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
             <Sparkles className="size-3.5" aria-hidden="true" /> Smart tools
           </span>
-          <h2 id="smart" className="mt-4 text-2xl font-bold sm:text-3xl">Tools for the problems, not just the file</h2>
+          <h2 id="smart" className="mt-4 text-2xl font-bold sm:text-3xl">
+            Tools for the problems, not just the file
+          </h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Specialised tools for the awkward document jobs — an exact upload limit, a form that keeps rejecting your
-            file, or a photo that needs to become a proper document.
+            Specialised tools for the awkward document jobs — an exact upload limit, a form that
+            keeps rejecting your file, or a photo that needs to become a proper document.
           </p>
         </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
@@ -94,17 +113,32 @@ function Home() {
           ))}
         </div>
         <p className="mt-4 text-xs text-muted-foreground">
-          Your document is processed for this task only. Please only upload documents you have permission to process.
+          Your document is processed for this task only. Please only upload documents you have
+          permission to process.
         </p>
       </section>
 
       <section aria-labelledby="why" className="container-page py-14 sm:py-16">
-        <h2 id="why" className="text-2xl font-bold sm:text-3xl">Built for real document work</h2>
+        <h2 id="why" className="text-2xl font-bold sm:text-3xl">
+          Built for real document work
+        </h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { icon: Zap, title: "Fast where it matters", body: "Most tools run directly in your browser, so there is no upload wait and no queue." },
-            { icon: ShieldCheck, title: "Honest about processing", body: "We tell you exactly what each tool does — and when an engine is not connected yet." },
-            { icon: Gauge, title: "Made for tight limits", body: "Target-size compression helps you meet strict upload rules on application forms." },
+            {
+              icon: Zap,
+              title: "Fast where it matters",
+              body: "Most tools run directly in your browser, so there is no upload wait and no queue.",
+            },
+            {
+              icon: ShieldCheck,
+              title: "Honest about processing",
+              body: "We tell you exactly what each tool does — and when an engine is not connected yet.",
+            },
+            {
+              icon: Gauge,
+              title: "Made for tight limits",
+              body: "Target-size compression helps you meet strict upload rules on application forms.",
+            },
           ].map((item) => (
             <div key={item.title} className="surface-card p-5 sm:p-6">
               <item.icon className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
@@ -116,7 +150,9 @@ function Home() {
       </section>
 
       <section aria-labelledby="categories" className="container-page pb-16 sm:pb-20">
-        <h2 id="categories" className="text-2xl font-bold sm:text-3xl">Every tool, organised</h2>
+        <h2 id="categories" className="text-2xl font-bold sm:text-3xl">
+          Every tool, organised
+        </h2>
         <div className="mt-8 space-y-10 sm:space-y-12">
           {CATEGORY_ORDER.map((category) => (
             <div key={category}>
@@ -134,4 +170,3 @@ function Home() {
     </div>
   );
 }
-

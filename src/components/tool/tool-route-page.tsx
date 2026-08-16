@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const SITE_URL = "https://ixdocs-doc-wizard.lovable.app";
+const SITE_URL = "https://ixdocs.com";
 
 export function toolRouteHead(slug: string) {
   const tool = getTool(slug);
@@ -73,7 +73,10 @@ export function ToolRoutePage({ slug }: { slug: string }) {
 
   return (
     <div className="container-page py-8 sm:py-12">
-      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground"
+      >
         <Link to="/" className="hover:text-foreground">
           IXDocs
         </Link>
@@ -99,7 +102,9 @@ export function ToolRoutePage({ slug }: { slug: string }) {
         </div>
         <h1 className="mt-3 text-3xl font-extrabold text-balance sm:text-4xl">{tool.name}</h1>
         {smart ? (
-          <p className="mt-3 text-base font-semibold text-pretty text-foreground">{smart.problem}</p>
+          <p className="mt-3 text-base font-semibold text-pretty text-foreground">
+            {smart.problem}
+          </p>
         ) : null}
         <p className="mt-2 text-base text-muted-foreground">{smart ? smart.benefit : tool.intro}</p>
         {smart ? <p className="mt-2 text-sm text-muted-foreground">{tool.intro}</p> : null}
@@ -125,10 +130,9 @@ export function ToolRoutePage({ slug }: { slug: string }) {
       </ul>
 
       <p className="mt-3 text-xs text-muted-foreground">
-        Your file is used for this task only and is not stored by IXDocs after you leave the page. Please only upload
-        documents you have permission to process.
+        Your file is used for this task only and is not stored by IXDocs after you leave the page.
+        Please only upload documents you have permission to process.
       </p>
-
 
       <section aria-labelledby="how-to" className="mt-14">
         <h2 id="how-to" className="text-lg font-bold">
@@ -161,7 +165,6 @@ export function ToolRoutePage({ slug }: { slug: string }) {
           ))}
         </Accordion>
       </section>
-
 
       <RelatedTools tool={tool} />
     </div>

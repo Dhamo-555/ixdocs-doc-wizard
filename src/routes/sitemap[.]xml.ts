@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const BASE_URL = "https://ixdocs-doc-wizard.lovable.app";
+const BASE_URL = "https://ixdocs.com";
 
 interface SitemapEntry {
   path: string;
@@ -20,13 +20,13 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/faq", changefreq: "weekly", priority: "0.8" },
           { path: "/about", changefreq: "weekly", priority: "0.8" },
           { path: "/contact", changefreq: "weekly", priority: "0.8" },
-          { path: "/privacy", changefreq: "weekly", priority: "0.8" },
+          { path: "/privacy-policy", changefreq: "weekly", priority: "0.8" },
           { path: "/terms", changefreq: "weekly", priority: "0.8" },
+          { path: "/cookie-policy", changefreq: "weekly", priority: "0.8" },
+          { path: "/disclaimer", changefreq: "weekly", priority: "0.8" },
           { path: "/jpg-to-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/pdf-to-jpg", changefreq: "weekly", priority: "0.8" },
           { path: "/pdf-to-png", changefreq: "weekly", priority: "0.8" },
-          { path: "/pdf-to-word", changefreq: "weekly", priority: "0.8" },
-          { path: "/word-to-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/merge-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/split-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/rotate-pdf", changefreq: "weekly", priority: "0.8" },
@@ -34,7 +34,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/delete-pdf-pages", changefreq: "weekly", priority: "0.8" },
           { path: "/reorder-pdf-pages", changefreq: "weekly", priority: "0.8" },
           { path: "/watermark-pdf", changefreq: "weekly", priority: "0.8" },
-          { path: "/password-protect-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/pdf-page-numbering", changefreq: "weekly", priority: "0.8" },
           { path: "/compress-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/compress-pdf-to-target-size", changefreq: "weekly", priority: "0.8" },
@@ -42,7 +41,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/pdf-page-size-converter", changefreq: "weekly", priority: "0.8" },
           { path: "/print-ready-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/pdf-metadata-cleaner", changefreq: "weekly", priority: "0.8" },
-          { path: "/pdf-ocr", changefreq: "weekly", priority: "0.8" },
           { path: "/application-pdf-optimizer", changefreq: "weekly", priority: "0.8" },
           { path: "/passport-photo", changefreq: "weekly", priority: "0.8" },
           { path: "/document-scanner", changefreq: "weekly", priority: "0.8" },

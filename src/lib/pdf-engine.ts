@@ -90,7 +90,9 @@ export function parseRanges(input: string, max: number): number[][] {
     const start = Number(m[1]);
     const end = m[2] ? Number(m[2]) : start;
     if (start < 1 || end > max || end < start) {
-      throw new ToolError(`Range "${part}" is outside this document, which has ${max} page${max === 1 ? "" : "s"}.`);
+      throw new ToolError(
+        `Range "${part}" is outside this document, which has ${max} page${max === 1 ? "" : "s"}.`,
+      );
     }
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   });
@@ -107,9 +109,13 @@ export async function loadPdfDoc(file: File, forEditing = true): Promise<PDFDocu
     return await PDFDocument.load(bytes, { ignoreEncryption: !forEditing, updateMetadata: false });
   } catch (err) {
     if (String(err).toLowerCase().includes("encrypt")) {
-      throw new ToolError("This PDF is password protected. Unlock it in a PDF reader first, then try again.");
+      throw new ToolError(
+        "This PDF is password protected. Unlock it in a PDF reader first, then try again.",
+      );
     }
-    throw new ToolError("This file could not be read as a PDF. It may be corrupt or in a different format.");
+    throw new ToolError(
+      "This file could not be read as a PDF. It may be corrupt or in a different format.",
+    );
   }
 }
 
@@ -141,7 +147,9 @@ export async function openRenderDoc(file: File) {
   try {
     return await pdfjs.getDocument({ data }).promise;
   } catch {
-    throw new ToolError("This PDF could not be opened for rendering. It may be corrupt or password protected.");
+    throw new ToolError(
+      "This PDF could not be opened for rendering. It may be corrupt or password protected.",
+    );
   }
 }
 
@@ -163,10 +171,17 @@ export async function renderPageToCanvas(
   return canvas;
 }
 
-export function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: number): Promise<Blob> {
+export function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality?: number,
+): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new ToolError("The browser could not encode the rendered page."))),
+      (blob) =>
+        blob
+          ? resolve(blob)
+          : reject(new ToolError("The browser could not encode the rendered page.")),
       type,
       quality,
     );
@@ -177,7 +192,8 @@ export async function loadImageElement(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new ToolError("This image could not be read. Try a JPG or PNG file."));
+    img.onerror = () =>
+      reject(new ToolError("This image could not be read. Try a JPG or PNG file."));
     img.src = src;
   });
 }

@@ -19,14 +19,22 @@ export const Route = createFileRoute("/tools")({
   head: () => ({
     meta: [
       { title: "All Tools \u2014 Every IXDocs PDF & Document Tool" },
-      { name: "description", content: "Browse every IXDocs tool: convert, organise, edit, compress, protect and analyse PDFs and documents. Search by task or browse by category \u2014 free, no signup." },
+      {
+        name: "description",
+        content:
+          "Browse every IXDocs tool: convert, organise, edit, compress, protect and analyse PDFs and documents. Search by task or browse by category \u2014 free, no signup.",
+      },
       { property: "og:title", content: "All Tools \u2014 Every IXDocs PDF & Document Tool" },
-      { property: "og:description", content: "Search or browse every IXDocs tool: convert, organise, edit, compress, protect and analyse PDFs and documents." },
+      {
+        property: "og:description",
+        content:
+          "Search or browse every IXDocs tool: convert, organise, edit, compress, protect and analyse PDFs and documents.",
+      },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://ixdocs-doc-wizard.lovable.app/tools" },
+      { property: "og:url", content: "https://ixdocs.com/tools" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://ixdocs-doc-wizard.lovable.app/tools" }],
+    links: [{ rel: "canonical", href: "https://ixdocs.com/tools" }],
   }),
   component: ToolsPage,
 });
@@ -55,8 +63,8 @@ function ToolsPage() {
       <header className="max-w-2xl">
         <h1 className="text-3xl font-extrabold sm:text-4xl">All tools</h1>
         <p className="mt-3 text-base text-muted-foreground">
-          {TOOLS.length} document tools, grouped by what you need to do. Search by task — try “compress”, “size”,
-          “image” or “word” — or browse a category below.
+          {TOOLS.length} document tools, grouped by what you need to do. Search by task — try
+          “compress”, “size”, “image” or “word” — or browse a category below.
         </p>
       </header>
 
@@ -99,12 +107,12 @@ function ToolsPage() {
         </div>
 
         {/* Categories */}
-        <div
-          role="group"
-          aria-label="Filter by category"
-          className="mt-4 flex flex-wrap gap-2"
-        >
-          <CategoryChip active={category === "all"} onClick={() => setCategory("all")} label={`All (${TOOLS.length})`} />
+        <div role="group" aria-label="Filter by category" className="mt-4 flex flex-wrap gap-2">
+          <CategoryChip
+            active={category === "all"}
+            onClick={() => setCategory("all")}
+            label={`All (${TOOLS.length})`}
+          />
           {CATEGORY_ORDER.map((c) => {
             const Icon = CATEGORY_ICONS[c];
             return (
@@ -148,7 +156,8 @@ function ToolsPage() {
             <div className="mt-4 rounded-2xl border border-border bg-surface p-6 text-center">
               <p className="text-sm font-semibold">No tool matches “{trimmed}”.</p>
               <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
-                Try a simpler word like “compress”, “merge”, “convert” or “size”, or pick a category to browse.
+                Try a simpler word like “compress”, “merge”, “convert” or “size”, or pick a category
+                to browse.
               </p>
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 {CATEGORY_ORDER.map((c) => (
@@ -170,12 +179,19 @@ function ToolsPage() {
         <div className="mt-12 space-y-12">
           <section aria-labelledby="smart-tools">
             <h2 id="smart-tools" className="flex items-center gap-2 text-xl font-bold">
-              <Sparkles className="size-5 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+              <Sparkles
+                className="size-5 shrink-0 text-primary"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
               <span className="min-w-0">Smart tools</span>
-              <span className="text-sm font-medium text-muted-foreground">({SMART_TOOLS.length})</span>
+              <span className="text-sm font-medium text-muted-foreground">
+                ({SMART_TOOLS.length})
+              </span>
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Specialised tools for specific document problems — upload limits, rejected forms and messy scans.
+              Specialised tools for specific document problems — upload limits, rejected forms and
+              messy scans.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {SMART_TOOLS.map((tool) => (
@@ -190,7 +206,11 @@ function ToolsPage() {
             return (
               <section key={c} aria-labelledby={id}>
                 <h2 id={id} className="flex items-center gap-2 text-xl font-bold">
-                  <Icon className="size-5 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                  <Icon
+                    className="size-5 shrink-0 text-primary"
+                    strokeWidth={1.75}
+                    aria-hidden="true"
+                  />
                   <span className="min-w-0">{c}</span>
                   <span className="text-sm font-medium text-muted-foreground">({list.length})</span>
                 </h2>

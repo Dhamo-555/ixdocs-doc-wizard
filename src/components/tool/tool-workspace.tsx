@@ -29,7 +29,13 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { TOOL_MAP, toolPath, type Tool, type ToolOption } from "@/lib/tools";
 import { RUNNERS } from "@/lib/tool-runners";
-import { ToolError, formatBytes, openRenderDoc, renderPageToCanvas, type RunResult } from "@/lib/pdf-engine";
+import {
+  ToolError,
+  formatBytes,
+  openRenderDoc,
+  renderPageToCanvas,
+  type RunResult,
+} from "@/lib/pdf-engine";
 
 /* ------------------------------------------------------------ shared cards */
 
@@ -42,8 +48,12 @@ export function ToolCard({ tool, showCategory = false }: { tool: Tool; showCateg
       <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
         <tool.icon className="size-5" strokeWidth={1.75} />
       </span>
-      <span className="mt-1 truncate text-sm font-semibold text-foreground sm:text-[0.95rem]">{tool.name}</span>
-      <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{tool.short}</span>
+      <span className="mt-1 truncate text-sm font-semibold text-foreground sm:text-[0.95rem]">
+        {tool.name}
+      </span>
+      <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+        {tool.short}
+      </span>
       {showCategory ? (
         <span className="mt-1 truncate text-[0.65rem] font-semibold tracking-wide text-muted-foreground uppercase">
           {tool.category}
@@ -53,9 +63,13 @@ export function ToolCard({ tool, showCategory = false }: { tool: Tool; showCateg
   );
 }
 
-
-
-export function AdSlot({ label = "Advertisement", className }: { label?: string; className?: string }) {
+export function AdSlot({
+  label = "Advertisement",
+  className,
+}: {
+  label?: string;
+  className?: string;
+}) {
   return (
     <aside
       aria-label={label}
@@ -72,14 +86,23 @@ export function AdSlot({ label = "Advertisement", className }: { label?: string;
 }
 
 export function RelatedTools({ tool }: { tool: Tool }) {
+  const activeRelated = tool.related.filter((slug) => {
+    const t = TOOL_MAP[slug];
+    return t && t.ready !== false;
+  });
+
+  if (!activeRelated.length) return null;
+
   return (
     <section aria-labelledby="related-tools" className="mt-14">
       <h2 id="related-tools" className="text-lg font-bold">
         Related tools
       </h2>
-      <p className="mt-1 text-sm text-muted-foreground">Other IXDocs tools people use with {tool.name}.</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Other IXDocs tools people use with {tool.name}.
+      </p>
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {tool.related.slice(0, 4).map((slug) => (
+        {activeRelated.slice(0, 4).map((slug) => (
           <RelatedCard key={slug} slug={slug} />
         ))}
       </div>
@@ -89,7 +112,7 @@ export function RelatedTools({ tool }: { tool: Tool }) {
 
 function RelatedCard({ slug }: { slug: string }) {
   const tool = TOOL_MAP[slug];
-  if (!tool) return null;
+  if (!tool || tool.ready === false) return null;
   return <ToolCard tool={tool} />;
 }
 
@@ -139,7 +162,9 @@ function UploadBox({
           ? `Add more ${tool.multiple ? "files" : "files"}`
           : `Drag & drop your ${tool.multiple ? "files" : "file"} here`}
       </p>
-      {!compact ? <p className="mt-1 text-sm text-muted-foreground">Nothing is uploaded to a server</p> : null}
+      {!compact ? (
+        <p className="mt-1 text-sm text-muted-foreground">Nothing is uploaded to a server</p>
+      ) : null}
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
         <Button
           type="button"
@@ -190,7 +215,6 @@ function UploadBox({
     </div>
   );
 }
-
 
 /* ---------------------------------------------------------------- options */
 
@@ -478,7 +502,12 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
             <p className="mt-1 text-sm break-words text-muted-foreground">{error}</p>
             {phase === "error" ? (
               <div className="mt-3 flex flex-wrap gap-2">
-                <Button size="sm" variant="outline" className="min-h-11" onClick={() => setPhase("ready")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="min-h-11"
+                  onClick={() => setPhase("ready")}
+                >
                   Try again
                 </Button>
                 <Button size="sm" variant="ghost" className="min-h-11" onClick={reset}>
@@ -500,12 +529,13 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           <div className="mx-auto mt-5 max-w-sm">
             <Progress value={progress !== null ? Math.round(progress * 100) : undefined} />
             <p className="mt-2 text-xs text-muted-foreground">
-              {progress !== null ? `${Math.round(progress * 100)}% complete` : "This usually takes a few seconds"}
+              {progress !== null
+                ? `${Math.round(progress * 100)}% complete`
+                : "This usually takes a few seconds"}
             </p>
           </div>
         </div>
       ) : phase === "done" && result ? (
-
         <div>
           <div className="flex items-start gap-3">
             <CheckCircle2 className="mt-0.5 size-6 shrink-0 text-success" aria-hidden="true" />
@@ -513,7 +543,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
               <h2 className="text-lg font-bold">
                 {result.outputs.length ? "Your document is ready" : "Analysis complete"}
               </h2>
-              {result.message ? <p className="mt-1 text-sm text-muted-foreground">{result.message}</p> : null}
+              {result.message ? (
+                <p className="mt-1 text-sm text-muted-foreground">{result.message}</p>
+              ) : null}
             </div>
           </div>
 
@@ -537,11 +569,19 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           ) : null}
 
           {result.report?.map((section) => (
-            <div key={section.title} className="mt-5 overflow-hidden rounded-xl border border-border">
-              <h3 className="border-b border-border bg-surface px-4 py-2.5 text-sm font-semibold">{section.title}</h3>
+            <div
+              key={section.title}
+              className="mt-5 overflow-hidden rounded-xl border border-border"
+            >
+              <h3 className="border-b border-border bg-surface px-4 py-2.5 text-sm font-semibold">
+                {section.title}
+              </h3>
               <dl className="divide-y divide-border">
                 {section.rows.map((row) => (
-                  <div key={row.label} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 px-4 py-2.5">
+                  <div
+                    key={row.label}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 px-4 py-2.5"
+                  >
                     <dt className="min-w-0 truncate text-sm text-muted-foreground">{row.label}</dt>
                     <dd
                       className={cn(
@@ -561,7 +601,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           {result.outputs.length ? (
             <div className="mt-5 rounded-2xl border border-primary/30 bg-accent/40 p-3 sm:p-4">
               <h3 className="px-1 text-sm font-semibold text-accent-foreground">
-                {result.outputs.length > 1 ? `${result.outputs.length} files ready to download` : "Your file"}
+                {result.outputs.length > 1
+                  ? `${result.outputs.length} files ready to download`
+                  : "Your file"}
               </h3>
               <ul className="mt-3 space-y-2">
                 {result.outputs.map((output) => (
@@ -588,7 +630,11 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
               {result.outputs.length > 1 ? (
                 <Button
                   className="mt-3 min-h-12 w-full sm:w-auto"
-                  onClick={() => result.outputs.forEach((o, i) => setTimeout(() => download(o.name, o.blob), i * 300))}
+                  onClick={() =>
+                    result.outputs.forEach((o, i) =>
+                      setTimeout(() => download(o.name, o.blob), i * 300),
+                    )
+                  }
                 >
                   <Download className="size-4" />
                   <span>Download all</span>
@@ -603,7 +649,6 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
               <span>Process another file</span>
             </Button>
           </div>
-
         </div>
       ) : files.length === 0 ? (
         <UploadBox tool={tool} onFiles={addFiles} />
@@ -674,15 +719,19 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
 
           {tool.multiple ? <UploadBox tool={tool} onFiles={addFiles} compact /> : null}
 
-
           {thumbs.length && tool.pageMode === "select" ? (
             <div>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold">
-                  Select pages <span className="text-muted-foreground">({selected.length} selected)</span>
+                  Select pages{" "}
+                  <span className="text-muted-foreground">({selected.length} selected)</span>
                 </h3>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => setSelected(thumbs.map((t) => t.page))}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelected(thumbs.map((t) => t.page))}
+                  >
                     Select all
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => setSelected([])}>
@@ -700,7 +749,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                       aria-pressed={isSelected}
                       onClick={() =>
                         setSelected((prev) =>
-                          prev.includes(thumb.page) ? prev.filter((p) => p !== thumb.page) : [...prev, thumb.page].sort((a, b) => a - b),
+                          prev.includes(thumb.page)
+                            ? prev.filter((p) => p !== thumb.page)
+                            : [...prev, thumb.page].sort((a, b) => a - b),
                         )
                       }
                       className={cn(
@@ -708,8 +759,15 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                         isSelected ? "border-primary" : "border-border opacity-70",
                       )}
                     >
-                      <img src={thumb.url} alt={`Page ${thumb.page}`} className="w-full rounded" loading="lazy" />
-                      <span className="mt-1 block text-center text-xs font-medium">{thumb.page}</span>
+                      <img
+                        src={thumb.url}
+                        alt={`Page ${thumb.page}`}
+                        className="w-full rounded"
+                        loading="lazy"
+                      />
+                      <span className="mt-1 block text-center text-xs font-medium">
+                        {thumb.page}
+                      </span>
                     </button>
                   );
                 })}
@@ -726,7 +784,12 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                   if (!thumb) return null;
                   return (
                     <div key={pageIndex} className="rounded-lg border border-border bg-surface p-1">
-                      <img src={thumb.url} alt={`Page ${thumb.page}`} className="w-full rounded" loading="lazy" />
+                      <img
+                        src={thumb.url}
+                        alt={`Page ${thumb.page}`}
+                        className="w-full rounded"
+                        loading="lazy"
+                      />
                       <div className="mt-1 flex items-center justify-between">
                         <Button
                           variant="ghost"
@@ -787,8 +850,8 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
 
           {!tool.ready ? (
             <p className="text-xs text-muted-foreground">
-              Processing is disabled for this tool until the engine is connected — IXDocs will not return a file that
-              was not genuinely processed.
+              Processing is disabled for this tool until the engine is connected — IXDocs will not
+              return a file that was not genuinely processed.
             </p>
           ) : null}
         </div>

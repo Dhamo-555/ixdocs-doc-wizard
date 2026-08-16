@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import {
@@ -15,11 +15,20 @@ import { cn } from "@/lib/utils";
 export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon" }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [isMac, setIsMac] = useState(true);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (typeof navigator !== "undefined") {
+      setIsMac(navigator.userAgent.toLowerCase().includes("mac"));
+    }
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        // Prevent trigger if the button is currently hidden by responsive CSS (e.g. display: none)
+        if (buttonRef.current && buttonRef.current.offsetParent === null) {
+          return;
+        }
         e.preventDefault();
         setOpen((v) => !v);
       }
@@ -28,7 +37,10 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const results = useMemo(() => (query.trim() ? searchTools(query) : POPULAR_TOOLS.slice(0, 6)), [query]);
+  const results = useMemo(
+    () => (query.trim() ? searchTools(query) : POPULAR_TOOLS.slice(0, 6)),
+    [query],
+  );
 
   const go = (slug: string) => {
     setOpen(false);
@@ -39,6 +51,7 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
   return (
     <>
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Search tools"
@@ -52,21 +65,30 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
           <>
             <span className="truncate">Search {TOOLS.length} tools</span>
             <kbd className="ml-auto hidden rounded border border-border bg-background px-1.5 py-0.5 text-[0.65rem] font-medium lg:inline">
-              ⌘K
+              {isMac ? "⌘K" : "Ctrl+K"}
             </kbd>
           </>
         ) : null}
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search tools — try 'compress' or 'convert'" value={query} onValueChange={setQuery} />
+        <CommandInput
+          placeholder="Search tools — try 'compress' or 'convert'"
+          value={query}
+          onValueChange={setQuery}
+        />
         <CommandList>
           <CommandEmpty>
             No tool matches that search. Try “compress”, “merge”, “convert” or “size”.
           </CommandEmpty>
           <CommandGroup heading={query.trim() ? "Results" : "Popular tools"}>
             {results.map((tool) => (
-              <CommandItem key={tool.slug} value={tool.slug} onSelect={() => go(tool.slug)} className="gap-3">
+              <CommandItem
+                key={tool.slug}
+                value={tool.slug}
+                onSelect={() => go(tool.slug)}
+                className="gap-3"
+              >
                 <tool.icon className="size-4 text-primary" />
                 <span className="flex min-w-0 flex-col">
                   <span className="truncate font-medium">{tool.name}</span>
@@ -78,7 +100,6 @@ export function ToolSearch({ variant = "button" }: { variant?: "button" | "icon"
               </CommandItem>
             ))}
           </CommandGroup>
-
         </CommandList>
       </CommandDialog>
     </>

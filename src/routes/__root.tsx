@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
+import { CookieConsent } from "@/components/site/cookie-consent";
 
 function NotFoundComponent() {
   return (
@@ -86,12 +87,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "IXDocs — Documents. Simplified." },
-      { name: "description", content: "Free, fast and easy-to-use tools for your documents and PDFs." },
+      {
+        name: "description",
+        content: "Free, fast and easy-to-use tools for your documents and PDFs.",
+      },
       { name: "author", content: "IXDocs" },
       { property: "og:title", content: "IXDocs — Documents. Simplified." },
-      { property: "og:description", content: "Free, fast and easy-to-use tools for your documents and PDFs." },
+      {
+        property: "og:description",
+        content: "Free, fast and easy-to-use tools for your documents and PDFs.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ixdocs.com/ixdocs-og-image.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:type", content: "image/png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://ixdocs.com/ixdocs-og-image.png" },
       { property: "og:site_name", content: "IXDocs" },
     ],
     links: [
@@ -102,7 +114,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
     ],
     scripts: [
       {
@@ -111,12 +123,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "IXDocs",
-          url: "https://ixdocs-doc-wizard.lovable.app/",
+          url: "https://ixdocs.com/",
           description: "Free, fast and easy-to-use tools for your documents and PDFs.",
           publisher: {
             "@type": "Organization",
             name: "IXDocs",
-            url: "https://ixdocs-doc-wizard.lovable.app/",
+            url: "https://ixdocs.com/",
           },
         }),
       },
@@ -130,11 +142,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -154,6 +166,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <SiteFooter />
+        <CookieConsent />
       </div>
     </QueryClientProvider>
   );

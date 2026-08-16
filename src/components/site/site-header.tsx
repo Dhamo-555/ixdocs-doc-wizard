@@ -69,7 +69,9 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <p className="mt-3 px-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">Popular</p>
+            <p className="mt-3 px-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+              Popular
+            </p>
             <div className="grid grid-cols-2 gap-1 pt-1">
               {POPULAR_TOOLS.slice(0, 6).map((tool) => (
                 <Link

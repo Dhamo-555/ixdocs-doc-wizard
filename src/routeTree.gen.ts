@@ -15,7 +15,9 @@ import { Route as ApplicationPdfOptimizerRouteImport } from './routes/applicatio
 import { Route as CompressPdfRouteImport } from './routes/compress-pdf'
 import { Route as CompressPdfToTargetSizeRouteImport } from './routes/compress-pdf-to-target-size'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as DeletePdfPagesRouteImport } from './routes/delete-pdf-pages'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DocumentScannerRouteImport } from './routes/document-scanner'
 import { Route as ExtractPdfPagesRouteImport } from './routes/extract-pdf-pages'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -33,13 +35,14 @@ import { Route as PdfToJpgRouteImport } from './routes/pdf-to-jpg'
 import { Route as PdfToPngRouteImport } from './routes/pdf-to-png'
 import { Route as PdfToWordRouteImport } from './routes/pdf-to-word'
 import { Route as PrintReadyPdfRouteImport } from './routes/print-ready-pdf'
-import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ReorderPdfPagesRouteImport } from './routes/reorder-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SmartPdfAnalyzerRouteImport } from './routes/smart-pdf-analyzer'
 import { Route as SplitPdfRouteImport } from './routes/split-pdf'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TestRunnerRouteImport } from './routes/test-runner'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as WatermarkPdfRouteImport } from './routes/watermark-pdf'
 import { Route as WordToPdfRouteImport } from './routes/word-to-pdf'
@@ -74,9 +77,19 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CookiePolicyRoute = CookiePolicyRouteImport.update({
+  id: '/cookie-policy',
+  path: '/cookie-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DeletePdfPagesRoute = DeletePdfPagesRouteImport.update({
   id: '/delete-pdf-pages',
   path: '/delete-pdf-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentScannerRoute = DocumentScannerRouteImport.update({
@@ -164,9 +177,9 @@ const PrintReadyPdfRoute = PrintReadyPdfRouteImport.update({
   path: '/print-ready-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReorderPdfPagesRoute = ReorderPdfPagesRouteImport.update({
@@ -199,6 +212,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TestRunnerRoute = TestRunnerRouteImport.update({
+  id: '/test-runner',
+  path: '/test-runner',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -222,7 +240,9 @@ export interface FileRoutesByFullPath {
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
@@ -240,13 +260,14 @@ export interface FileRoutesByFullPath {
   '/pdf-to-png': typeof PdfToPngRoute
   '/pdf-to-word': typeof PdfToWordRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
-  '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
+  '/test-runner': typeof TestRunnerRoute
   '/tools': typeof ToolsRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
   '/word-to-pdf': typeof WordToPdfRoute
@@ -258,7 +279,9 @@ export interface FileRoutesByTo {
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
@@ -276,13 +299,14 @@ export interface FileRoutesByTo {
   '/pdf-to-png': typeof PdfToPngRoute
   '/pdf-to-word': typeof PdfToWordRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
-  '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
+  '/test-runner': typeof TestRunnerRoute
   '/tools': typeof ToolsRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
   '/word-to-pdf': typeof WordToPdfRoute
@@ -295,7 +319,9 @@ export interface FileRoutesById {
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
@@ -313,13 +339,14 @@ export interface FileRoutesById {
   '/pdf-to-png': typeof PdfToPngRoute
   '/pdf-to-word': typeof PdfToWordRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
-  '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
+  '/test-runner': typeof TestRunnerRoute
   '/tools': typeof ToolsRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
   '/word-to-pdf': typeof WordToPdfRoute
@@ -333,7 +360,9 @@ export interface FileRouteTypes {
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
+    | '/cookie-policy'
     | '/delete-pdf-pages'
+    | '/disclaimer'
     | '/document-scanner'
     | '/extract-pdf-pages'
     | '/faq'
@@ -351,13 +380,14 @@ export interface FileRouteTypes {
     | '/pdf-to-png'
     | '/pdf-to-word'
     | '/print-ready-pdf'
-    | '/privacy'
+    | '/privacy-policy'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
     | '/terms'
+    | '/test-runner'
     | '/tools'
     | '/watermark-pdf'
     | '/word-to-pdf'
@@ -369,7 +399,9 @@ export interface FileRouteTypes {
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
+    | '/cookie-policy'
     | '/delete-pdf-pages'
+    | '/disclaimer'
     | '/document-scanner'
     | '/extract-pdf-pages'
     | '/faq'
@@ -387,13 +419,14 @@ export interface FileRouteTypes {
     | '/pdf-to-png'
     | '/pdf-to-word'
     | '/print-ready-pdf'
-    | '/privacy'
+    | '/privacy-policy'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
     | '/terms'
+    | '/test-runner'
     | '/tools'
     | '/watermark-pdf'
     | '/word-to-pdf'
@@ -405,7 +438,9 @@ export interface FileRouteTypes {
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
+    | '/cookie-policy'
     | '/delete-pdf-pages'
+    | '/disclaimer'
     | '/document-scanner'
     | '/extract-pdf-pages'
     | '/faq'
@@ -423,13 +458,14 @@ export interface FileRouteTypes {
     | '/pdf-to-png'
     | '/pdf-to-word'
     | '/print-ready-pdf'
-    | '/privacy'
+    | '/privacy-policy'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
     | '/terms'
+    | '/test-runner'
     | '/tools'
     | '/watermark-pdf'
     | '/word-to-pdf'
@@ -442,7 +478,9 @@ export interface RootRouteChildren {
   CompressPdfRoute: typeof CompressPdfRoute
   CompressPdfToTargetSizeRoute: typeof CompressPdfToTargetSizeRoute
   ContactRoute: typeof ContactRoute
+  CookiePolicyRoute: typeof CookiePolicyRoute
   DeletePdfPagesRoute: typeof DeletePdfPagesRoute
+  DisclaimerRoute: typeof DisclaimerRoute
   DocumentScannerRoute: typeof DocumentScannerRoute
   ExtractPdfPagesRoute: typeof ExtractPdfPagesRoute
   FaqRoute: typeof FaqRoute
@@ -460,13 +498,14 @@ export interface RootRouteChildren {
   PdfToPngRoute: typeof PdfToPngRoute
   PdfToWordRoute: typeof PdfToWordRoute
   PrintReadyPdfRoute: typeof PrintReadyPdfRoute
-  PrivacyRoute: typeof PrivacyRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ReorderPdfPagesRoute: typeof ReorderPdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SmartPdfAnalyzerRoute: typeof SmartPdfAnalyzerRoute
   SplitPdfRoute: typeof SplitPdfRoute
   TermsRoute: typeof TermsRoute
+  TestRunnerRoute: typeof TestRunnerRoute
   ToolsRoute: typeof ToolsRoute
   WatermarkPdfRoute: typeof WatermarkPdfRoute
   WordToPdfRoute: typeof WordToPdfRoute
@@ -516,11 +555,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cookie-policy': {
+      id: '/cookie-policy'
+      path: '/cookie-policy'
+      fullPath: '/cookie-policy'
+      preLoaderRoute: typeof CookiePolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/delete-pdf-pages': {
       id: '/delete-pdf-pages'
       path: '/delete-pdf-pages'
       fullPath: '/delete-pdf-pages'
       preLoaderRoute: typeof DeletePdfPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/document-scanner': {
@@ -642,11 +695,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrintReadyPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reorder-pdf-pages': {
@@ -691,6 +744,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/test-runner': {
+      id: '/test-runner'
+      path: '/test-runner'
+      fullPath: '/test-runner'
+      preLoaderRoute: typeof TestRunnerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -722,7 +782,9 @@ const rootRouteChildren: RootRouteChildren = {
   CompressPdfRoute: CompressPdfRoute,
   CompressPdfToTargetSizeRoute: CompressPdfToTargetSizeRoute,
   ContactRoute: ContactRoute,
+  CookiePolicyRoute: CookiePolicyRoute,
   DeletePdfPagesRoute: DeletePdfPagesRoute,
+  DisclaimerRoute: DisclaimerRoute,
   DocumentScannerRoute: DocumentScannerRoute,
   ExtractPdfPagesRoute: ExtractPdfPagesRoute,
   FaqRoute: FaqRoute,
@@ -740,13 +802,14 @@ const rootRouteChildren: RootRouteChildren = {
   PdfToPngRoute: PdfToPngRoute,
   PdfToWordRoute: PdfToWordRoute,
   PrintReadyPdfRoute: PrintReadyPdfRoute,
-  PrivacyRoute: PrivacyRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ReorderPdfPagesRoute: ReorderPdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SmartPdfAnalyzerRoute: SmartPdfAnalyzerRoute,
   SplitPdfRoute: SplitPdfRoute,
   TermsRoute: TermsRoute,
+  TestRunnerRoute: TestRunnerRoute,
   ToolsRoute: ToolsRoute,
   WatermarkPdfRoute: WatermarkPdfRoute,
   WordToPdfRoute: WordToPdfRoute,

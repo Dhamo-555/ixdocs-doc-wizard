@@ -31,7 +31,10 @@ export function SmartToolCard({ tool, className }: { tool: Tool; className?: str
       <p className="text-sm leading-relaxed text-muted-foreground">{meta.benefit}</p>
       <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium text-primary">
         {tool.name}
-        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+        <ArrowRight
+          className="size-3.5 transition-transform group-hover:translate-x-0.5"
+          aria-hidden="true"
+        />
       </span>
     </Link>
   );

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ixdocs-doc-wizard.lovable.app/sitemap.xml
+Sitemap: https://ixdocs.com/sitemap.xml

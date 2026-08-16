@@ -27,12 +27,7 @@ import {
 } from "lucide-react";
 
 export type ToolCategory =
-  | "Convert"
-  | "Organize"
-  | "Edit PDF"
-  | "Compress & Optimize"
-  | "Privacy"
-  | "Advanced";
+  "Convert" | "Organize" | "Edit PDF" | "Compress & Optimize" | "Privacy" | "Advanced";
 
 export const CATEGORY_ORDER: ToolCategory[] = [
   "Convert",
@@ -96,7 +91,7 @@ const PAGE_SIZE_CHOICES = [
   { value: "legal", label: "Legal" },
 ];
 
-export const TOOLS: Tool[] = [
+const ALL_TOOLS: Tool[] = [
   /* ---------------------------------------------------------------- Convert */
   {
     slug: "jpg-to-pdf",
@@ -114,7 +109,13 @@ export const TOOLS: Tool[] = [
     acceptLabel: "JPG, PNG or WebP images",
     multiple: true,
     options: [
-      { key: "pageSize", label: "Page size", type: "select", default: "a4", choices: PAGE_SIZE_CHOICES },
+      {
+        key: "pageSize",
+        label: "Page size",
+        type: "select",
+        default: "a4",
+        choices: PAGE_SIZE_CHOICES,
+      },
       {
         key: "orientation",
         label: "Orientation",
@@ -198,7 +199,16 @@ export const TOOLS: Tool[] = [
           { value: "3", label: "Print (216 dpi)" },
         ],
       },
-      { key: "quality", label: "JPG quality", type: "range", default: 85, min: 40, max: 100, step: 5, suffix: "%" },
+      {
+        key: "quality",
+        label: "JPG quality",
+        type: "range",
+        default: 85,
+        min: 40,
+        max: 100,
+        step: 5,
+        suffix: "%",
+      },
     ],
     actionLabel: "Convert to JPG",
     steps: [
@@ -281,8 +291,7 @@ export const TOOLS: Tool[] = [
     category: "Convert",
     icon: FileType2,
     ready: false,
-    notice:
-      "The Word conversion engine is not connected yet. The interface below is complete, but no file is produced — we will not hand you a document that was never converted.",
+    notice: "This tool is currently unavailable. Please try one of our available tools.",
     accept: PDF,
     acceptLabel: "PDF file",
     multiple: false,
@@ -329,13 +338,19 @@ export const TOOLS: Tool[] = [
     category: "Convert",
     icon: FileText,
     ready: false,
-    notice:
-      "The Word rendering engine is not connected yet. The interface is complete and ready for the production conversion service.",
-    accept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    notice: "This tool is currently unavailable. Please try one of our available tools.",
+    accept:
+      ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     acceptLabel: "DOC or DOCX file",
     multiple: false,
     options: [
-      { key: "pageSize", label: "Page size", type: "select", default: "a4", choices: PAGE_SIZE_CHOICES.slice(1) },
+      {
+        key: "pageSize",
+        label: "Page size",
+        type: "select",
+        default: "a4",
+        choices: PAGE_SIZE_CHOICES.slice(1),
+      },
     ],
     actionLabel: "Convert to PDF",
     steps: [
@@ -401,7 +416,8 @@ export const TOOLS: Tool[] = [
     metaDescription:
       "Split a PDF into separate documents by page range or one file per page. Runs in your browser, free on IXDocs.",
     short: "Break a PDF into smaller documents.",
-    intro: "Split a PDF by custom ranges or into one file per page, and download each result separately.",
+    intro:
+      "Split a PDF by custom ranges or into one file per page, and download each result separately.",
     category: "Organize",
     icon: Scissors,
     ready: true,
@@ -456,7 +472,8 @@ export const TOOLS: Tool[] = [
     metaDescription:
       "Rotate PDF pages by 90, 180 or 270 degrees. Rotate every page or only the ones you select, then download. Free browser tool by IXDocs.",
     short: "Fix sideways or upside-down pages.",
-    intro: "Rotate the whole document or just the pages you select, and save the corrected orientation permanently.",
+    intro:
+      "Rotate the whole document or just the pages you select, and save the corrected orientation permanently.",
     category: "Organize",
     icon: RotateCw,
     ready: true,
@@ -623,7 +640,8 @@ export const TOOLS: Tool[] = [
     metaDescription:
       "Add a text watermark to a PDF with control over position, size, opacity and rotation. Runs in your browser, free on IXDocs.",
     short: "Stamp text across your pages.",
-    intro: "Add a text watermark such as CONFIDENTIAL or DRAFT with full control over placement and opacity.",
+    intro:
+      "Add a text watermark such as CONFIDENTIAL or DRAFT with full control over placement and opacity.",
     category: "Edit PDF",
     icon: FileCog,
     ready: true,
@@ -644,9 +662,36 @@ export const TOOLS: Tool[] = [
           { value: "bottom", label: "Bottom" },
         ],
       },
-      { key: "size", label: "Font size", type: "range", default: 48, min: 12, max: 120, step: 2, suffix: "pt" },
-      { key: "opacity", label: "Opacity", type: "range", default: 20, min: 5, max: 100, step: 5, suffix: "%" },
-      { key: "rotation", label: "Rotation", type: "range", default: 45, min: 0, max: 90, step: 5, suffix: "°" },
+      {
+        key: "size",
+        label: "Font size",
+        type: "range",
+        default: 48,
+        min: 12,
+        max: 120,
+        step: 2,
+        suffix: "pt",
+      },
+      {
+        key: "opacity",
+        label: "Opacity",
+        type: "range",
+        default: 20,
+        min: 5,
+        max: 100,
+        step: 5,
+        suffix: "%",
+      },
+      {
+        key: "rotation",
+        label: "Rotation",
+        type: "range",
+        default: 45,
+        min: 0,
+        max: 90,
+        step: 5,
+        suffix: "°",
+      },
     ],
     actionLabel: "Add watermark",
     steps: [
@@ -678,8 +723,7 @@ export const TOOLS: Tool[] = [
     category: "Edit PDF",
     icon: Lock,
     ready: false,
-    notice:
-      "PDF encryption cannot be performed safely in the browser with the current engine, so no protected file is produced yet. The interface is complete and ready for the production encryption service. Your password is never stored or transmitted.",
+    notice: "This tool is currently unavailable. Please try one of our available tools.",
     accept: PDF,
     acceptLabel: "PDF file",
     multiple: false,
@@ -723,7 +767,8 @@ export const TOOLS: Tool[] = [
     metaDescription:
       "Insert page numbers into a PDF with control over position, starting number, font size and format. Free browser tool by IXDocs.",
     short: "Add clean page numbers to a document.",
-    intro: "Insert page numbers in the position and format you need — ideal for reports, contracts and submissions.",
+    intro:
+      "Insert page numbers in the position and format you need — ideal for reports, contracts and submissions.",
     category: "Edit PDF",
     icon: Hash,
     ready: true,
@@ -758,8 +803,25 @@ export const TOOLS: Tool[] = [
           { value: "dash", label: "– 1 –" },
         ],
       },
-      { key: "start", label: "Start number", type: "number", default: 1, min: 0, max: 9999, step: 1 },
-      { key: "size", label: "Font size", type: "range", default: 11, min: 6, max: 24, step: 1, suffix: "pt" },
+      {
+        key: "start",
+        label: "Start number",
+        type: "number",
+        default: 1,
+        min: 0,
+        max: 9999,
+        step: 1,
+      },
+      {
+        key: "size",
+        label: "Font size",
+        type: "range",
+        default: 11,
+        min: 6,
+        max: 24,
+        step: 1,
+        suffix: "pt",
+      },
     ],
     actionLabel: "Add page numbers",
     steps: [
@@ -830,7 +892,12 @@ export const TOOLS: Tool[] = [
         a: "Levels other than Structure only re-encode pages as images, so there is some quality loss. Start with Balanced and step up if you need more.",
       },
     ],
-    related: ["compress-pdf-to-target-size", "pdf-health-checker", "pdf-page-size-converter", "merge-pdf"],
+    related: [
+      "compress-pdf-to-target-size",
+      "pdf-health-checker",
+      "pdf-page-size-converter",
+      "merge-pdf",
+    ],
     popular: true,
   },
   {
@@ -893,7 +960,12 @@ export const TOOLS: Tool[] = [
         a: "Use exactly the limit stated in the form's instructions. If it lists a range, aim slightly below the maximum.",
       },
     ],
-    related: ["compress-pdf", "application-pdf-optimizer", "pdf-health-checker", "pdf-page-size-converter"],
+    related: [
+      "compress-pdf",
+      "application-pdf-optimizer",
+      "pdf-health-checker",
+      "pdf-page-size-converter",
+    ],
     popular: true,
   },
   {
@@ -929,7 +1001,12 @@ export const TOOLS: Tool[] = [
         a: "No. The report is produced in your browser from the file you selected.",
       },
     ],
-    related: ["compress-pdf", "pdf-metadata-cleaner", "pdf-page-size-converter", "smart-pdf-analyzer"],
+    related: [
+      "compress-pdf",
+      "pdf-metadata-cleaner",
+      "pdf-page-size-converter",
+      "smart-pdf-analyzer",
+    ],
   },
   {
     slug: "pdf-page-size-converter",
@@ -938,7 +1015,8 @@ export const TOOLS: Tool[] = [
     metaDescription:
       "Convert PDF pages to A4, A3, Letter or Legal with portrait or landscape orientation. Free browser tool by IXDocs.",
     short: "Standardise pages to A4, Letter and more.",
-    intro: "Rescale every page onto a consistent paper size so the document prints predictably anywhere.",
+    intro:
+      "Rescale every page onto a consistent paper size so the document prints predictably anywhere.",
     category: "Compress & Optimize",
     icon: ArrowLeftRight,
     ready: true,
@@ -991,7 +1069,8 @@ export const TOOLS: Tool[] = [
     metaDescription:
       "Prepare a PDF for printing with a consistent paper size, orientation, margins and page positioning. Free tool by IXDocs.",
     short: "Prepare a document for clean printing.",
-    intro: "Place every page on a consistent sheet with safe margins so nothing is clipped by your printer.",
+    intro:
+      "Place every page on a consistent sheet with safe margins so nothing is clipped by your printer.",
     category: "Compress & Optimize",
     icon: Printer,
     ready: true,
@@ -999,7 +1078,13 @@ export const TOOLS: Tool[] = [
     acceptLabel: "PDF file",
     multiple: false,
     options: [
-      { key: "pageSize", label: "Paper size", type: "select", default: "a4", choices: PAGE_SIZE_CHOICES.slice(1) },
+      {
+        key: "pageSize",
+        label: "Paper size",
+        type: "select",
+        default: "a4",
+        choices: PAGE_SIZE_CHOICES.slice(1),
+      },
       {
         key: "orientation",
         label: "Orientation",
@@ -1010,7 +1095,16 @@ export const TOOLS: Tool[] = [
           { value: "landscape", label: "Landscape" },
         ],
       },
-      { key: "margin", label: "Margin", type: "range", default: 36, min: 0, max: 96, step: 6, suffix: "pt" },
+      {
+        key: "margin",
+        label: "Margin",
+        type: "range",
+        default: 36,
+        min: 0,
+        max: 96,
+        step: 6,
+        suffix: "pt",
+      },
       {
         key: "align",
         label: "Positioning",
@@ -1094,8 +1188,7 @@ export const TOOLS: Tool[] = [
     category: "Advanced",
     icon: FileScan,
     ready: false,
-    notice:
-      "The recognition engine is not connected yet, so no text is produced. The interface is complete and isolated from the processing layer, ready for the production OCR service.",
+    notice: "This tool is currently unavailable. Please try one of our available tools.",
     accept: PDF,
     acceptLabel: "Scanned PDF file",
     multiple: false,
@@ -1212,7 +1305,12 @@ export const TOOLS: Tool[] = [
         a: "You get the closest achievable file plus a plain explanation, never a fake success.",
       },
     ],
-    related: ["compress-pdf-to-target-size", "passport-photo", "pdf-health-checker", "pdf-page-size-converter"],
+    related: [
+      "compress-pdf-to-target-size",
+      "passport-photo",
+      "pdf-health-checker",
+      "pdf-page-size-converter",
+    ],
   },
   {
     slug: "passport-photo",
@@ -1306,7 +1404,13 @@ export const TOOLS: Tool[] = [
           { value: "bw", label: "Black and white" },
         ],
       },
-      { key: "pageSize", label: "Page size", type: "select", default: "a4", choices: PAGE_SIZE_CHOICES },
+      {
+        key: "pageSize",
+        label: "Page size",
+        type: "select",
+        default: "a4",
+        choices: PAGE_SIZE_CHOICES,
+      },
     ],
     actionLabel: "Build scan PDF",
     steps: [
@@ -1366,7 +1470,9 @@ export const TOOLS: Tool[] = [
   },
 ];
 
-export const TOOL_MAP: Record<string, Tool> = Object.fromEntries(TOOLS.map((t) => [t.slug, t]));
+export const TOOLS: Tool[] = ALL_TOOLS.filter((t) => t.ready !== false);
+
+export const TOOL_MAP: Record<string, Tool> = Object.fromEntries(ALL_TOOLS.map((t) => [t.slug, t]));
 
 export function getTool(slug: string): Tool {
   const tool = TOOL_MAP[slug];
@@ -1385,40 +1491,184 @@ export const POPULAR_SLUGS = [
   "rotate-pdf",
 ];
 
-export const POPULAR_TOOLS = POPULAR_SLUGS.map((s) => getTool(s));
+export const POPULAR_TOOLS = POPULAR_SLUGS.map((s) => getTool(s)).filter((t) => t.ready !== false);
 
 export function toolsByCategory(category: ToolCategory) {
   return TOOLS.filter((t) => t.category === category);
 }
 
 const SEARCH_ALIASES: Record<string, string[]> = {
-  "compress-pdf": ["compress", "reduce", "smaller", "shrink", "size", "too big", "optimize", "optimise", "mb", "kb"],
-  "compress-pdf-to-target-size": [
-    "compress", "200 kb", "100 kb", "target", "exact", "limit", "size", "under", "max size", "upload limit", "portal", "reject",
+  "compress-pdf": [
+    "compress",
+    "reduce",
+    "smaller",
+    "shrink",
+    "size",
+    "too big",
+    "optimize",
+    "optimise",
+    "mb",
+    "kb",
   ],
-  "pdf-health-checker": ["compress", "check", "inspect", "report", "size", "diagnose", "inspector", "why is my pdf big", "portal", "reject", "problem"],
-  "application-pdf-optimizer": ["compress", "application", "form", "upload", "size", "optimize", "portal", "reject", "submission", "government"],
-  "jpg-to-pdf": ["convert", "image", "images", "photo", "picture", "jpeg", "jpg", "png", "webp", "screenshot", "receipt", "id card", "scan to pdf"],
+  "compress-pdf-to-target-size": [
+    "compress",
+    "200 kb",
+    "100 kb",
+    "target",
+    "exact",
+    "limit",
+    "size",
+    "under",
+    "max size",
+    "upload limit",
+    "portal",
+    "reject",
+  ],
+  "pdf-health-checker": [
+    "compress",
+    "check",
+    "inspect",
+    "report",
+    "size",
+    "diagnose",
+    "inspector",
+    "why is my pdf big",
+    "portal",
+    "reject",
+    "problem",
+  ],
+  "application-pdf-optimizer": [
+    "compress",
+    "application",
+    "form",
+    "upload",
+    "size",
+    "optimize",
+    "portal",
+    "reject",
+    "submission",
+    "government",
+  ],
+  "jpg-to-pdf": [
+    "convert",
+    "image",
+    "images",
+    "photo",
+    "picture",
+    "jpeg",
+    "jpg",
+    "png",
+    "webp",
+    "screenshot",
+    "receipt",
+    "id card",
+    "scan to pdf",
+  ],
   "pdf-to-jpg": ["convert", "image", "export", "jpeg", "jpg", "picture", "pdf to image"],
   "pdf-to-png": ["convert", "image", "export", "png", "picture", "transparent", "pdf to image"],
-  "pdf-to-word": ["convert", "docx", "doc", "edit", "word", "editable", "text", "markdown", "extract text"],
+  "pdf-to-word": [
+    "convert",
+    "docx",
+    "doc",
+    "edit",
+    "word",
+    "editable",
+    "text",
+    "markdown",
+    "extract text",
+  ],
   "word-to-pdf": ["convert", "docx", "doc", "word", "office", "resume", "cv"],
   "merge-pdf": ["combine", "join", "merge", "append", "one file", "grid", "receipt", "batch"],
   "split-pdf": ["separate", "divide", "cut", "split", "chapters", "pages"],
-  "rotate-pdf": ["turn", "orientation", "sideways", "upside down", "landscape", "portrait", "rotate"],
+  "rotate-pdf": [
+    "turn",
+    "orientation",
+    "sideways",
+    "upside down",
+    "landscape",
+    "portrait",
+    "rotate",
+  ],
   "extract-pdf-pages": ["select", "pages", "save", "extract", "pick pages", "range", "split"],
   "delete-pdf-pages": ["remove", "pages", "delete", "erase page", "blank page"],
-  "reorder-pdf-pages": ["rearrange", "order", "sort", "pages", "move pages", "organize", "organise"],
+  "reorder-pdf-pages": [
+    "rearrange",
+    "order",
+    "sort",
+    "pages",
+    "move pages",
+    "organize",
+    "organise",
+  ],
   "watermark-pdf": ["stamp", "confidential", "draft", "watermark", "brand", "copyright"],
-  "password-protect-pdf": ["encrypt", "lock", "secure", "password", "protect", "unlock", "security", "private"],
+  "password-protect-pdf": [
+    "encrypt",
+    "lock",
+    "secure",
+    "password",
+    "protect",
+    "unlock",
+    "security",
+    "private",
+  ],
   "pdf-page-numbering": ["numbers", "pagination", "footer", "page number", "header"],
-  "pdf-page-size-converter": ["a4", "letter", "legal", "resize", "paper", "size", "page size", "scale"],
+  "pdf-page-size-converter": [
+    "a4",
+    "letter",
+    "legal",
+    "resize",
+    "paper",
+    "size",
+    "page size",
+    "scale",
+  ],
   "print-ready-pdf": ["print", "margins", "paper", "bleed", "printer", "print ready"],
-  "pdf-metadata-cleaner": ["privacy", "author", "metadata", "clean", "redact", "whiteout", "blackout", "hidden data", "strip", "anonymous"],
-  "pdf-ocr": ["scan", "scanned", "text", "recognition", "searchable", "ocr", "copy text", "extract text", "image to text"],
+  "pdf-metadata-cleaner": [
+    "privacy",
+    "author",
+    "metadata",
+    "clean",
+    "redact",
+    "whiteout",
+    "blackout",
+    "hidden data",
+    "strip",
+    "anonymous",
+  ],
+  "pdf-ocr": [
+    "scan",
+    "scanned",
+    "text",
+    "recognition",
+    "searchable",
+    "ocr",
+    "copy text",
+    "extract text",
+    "image to text",
+  ],
   "passport-photo": ["id", "photo", "visa", "print", "passport", "portrait", "biometric"],
-  "document-scanner": ["scan", "camera", "mobile", "photo", "scanner", "receipt", "id card", "dark mode", "contrast"],
-  "smart-pdf-analyzer": ["analyze", "analyse", "inspect", "structure", "report", "fonts", "images", "audit", "problem"],
+  "document-scanner": [
+    "scan",
+    "camera",
+    "mobile",
+    "photo",
+    "scanner",
+    "receipt",
+    "id card",
+    "dark mode",
+    "contrast",
+  ],
+  "smart-pdf-analyzer": [
+    "analyze",
+    "analyse",
+    "inspect",
+    "structure",
+    "report",
+    "fonts",
+    "images",
+    "audit",
+    "problem",
+  ],
 };
 
 export function searchTools(query: string, limit = 8): Tool[] {
@@ -1447,7 +1697,10 @@ export function searchTools(query: string, limit = 8): Tool[] {
     if (haystack.includes(q)) score += 20;
     if (words.length > 1 && words.every((w) => haystack.includes(w))) score += 15;
     // partial word matches: "compres" -> "compress"
-    if (score === 0 && words.every((w) => w.length >= 3 && haystack.includes(w.slice(0, Math.max(3, w.length - 1))))) {
+    if (
+      score === 0 &&
+      words.every((w) => w.length >= 3 && haystack.includes(w.slice(0, Math.max(3, w.length - 1))))
+    ) {
       score += 5;
     }
     return { tool, score };
@@ -1457,7 +1710,6 @@ export function searchTools(query: string, limit = 8): Tool[] {
     .slice(0, limit)
     .map((r) => r.tool);
 }
-
 
 /* ------------------------------------------------------------- smart tools */
 
@@ -1480,7 +1732,8 @@ export const SMART_TOOL_META: Record<string, SmartToolMeta> = {
   },
   "pdf-health-checker": {
     problem: "Not sure why your PDF won't upload?",
-    benefit: "Detect common PDF problems and identify potential compatibility issues before you submit.",
+    benefit:
+      "Detect common PDF problems and identify potential compatibility issues before you submit.",
   },
   "smart-pdf-analyzer": {
     problem: "Want to know what's actually inside a file?",
