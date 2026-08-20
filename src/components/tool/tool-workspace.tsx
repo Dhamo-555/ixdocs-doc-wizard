@@ -850,8 +850,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
 
           {!tool.ready ? (
             <p className="text-xs text-muted-foreground">
-              Processing is disabled for this tool until the engine is connected — IXDocs will not
-              return a file that was not genuinely processed.
+              This tool is currently unavailable. Please try one of our available tools.
             </p>
           ) : null}
         </div>

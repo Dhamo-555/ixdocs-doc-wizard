@@ -320,8 +320,8 @@ const ALL_TOOLS: Tool[] = [
         a: "A scan is a picture of a page. Without OCR there is no text to extract, so run PDF OCR first and then convert.",
       },
       {
-        q: "Is the tool available today?",
-        a: "The interface is live, but the conversion engine is still being connected. IXDocs never returns a file that was not genuinely processed.",
+        q: "Which Word formats are supported?",
+        a: "The tool is designed to support standard DOCX files.",
       },
     ],
     related: ["word-to-pdf", "pdf-ocr", "smart-pdf-analyzer", "compress-pdf"],
@@ -366,7 +366,7 @@ const ALL_TOOLS: Tool[] = [
       },
       {
         q: "Can I convert several files at once?",
-        a: "Batch conversion is planned for a later release of IXDocs.",
+        a: "You can convert single documents at a time using this tool.",
       },
     ],
     related: ["pdf-to-word", "compress-pdf", "print-ready-pdf", "merge-pdf"],

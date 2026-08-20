@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import * as React from "react";
+import { Mail } from "lucide-react";
 
 const CONTACT_EMAIL_PLACEHOLDER = "support@ixdocs.com"; // Internal placeholder to be replaced in production
 
@@ -28,7 +30,20 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Page() {
-  const isEmailConfigured = CONTACT_EMAIL_PLACEHOLDER !== "CONTACT_EMAIL_PLACEHOLDER";
+  const isEmailConfigured = (CONTACT_EMAIL_PLACEHOLDER as string) !== "CONTACT_EMAIL_PLACEHOLDER";
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [draftSubject, setDraftSubject] = React.useState("");
+  const [draftBody, setDraftBody] = React.useState("");
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,9 +53,20 @@ function Page() {
     const category = formData.get("category") as string;
     const message = formData.get("message") as string;
 
-    const subject = encodeURIComponent(`IXDocs Support: ${category}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-    window.location.href = `mailto:${CONTACT_EMAIL_PLACEHOLDER}?subject=${subject}&body=${body}`;
+    const subject = `IXDocs Support: ${category}`;
+    const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+
+    const mailtoUrl = `mailto:${CONTACT_EMAIL_PLACEHOLDER}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+
+    if (isMobile) {
+      setDraftSubject(subject);
+      setDraftBody(body);
+      setIsSubmitted(true);
+    }
+
+    window.location.href = mailtoUrl;
   };
 
   return (
@@ -103,7 +129,39 @@ function Page() {
             </div>
           )}
 
-          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          {isSubmitted && (
+            <div className="mt-6 rounded-xl border border-border bg-background p-6 text-center animate-in fade-in zoom-in-95 duration-200">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Mail className="size-6" />
+              </div>
+              <h3 className="mt-4 text-base font-bold text-foreground">
+                Opening Email Application
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                We've drafted your message. Please send it from your default email application to
+                complete your request.
+              </p>
+              <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
+                <a
+                  href={`mailto:${CONTACT_EMAIL_PLACEHOLDER}?subject=${encodeURIComponent(
+                    draftSubject,
+                  )}&body=${encodeURIComponent(draftBody)}`}
+                  className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                >
+                  Reopen Email App
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setIsSubmitted(false)}
+                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-input bg-background px-5 text-sm font-medium text-foreground hover:bg-accent cursor-pointer"
+                >
+                  Edit Message / Go Back
+                </button>
+              </div>
+            </div>
+          )}
+
+          <form className={`mt-6 space-y-4 ${isSubmitted ? "hidden" : ""}`} onSubmit={handleSubmit}>
             <div className="space-y-1.5">
               <label htmlFor="name" className="text-sm font-medium text-foreground">
                 Name
@@ -162,10 +220,16 @@ function Page() {
             <button
               type="submit"
               disabled={!isEmailConfigured}
-              className="inline-flex min-h-11 items-center rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+              className="inline-flex min-h-11 items-center rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50 cursor-pointer"
             >
-              Send Message
+              {isMobile ? "Open Email Application" : "Send Message"}
             </button>
+            {isMobile && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Note: Submitting will draft your message inside your device's default mail
+                application.
+              </p>
+            )}
           </form>
         </div>
       </div>

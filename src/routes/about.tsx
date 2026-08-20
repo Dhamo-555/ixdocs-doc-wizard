@@ -71,7 +71,7 @@ function Page() {
           </li>
           <li>
             <strong>Honesty:</strong> We report genuine processing results. If a conversion fails,
-            or a specific engine is not yet connected, we say so immediately.
+            or a specific tool is unavailable, we say so immediately.
           </li>
           <li>
             <strong>Usability:</strong> Fast processing built around standard web technologies,

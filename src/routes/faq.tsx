@@ -17,11 +17,11 @@ const FAQS = [
   },
   {
     q: "What files are supported?",
-    a: "PDF files for the PDF tools, and JPG, PNG and WebP images for the image tools. Word conversion accepts DOC and DOCX once that engine is connected.",
+    a: "PDF files for the PDF tools, and JPG, PNG and WebP images for the image tools.",
   },
   {
     q: "Are my files stored?",
-    a: "The tools available today process files in your browser, so your document is not uploaded to IXDocs. Tools that will need a server engine say so on their page, and the privacy policy will be updated before any server processing goes live.",
+    a: "The tools process files in your browser, so your document is not uploaded to IXDocs. Your files remain on your device and are never stored on our servers.",
   },
   {
     q: "How does PDF compression work?",

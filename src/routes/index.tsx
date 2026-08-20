@@ -132,7 +132,7 @@ function Home() {
             {
               icon: ShieldCheck,
               title: "Honest about processing",
-              body: "We tell you exactly what each tool does — and when an engine is not connected yet.",
+              body: "Powerful PDF tools, completely free to use.",
             },
             {
               icon: Gauge,
@@ -148,6 +148,8 @@ function Home() {
           ))}
         </div>
       </section>
+
+      <AdSlot className="container-page" />
 
       <section aria-labelledby="categories" className="container-page pb-16 sm:pb-20">
         <h2 id="categories" className="text-2xl font-bold sm:text-3xl">
