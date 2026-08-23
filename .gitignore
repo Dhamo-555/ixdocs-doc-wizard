@@ -15,10 +15,20 @@ dist-ssr
 .tanstack/**
 .nitro
 *.local
+.env
+.env.*
+!.env.example
 
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+*.credentials
 
 # Editor directories and files
 .vscode/*
