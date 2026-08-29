@@ -854,20 +854,853 @@ const smartAnalyzer: Runner = async (ctx) => {
   };
 };
 
+
+/* ---------------------------------------------------------------- New Tools */
+
+const pdfToText: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const doc = await openRenderDoc(file);
+  const includeHeaders = ctx.options["includeHeaders"] !== false;
+  const format = str(ctx.options["format"], "plain");
+
+  let fullText = "";
+  let totalWords = 0;
+  let totalChars = 0;
+
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    const pageStrings = content.items
+      .map((item) => ("str" in item ? item.str : ""))
+      .filter((s) => s.trim().length > 0);
+    const pageText = pageStrings.join(" ");
+
+    totalChars += pageText.length;
+    totalWords += pageText ? pageText.split(/\s+/).length : 0;
+
+    if (includeHeaders) {
+      if (format === "markdown") {
+        fullText += `## Page ${i}\n\n${pageText}\n\n`;
+      } else {
+        fullText += `--- Page ${i} ---\n${pageText}\n\n`;
+      }
+    } else {
+      fullText += `${pageText}\n\n`;
+    }
+    ctx.onProgress(i / doc.numPages);
+  }
+
+  const ext = format === "markdown" ? "md" : "txt";
+  const mime = format === "markdown" ? "text/markdown" : "text/plain";
+  const blob = new Blob([fullText], { type: mime });
+  const outName = `${baseName(file.name)}_extracted.${ext}`;
+
+  return {
+    outputs: [{ name: outName, blob, size: blob.size, kind: "text" }],
+    stats: [
+      { label: "Pages scanned", value: String(doc.numPages) },
+      { label: "Extractable words", value: totalWords.toLocaleString(), tone: "success" },
+      { label: "Characters", value: totalChars.toLocaleString() },
+      { label: "Format", value: ext.toUpperCase() },
+    ],
+    report: [
+      {
+        title: "Text Extraction Summary",
+        rows: [
+          { label: "Source File", value: file.name },
+          { label: "Total Pages", value: String(doc.numPages) },
+          { label: "Word Count", value: `${totalWords.toLocaleString()} words` },
+          {
+            label: "Text Preview",
+            value:
+              fullText.slice(0, 150).replace(/\n/g, " ") + (fullText.length > 150 ? "..." : ""),
+          },
+        ],
+      },
+    ],
+    message:
+      totalWords > 0
+        ? "Text extracted successfully from your PDF."
+        : "No extractable text was found. If this is a scanned document, it contains image-only pages.",
+  };
+};
+
+const cropPdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const doc = await loadPdfDoc(file);
+  const preset = str(ctx.options["cropPreset"], "trim-margins-medium");
+  const targetPages = str(ctx.options["targetPages"], "all");
+  const customPagesInput = str(ctx.options["customPages"], "1");
+
+  let top = num(ctx.options["cropTop"], -1);
+  let bottom = num(ctx.options["cropBottom"], -1);
+  let left = num(ctx.options["cropLeft"], -1);
+  let right = num(ctx.options["cropRight"], -1);
+
+  // Fallback to presets if not set by interactive editor
+  if (top === -1 || bottom === -1 || left === -1 || right === -1) {
+    if (preset === "trim-margins-small") {
+      top = bottom = left = right = 18;
+    } else if (preset === "trim-margins-medium") {
+      top = bottom = left = right = 36;
+    } else if (preset === "trim-margins-large") {
+      top = bottom = left = right = 72;
+    } else if (preset === "custom") {
+      top = num(ctx.options["topMargin"], 36);
+      bottom = num(ctx.options["bottomMargin"], 36);
+      left = num(ctx.options["leftMargin"], 36);
+      right = num(ctx.options["rightMargin"], 36);
+    }
+  }
+
+  const pageCount = doc.getPageCount();
+  let pagesToCrop: number[] = [];
+  if (targetPages === "all") {
+    pagesToCrop = Array.from({ length: pageCount }, (_, i) => i + 1);
+  } else if (targetPages === "first") {
+    pagesToCrop = [1];
+  } else if (targetPages === "custom") {
+    const parsed = parseRanges(customPagesInput, pageCount);
+    pagesToCrop = Array.from(new Set(parsed.flat()));
+  }
+
+  for (let i = 0; i < pagesToCrop.length; i++) {
+    const pageNum = pagesToCrop[i]!;
+    const page = doc.getPage(pageNum - 1);
+    const mediaBox = page.getMediaBox();
+    const currentCrop = page.getCropBox();
+    const box = currentCrop ?? mediaBox;
+
+    const newX = box.x + left;
+    const newY = box.y + bottom;
+    const newWidth = Math.max(72, box.width - (left + right));
+    const newHeight = Math.max(72, box.height - (top + bottom));
+
+    page.setCropBox(newX, newY, newWidth, newHeight);
+    page.setMediaBox(newX, newY, newWidth, newHeight);
+    ctx.onProgress((i + 1) / pagesToCrop.length);
+  }
+
+  const out = await saveDoc(doc, `${baseName(file.name)}_cropped.pdf`);
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Pages cropped", value: `${pagesToCrop.length} of ${pageCount}`, tone: "success" },
+      { label: "Trim preset", value: preset.replace(/-/g, " ") },
+      { label: "Result size", value: formatBytes(out.size) },
+    ],
+    message: `Cropped ${pagesToCrop.length} page${pagesToCrop.length === 1 ? "" : "s"} with ${top}pt top/bottom, ${left}pt sides.`,
+  };
+};
+
+const flattenPdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const mode = str(ctx.options["flattenMode"], "forms-and-annotations");
+
+  if (mode === "full-raster") {
+    const bytes = await rasterCompress(file, {
+      scale: 1.75,
+      quality: 0.9,
+      onProgress: ctx.onProgress,
+    });
+    const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
+    const out: OutputFile = {
+      name: `${baseName(file.name)}_flattened.pdf`,
+      blob,
+      size: blob.size,
+      kind: "pdf",
+    };
+    return {
+      outputs: [out],
+      stats: sizeStats(file.size, out.size),
+      message:
+        "Visual flattening complete. All form fields, layers and annotations rasterized into static page artwork.",
+    };
+  }
+
+  const doc = await loadPdfDoc(file);
+  let formFlattened = false;
+  try {
+    const form = doc.getForm();
+    if (form) {
+      form.flatten();
+      formFlattened = true;
+    }
+  } catch {
+    // Document may not have an AcroForm, which is fine
+  }
+
+  const out = await saveDoc(doc, `${baseName(file.name)}_flattened.pdf`);
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Original size", value: formatBytes(file.size) },
+      { label: "Result size", value: formatBytes(out.size) },
+      {
+        label: "Interactive forms",
+        value: formFlattened ? "Flattened to text" : "None found",
+        tone: "success",
+      },
+    ],
+    message: "Interactive form fields flattened into static PDF content.",
+  };
+};
+
+const grayscalePdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const { PDFDocument } = await import("pdf-lib");
+  const src = await openRenderDoc(file);
+  const out = await PDFDocument.create();
+
+  const mode = str(ctx.options["mode"], "smooth");
+  const qualityKey = str(ctx.options["quality"], "standard");
+
+  let scale = 1.5;
+  let jpgQuality = 0.85;
+  if (qualityKey === "high") {
+    scale = 2.0;
+    jpgQuality = 0.92;
+  } else if (qualityKey === "compact") {
+    scale = 1.0;
+    jpgQuality = 0.7;
+  }
+
+  for (let i = 1; i <= src.numPages; i++) {
+    const canvas = await renderPageToCanvas(src, i, scale);
+    const cctx = canvas.getContext("2d");
+    if (cctx) {
+      const imgData = cctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      for (let p = 0; p < data.length; p += 4) {
+        const r = data[p]!;
+        const g = data[p + 1]!;
+        const b = data[p + 2]!;
+        let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        if (mode === "high-contrast") {
+          gray = gray < 160 ? 0 : 255;
+        }
+        data[p] = gray;
+        data[p + 1] = gray;
+        data[p + 2] = gray;
+      }
+      cctx.putImageData(imgData, 0, 0);
+    }
+
+    const blob = await canvasToBlob(canvas, "image/jpeg", jpgQuality);
+    const img = await out.embedJpg(await blob.arrayBuffer());
+    const page = out.addPage([img.width, img.height]);
+    page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+    ctx.onProgress(i / src.numPages);
+  }
+
+  const outBytes = await out.save({ useObjectStreams: true });
+  const blob = new Blob([outBytes as unknown as BlobPart], { type: "application/pdf" });
+  const outputFile: OutputFile = {
+    name: `${baseName(file.name)}_grayscale.pdf`,
+    blob,
+    size: blob.size,
+    kind: "pdf",
+  };
+
+  return {
+    outputs: [outputFile],
+    stats: [
+      { label: "Original size", value: formatBytes(file.size) },
+      { label: "Grayscale size", value: formatBytes(outputFile.size) },
+      { label: "Pages converted", value: `${src.numPages} pages`, tone: "success" },
+      {
+        label: "Mode",
+        value: mode === "high-contrast" ? "B&W High Contrast" : "Smooth Grayscale",
+      },
+    ],
+    message: `Converted ${src.numPages} page${src.numPages === 1 ? "" : "s"} to clean monochrome grayscale.`,
+  };
+};
+
+const signPdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const doc = await loadPdfDoc(file);
+
+  const sigType = str(ctx.options["signatureType"], "type");
+  const typedName = str(ctx.options["typedSignature"], "John Doe") || "Signature";
+  const sigPosition = str(ctx.options["signPosition"], "bottom-right");
+  const targetPageOption = str(ctx.options["targetPage"], "last");
+  const customPageNum = num(ctx.options["customPageNum"], 1);
+  const sigScale = str(ctx.options["signatureScale"], "medium");
+  const sigColorHex = str(ctx.options["signatureColor"], "#000080");
+  const addDate = Boolean(ctx.options["addDate"]);
+
+  const sigImage = str(ctx.options["sigImage"], "");
+  const sigX = num(ctx.options["sigX"], -1);
+  const sigY = num(ctx.options["sigY"], -1);
+  const signPageNum = num(ctx.options["signPageNum"], -1);
+
+  // If interactive signature is provided
+  if (sigImage && sigX !== -1 && sigY !== -1 && signPageNum !== -1) {
+    const base64Data = sigImage.split(',')[1];
+    const pngBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+    const embeddedPng = await doc.embedPng(pngBytes);
+
+    const pageCount = doc.getPageCount();
+    const targetPageIndex = Math.min(pageCount - 1, Math.max(0, signPageNum - 1));
+    const page = doc.getPage(targetPageIndex);
+    const { width: pW, height: pH } = page.getSize();
+
+    const scaleVal = num(ctx.options["sigScaleVal"], 100) / 100;
+    const sigW = 150 * scaleVal;
+    const sigH = 50 * scaleVal;
+
+    const x = (sigX / 100) * pW - (sigW / 2);
+    const y = (sigY / 100) * pH - (sigH / 2);
+
+    page.drawImage(embeddedPng, { x, y, width: sigW, height: sigH });
+
+    const out = await saveDoc(doc, `${baseName(file.name)}_signed.pdf`);
+    return {
+      outputs: [out],
+      stats: [
+        { label: "Signed by", value: sigType === "type" ? typedName : "Drawn signature" },
+        { label: "Page signed", value: String(signPageNum), tone: "success" },
+        { label: "Location", value: `X: ${sigX}%, Y: ${sigY}%` },
+      ],
+      message: `Signature placed on page ${signPageNum}.`,
+    };
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 600;
+  canvas.height = 200;
+  const cctx = canvas.getContext("2d");
+  if (!cctx) throw new ToolError("Canvas context unavailable.");
+
+  cctx.clearRect(0, 0, canvas.width, canvas.height);
+  cctx.fillStyle = sigColorHex;
+
+  if (sigType === "type") {
+    cctx.font =
+      "italic 64px 'Brush Script MT', 'Great Vibes', 'Dancing Script', 'Segoe Script', cursive, sans-serif";
+    cctx.textAlign = "center";
+    cctx.textBaseline = "middle";
+    cctx.fillText(typedName, canvas.width / 2, canvas.height / 2 - (addDate ? 20 : 0));
+
+    if (addDate) {
+      const dateStr = new Date().toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      cctx.font = "22px sans-serif";
+      cctx.fillStyle = "#555555";
+      cctx.fillText(`Date: ${dateStr}`, canvas.width / 2, canvas.height / 2 + 50);
+    }
+  } else {
+    cctx.strokeStyle = sigColorHex;
+    cctx.lineWidth = 4;
+    cctx.beginPath();
+    cctx.moveTo(100, 120);
+    cctx.bezierCurveTo(150, 40, 200, 160, 260, 90);
+    cctx.bezierCurveTo(300, 50, 340, 140, 400, 80);
+    cctx.lineTo(480, 130);
+    cctx.stroke();
+
+    cctx.font = "20px sans-serif";
+    cctx.fillStyle = sigColorHex;
+    cctx.textAlign = "center";
+    cctx.fillText(typedName, canvas.width / 2, 170);
+  }
+
+  const pngBlob = await canvasToBlob(canvas, "image/png");
+  const embeddedPng = await doc.embedPng(await pngBlob.arrayBuffer());
+
+  const pageCount = doc.getPageCount();
+  let targetPageIndex = pageCount - 1;
+  if (targetPageOption === "first") targetPageIndex = 0;
+  else if (targetPageOption === "custom")
+    targetPageIndex = Math.min(pageCount - 1, Math.max(0, customPageNum - 1));
+
+  const targetPages =
+    targetPageOption === "all"
+      ? Array.from({ length: pageCount }, (_, i) => i)
+      : [targetPageIndex];
+
+  let sigW = 160;
+  let sigH = 53.33;
+  if (sigScale === "small") {
+    sigW = 120;
+    sigH = 40;
+  } else if (sigScale === "large") {
+    sigW = 220;
+    sigH = 73.33;
+  }
+
+  const margin = 40;
+
+  for (const pIdx of targetPages) {
+    const page = doc.getPage(pIdx);
+    const { width: pW, height: pH } = page.getSize();
+
+    let x = pW - sigW - margin;
+    let y = margin;
+
+    if (sigPosition === "bottom-left") {
+      x = margin;
+      y = margin;
+    } else if (sigPosition === "bottom-center") {
+      x = (pW - sigW) / 2;
+      y = margin;
+    } else if (sigPosition === "top-right") {
+      x = pW - sigW - margin;
+      y = pH - sigH - margin;
+    } else if (sigPosition === "top-left") {
+      x = margin;
+      y = pH - sigH - margin;
+    } else if (sigPosition === "center") {
+      x = (pW - sigW) / 2;
+      y = (pH - sigH) / 2;
+    }
+
+    page.drawImage(embeddedPng, { x, y, width: sigW, height: sigH });
+  }
+
+  const out = await saveDoc(doc, `${baseName(file.name)}_signed.pdf`);
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Signed by", value: typedName },
+      { label: "Pages signed", value: `${targetPages.length} of ${pageCount}`, tone: "success" },
+      { label: "Position", value: sigPosition.replace(/-/g, " ") },
+    ],
+    message: `Signature placed on page ${targetPages.map((p) => p + 1).join(", ")}.`,
+  };
+};
+
+const annotatePdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const { rgb, StandardFonts } = await import("pdf-lib");
+  const doc = await loadPdfDoc(file);
+  const font = await doc.embedFont(StandardFonts.HelveticaBold);
+
+  const annotationsMap = ctx.options["annotationsMap"];
+  // If interactive drawing annotations are present
+  if (annotationsMap && typeof annotationsMap === 'object' && Object.keys(annotationsMap).length > 0) {
+    const pageCount = doc.getPageCount();
+    let markedCount = 0;
+
+    for (const [key, dataUrl] of Object.entries(annotationsMap)) {
+      const pageNum = Number(key);
+      if (isNaN(pageNum) || pageNum < 1 || pageNum > pageCount) continue;
+
+      const page = doc.getPage(pageNum - 1);
+      const { width: pW, height: pH } = page.getSize();
+
+      const base64Data = (dataUrl as string).split(',')[1];
+      if (!base64Data) continue;
+
+      const pngBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+      const embeddedPng = await doc.embedPng(pngBytes);
+
+      page.drawImage(embeddedPng, { x: 0, y: 0, width: pW, height: pH });
+      markedCount++;
+    }
+
+    const out = await saveDoc(doc, `${baseName(file.name)}_annotated.pdf`);
+    return {
+      outputs: [out],
+      stats: [
+        { label: "Annotation Type", value: "Draw / Highlighter / Text" },
+        { label: "Pages annotated", value: `${markedCount} of ${pageCount}`, tone: "success" },
+      ],
+      message: `Applied annotations to ${markedCount} page(s).`,
+    };
+  }
+
+  const type = str(ctx.options["annotationType"], "highlight");
+  const text = str(ctx.options["annotationText"], "APPROVED").trim() || "NOTE";
+  const colorKey = str(ctx.options["annotationColor"], "yellow");
+  const posKey = str(ctx.options["annotationPosition"], "top");
+  const opacityVal = num(ctx.options["opacity"], 80) / 100;
+  const targetPagesOpt = str(ctx.options["targetPages"], "all");
+  const customPagesInput = str(ctx.options["customPages"], "1");
+
+  const colors: Record<string, [number, number, number]> = {
+    yellow: [1, 0.9, 0],
+    green: [0.1, 0.8, 0.2],
+    blue: [0.1, 0.5, 0.9],
+    red: [0.9, 0.2, 0.2],
+    orange: [1, 0.5, 0],
+  };
+  const [cr, cg, cb] = colors[colorKey] ?? colors["yellow"]!;
+
+  const pageCount = doc.getPageCount();
+  let pagesToAnnotate: number[] = [];
+  if (targetPagesOpt === "all")
+    pagesToAnnotate = Array.from({ length: pageCount }, (_, i) => i + 1);
+  else if (targetPagesOpt === "first") pagesToAnnotate = [1];
+  else if (targetPagesOpt === "last") pagesToAnnotate = [pageCount];
+  else {
+    const parsed = parseRanges(customPagesInput, pageCount);
+    pagesToAnnotate = Array.from(new Set(parsed.flat()));
+  }
+
+  for (const pageNum of pagesToAnnotate) {
+    const page = doc.getPage(pageNum - 1);
+    const { width: pW, height: pH } = page.getSize();
+
+    if (type === "highlight") {
+      const hH = 32;
+      let y = pH - 70;
+      if (posKey === "center") y = pH / 2 - hH / 2;
+      else if (posKey === "bottom") y = 50;
+
+      page.drawRectangle({
+        x: 40,
+        y,
+        width: pW - 80,
+        height: hH,
+        color: rgb(cr, cg, cb),
+        opacity: Math.min(0.5, opacityVal),
+      });
+
+      page.drawText(text, {
+        x: 50,
+        y: y + 8,
+        size: 14,
+        font,
+        color: rgb(0.1, 0.1, 0.1),
+        opacity: opacityVal,
+      });
+    } else if (type === "callout" || type === "banner") {
+      const boxW = Math.min(pW - 60, font.widthOfTextAtSize(text, 14) + 30);
+      const boxH = 32;
+      let x = (pW - boxW) / 2;
+      let y = pH - 60;
+      if (posKey === "bottom") y = 40;
+      else if (posKey === "center") y = (pH - boxH) / 2;
+
+      page.drawRectangle({
+        x,
+        y,
+        width: boxW,
+        height: boxH,
+        color: rgb(cr, cg, cb),
+        opacity: opacityVal,
+        borderColor: rgb(cr * 0.7, cg * 0.7, cb * 0.7),
+        borderWidth: 1.5,
+      });
+
+      page.drawText(text, {
+        x: x + 15,
+        y: y + 9,
+        size: 13,
+        font,
+        color: rgb(1, 1, 1),
+      });
+    } else if (type === "rectangle") {
+      page.drawRectangle({
+        x: 30,
+        y: 30,
+        width: pW - 60,
+        height: pH - 60,
+        borderColor: rgb(cr, cg, cb),
+        borderWidth: 2.5,
+        opacity: opacityVal,
+      });
+    }
+  }
+
+  const out = await saveDoc(doc, `${baseName(file.name)}_annotated.pdf`);
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Annotation", value: type },
+      {
+        label: "Pages marked",
+        value: `${pagesToAnnotate.length} of ${pageCount}`,
+        tone: "success",
+      },
+      { label: "Color", value: colorKey },
+    ],
+    message: `Applied ${type} annotation to ${pagesToAnnotate.length} page${pagesToAnnotate.length === 1 ? "" : "s"}.`,
+  };
+};
+
+const addTextToPdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const { rgb, StandardFonts } = await import("pdf-lib");
+  const doc = await loadPdfDoc(file);
+
+  const text = str(ctx.options["text"], "Confidential Document").trim() || "Note";
+  const posKey = str(ctx.options["position"], "header-right");
+  const fontSize = num(ctx.options["fontSize"], 13);
+  const fontKey = str(ctx.options["fontFamily"], "helvetica");
+  const colorKey = str(ctx.options["textColor"], "black");
+  const bgPill = Boolean(ctx.options["bgPill"]);
+  const targetPagesOpt = str(ctx.options["targetPages"], "all");
+  const customPagesInput = str(ctx.options["customPages"], "1");
+
+  let standardFont = StandardFonts.Helvetica;
+  if (fontKey === "times") standardFont = StandardFonts.TimesRoman;
+  else if (fontKey === "courier") standardFont = StandardFonts.Courier;
+  const font = await doc.embedFont(standardFont);
+
+  const colorMap: Record<string, [number, number, number]> = {
+    black: [0, 0, 0],
+    darkgray: [0.3, 0.3, 0.3],
+    navy: [0, 0.1, 0.5],
+    red: [0.8, 0, 0],
+    darkgreen: [0, 0.5, 0.1],
+  };
+  const [r, g, b] = colorMap[colorKey] ?? colorMap["black"]!;
+
+  const pageCount = doc.getPageCount();
+  let targetPages: number[] = [];
+  if (targetPagesOpt === "all") targetPages = Array.from({ length: pageCount }, (_, i) => i + 1);
+  else if (targetPagesOpt === "first") targetPages = [1];
+  else if (targetPagesOpt === "last") targetPages = [pageCount];
+  else {
+    const parsed = parseRanges(customPagesInput, pageCount);
+    targetPages = Array.from(new Set(parsed.flat()));
+  }
+
+  const textWidth = font.widthOfTextAtSize(text, fontSize);
+  const textHeight = font.heightAtSize(fontSize);
+  const margin = 36;
+
+  for (const pageNum of targetPages) {
+    const page = doc.getPage(pageNum - 1);
+    const { width: pW, height: pH } = page.getSize();
+
+    let x = pW - textWidth - margin;
+    let y = pH - margin;
+
+    if (posKey === "header-left" || posKey === "top-left") {
+      x = margin;
+      y = pH - margin;
+    } else if (posKey === "header-center") {
+      x = (pW - textWidth) / 2;
+      y = pH - margin;
+    } else if (posKey === "footer-left" || posKey === "bottom-left") {
+      x = margin;
+      y = margin;
+    } else if (posKey === "footer-center") {
+      x = (pW - textWidth) / 2;
+      y = margin;
+    } else if (posKey === "footer-right") {
+      x = pW - textWidth - margin;
+      y = margin;
+    } else if (posKey === "center") {
+      x = (pW - textWidth) / 2;
+      y = (pH - textHeight) / 2;
+    }
+
+    if (bgPill) {
+      page.drawRectangle({
+        x: x - 6,
+        y: y - 4,
+        width: textWidth + 12,
+        height: textHeight + 8,
+        color: rgb(0.95, 0.95, 0.95),
+        borderColor: rgb(0.8, 0.8, 0.8),
+        borderWidth: 1,
+      });
+    }
+
+    page.drawText(text, {
+      x,
+      y,
+      size: fontSize,
+      font,
+      color: rgb(r, g, b),
+    });
+  }
+
+  const out = await saveDoc(doc, `${baseName(file.name)}_text.pdf`);
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Text added", value: `"${text.slice(0, 16)}${text.length > 16 ? "..." : ""}"` },
+      { label: "Pages modified", value: `${targetPages.length} of ${pageCount}`, tone: "success" },
+      { label: "Font size", value: `${fontSize} pt` },
+    ],
+    message: `Added custom text to ${targetPages.length} page${targetPages.length === 1 ? "" : "s"}.`,
+  };
+};
+
+
+
+const pdfOcr: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const lang = str(ctx.options["language"], "eng");
+  const outputMode = str(ctx.options["output"], "searchable");
+
+  ctx.onProgress(0.05, "Initializing Tesseract.js OCR engine...");
+  const Tesseract = await import("tesseract.js");
+
+  ctx.onProgress(0.1, "Loading PDF document...");
+  const src = await openRenderDoc(file);
+  const totalPages = src.numPages;
+
+  let fullText = "";
+
+  if (outputMode === "text") {
+    for (let i = 1; i <= totalPages; i++) {
+      ctx.onProgress(
+        (i - 1) / totalPages,
+        `Rendering page ${i} of ${totalPages} for analysis...`
+      );
+      const canvas = await renderPageToCanvas(src, i, 1.5);
+
+      ctx.onProgress(
+        (i - 0.5) / totalPages,
+        `Running OCR on page ${i} of ${totalPages} (${lang})...`
+      );
+
+      const { data: { text } } = await Tesseract.recognize(canvas, lang, {
+        logger: (m) => {
+          if (m.status === "recognizing text") {
+            ctx.onProgress(
+              ((i - 1) + m.progress) / totalPages,
+              `Page ${i}: Recognizing text (${Math.round(m.progress * 100)}%)...`
+            );
+          }
+        }
+      });
+
+      fullText += `--- Page ${i} ---\n${text}\n\n`;
+    }
+
+    const blob = new Blob([fullText], { type: "text/plain" });
+    const outName = `${baseName(file.name)}_ocr.txt`;
+    return {
+      outputs: [{ name: outName, blob, size: blob.size, kind: "text" }],
+      stats: [
+        { label: "Pages processed", value: String(totalPages) },
+        { label: "Recognition language", value: lang.toUpperCase() },
+        { label: "Result format", value: "PLAIN TEXT" },
+      ],
+      report: [
+        {
+          title: "OCR Results Summary",
+          rows: [
+            { label: "Source file", value: file.name },
+            { label: "Detected pages", value: String(totalPages) },
+            { label: "Total words recognized", value: String(fullText.split(/\s+/).filter(Boolean).length) },
+            { label: "OCR Engine", value: "Tesseract.js (WebAssembly)" },
+          ],
+        },
+      ],
+      message: "OCR processing completed. Download your extracted plain text file.",
+    };
+  } else {
+    const { PDFDocument, rgb } = await import("pdf-lib");
+    const out = await PDFDocument.create();
+    const standardFont = await out.embedFont("Helvetica");
+
+    for (let i = 1; i <= totalPages; i++) {
+      ctx.onProgress(
+        (i - 1) / totalPages,
+        `Rendering page ${i} of ${totalPages} for searchable overlay...`
+      );
+      const canvas = await renderPageToCanvas(src, i, 1.5);
+
+      ctx.onProgress(
+        (i - 0.5) / totalPages,
+        `Running layout OCR on page ${i} of ${totalPages}...`
+      );
+
+      const { data } = await Tesseract.recognize(canvas, lang, {
+        logger: (m) => {
+          if (m.status === "recognizing text") {
+            ctx.onProgress(
+              ((i - 1) + m.progress) / totalPages,
+              `Page ${i}: Analyzing layout (${Math.round(m.progress * 100)}%)...`
+            );
+          }
+        }
+      });
+
+      const imgBlob = await canvasToBlob(canvas, "image/jpeg", 0.85);
+      const img = await out.embedJpg(await imgBlob.arrayBuffer());
+      const page = out.addPage([img.width, img.height]);
+      page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+
+      const scaleX = img.width / canvas.width;
+      const scaleY = img.height / canvas.height;
+
+      if (data.words) {
+        for (const word of data.words) {
+          if (!word.text || !word.bbox) continue;
+          const { x0, y0, x1, y1 } = word.bbox;
+          const wW = (x1 - x0) * scaleX;
+          const wH = (y1 - y0) * scaleY;
+          const wX = x0 * scaleX;
+          const wY = img.height - (y1 * scaleY);
+
+          try {
+            page.drawText(word.text, {
+              x: wX,
+              y: wY,
+              size: Math.max(4, Math.min(wH, 32)),
+              font: standardFont,
+              color: rgb(0, 0, 0),
+              opacity: 0.001,
+            });
+          } catch {
+            // Ignore text drawing errors
+          }
+        }
+      }
+    }
+
+    const outBytes = await out.save({ useObjectStreams: true });
+    const blob = new Blob([outBytes as unknown as BlobPart], { type: "application/pdf" });
+    const outName = `${baseName(file.name)}_searchable.pdf`;
+
+    return {
+      outputs: [{ name: outName, blob, size: blob.size, kind: "pdf" }],
+      stats: [
+        { label: "Pages processed", value: String(totalPages) },
+        { label: "Overlay font", value: "Helvetica" },
+        { label: "Output size", value: formatBytes(blob.size) },
+      ],
+      report: [
+        {
+          title: "Searchable PDF Generation",
+          rows: [
+            { label: "Original file", value: file.name },
+            { label: "Pages processed", value: String(totalPages) },
+            { label: "Result file", value: outName },
+            { label: "Text Layer", value: "Selectable & Searchable PDF 1.7" },
+          ],
+        },
+      ],
+      message: "Scanned PDF converted to searchable PDF locally in your browser.",
+    };
+  }
+};
+
+
 export const RUNNERS: Record<string, Runner> = {
   "jpg-to-pdf": jpgToPdf,
   "pdf-to-jpg": renderRunner("image/jpeg"),
   "pdf-to-png": renderRunner("image/png"),
+  "pdf-to-text": pdfToText,
   "merge-pdf": mergePdf,
   "split-pdf": splitPdf,
   "rotate-pdf": rotatePdf,
   "extract-pdf-pages": extractPages,
   "delete-pdf-pages": deletePages,
   "reorder-pdf-pages": reorderPages,
+  "crop-pdf": cropPdf,
+  "flatten-pdf": flattenPdf,
   "watermark-pdf": watermarkPdf,
+  "sign-pdf": signPdf,
+  "annotate-pdf": annotatePdf,
+  "add-text-to-pdf": addTextToPdf,
   "pdf-page-numbering": pageNumbering,
   "compress-pdf": compressPdf,
   "compress-pdf-to-target-size": compressToTarget,
+  "grayscale-pdf": grayscalePdf,
   "pdf-health-checker": healthChecker,
   "pdf-page-size-converter": pageSizeConverter,
   "print-ready-pdf": printReady,
@@ -876,6 +1709,7 @@ export const RUNNERS: Record<string, Runner> = {
   "passport-photo": passportSheet,
   "document-scanner": documentScanner,
   "smart-pdf-analyzer": smartAnalyzer,
+  "pdf-ocr": pdfOcr,
 };
 
 export type { RunResult };

@@ -3,6 +3,8 @@ import {
   ArrowLeftRight,
   Camera,
   Combine,
+  Contrast,
+  Crop,
   FileArchive,
   FileCheck2,
   FileCog,
@@ -13,17 +15,22 @@ import {
   FileType2,
   Gauge,
   Hash,
+  Highlighter,
   IdCard,
   Image as ImageIcon,
+  Layers,
   ListOrdered,
   Lock,
+  PenLine,
   Printer,
   RotateCw,
   Scissors,
   ShieldCheck,
+  Signature,
   Sparkles,
   SquareStack,
   Trash2,
+  Type,
 } from "lucide-react";
 
 export type ToolCategory =
@@ -372,6 +379,59 @@ const ALL_TOOLS: Tool[] = [
     related: ["pdf-to-word", "compress-pdf", "print-ready-pdf", "merge-pdf"],
   },
 
+  {
+    slug: "pdf-to-text",
+    name: "PDF to Text",
+    metaTitle: "PDF to Text — Extract Text from PDF Online | IXDocs",
+    metaDescription:
+      "Extract selectable text from PDF documents in your browser. Copy or download clean plain text or Markdown with page markers. Free on IXDocs.",
+    short: "Extract text from PDF pages into plain text or Markdown.",
+    intro:
+      "Extract all selectable text from your PDF. Download the text as a TXT or Markdown file, or view the extracted word count and summary.",
+    category: "Convert",
+    icon: FileText,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF file",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "format",
+        label: "Output format",
+        type: "select",
+        default: "plain",
+        choices: [
+          { value: "plain", label: "Plain Text (.txt)" },
+          { value: "markdown", label: "Markdown with Headings (.md)" },
+        ],
+      },
+      {
+        key: "includeHeaders",
+        label: "Include page break markers",
+        type: "toggle",
+        default: true,
+      },
+    ],
+    actionLabel: "Extract text",
+    steps: [
+      "Upload your PDF document.",
+      "Choose plain text or Markdown format.",
+      "Extract the text and preview the character/word count.",
+      "Download the text file to your device.",
+    ],
+    faqs: [
+      {
+        q: "Does this work on scanned PDFs?",
+        a: "This tool extracts native selectable text. If your PDF is a scanned document without text layers, run Smart PDF Analyzer to inspect its content.",
+      },
+      {
+        q: "Are my document contents uploaded to a server?",
+        a: "No. Text extraction runs 100% locally in your browser memory using PDF.js.",
+      },
+    ],
+    related: ["smart-pdf-analyzer", "pdf-health-checker", "compress-pdf"],
+  },
   /* --------------------------------------------------------------- Organize */
   {
     slug: "merge-pdf",
@@ -632,6 +692,152 @@ const ALL_TOOLS: Tool[] = [
     related: ["merge-pdf", "extract-pdf-pages", "delete-pdf-pages", "rotate-pdf"],
   },
 
+  {
+    slug: "crop-pdf",
+    name: "Crop PDF",
+    metaTitle: "Crop PDF — Trim PDF Page Margins Online | IXDocs",
+    metaDescription:
+      "Crop PDF pages and trim white margins in your browser. Choose presets or custom margin sizes, then download the cropped PDF. Free on IXDocs.",
+    short: "Trim margins and adjust page dimensions.",
+    intro:
+      "Trim unwanted margins from PDF pages or resize document viewboxes for printing, e-readers, and clean viewing.",
+    category: "Organize",
+    icon: Crop,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF file",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "cropPreset",
+        label: "Trim margin preset",
+        type: "select",
+        default: "trim-margins-medium",
+        choices: [
+          { value: "trim-margins-small", label: "Small trim (18 pt / 0.25 in)" },
+          { value: "trim-margins-medium", label: "Medium trim (36 pt / 0.5 in)" },
+          { value: "trim-margins-large", label: "Large trim (72 pt / 1.0 in)" },
+          { value: "custom", label: "Custom margins" },
+        ],
+      },
+      {
+        key: "topMargin",
+        label: "Top margin trim (pt)",
+        type: "number",
+        default: 36,
+        suffix: " pt",
+        showIf: { key: "cropPreset", value: "custom" },
+      },
+      {
+        key: "bottomMargin",
+        label: "Bottom margin trim (pt)",
+        type: "number",
+        default: 36,
+        suffix: " pt",
+        showIf: { key: "cropPreset", value: "custom" },
+      },
+      {
+        key: "leftMargin",
+        label: "Left margin trim (pt)",
+        type: "number",
+        default: 36,
+        suffix: " pt",
+        showIf: { key: "cropPreset", value: "custom" },
+      },
+      {
+        key: "rightMargin",
+        label: "Right margin trim (pt)",
+        type: "number",
+        default: 36,
+        suffix: " pt",
+        showIf: { key: "cropPreset", value: "custom" },
+      },
+      {
+        key: "targetPages",
+        label: "Apply to pages",
+        type: "select",
+        default: "all",
+        choices: [
+          { value: "all", label: "All pages" },
+          { value: "first", label: "First page only" },
+          { value: "custom", label: "Custom page range" },
+        ],
+      },
+      {
+        key: "customPages",
+        label: "Page numbers (e.g. 1-3, 5)",
+        type: "text",
+        default: "1",
+        showIf: { key: "targetPages", value: "custom" },
+      },
+    ],
+    actionLabel: "Crop PDF",
+    steps: [
+      "Upload your PDF.",
+      "Select a trim preset or specify custom margin values.",
+      "Choose which pages to crop.",
+      "Generate and download your cropped PDF.",
+    ],
+    faqs: [
+      {
+        q: "Does cropping reduce file size?",
+        a: "Cropping adjusts the visible page viewport (CropBox & MediaBox) without recompressing images, preserving original vector clarity.",
+      },
+      {
+        q: "Can I undo a crop?",
+        a: "Your original file on your computer is never touched. You can download the new cropped version while keeping your original intact.",
+      },
+    ],
+    related: ["split-pdf", "rotate-pdf", "pdf-page-size-converter", "print-ready-pdf"],
+  },
+  {
+    slug: "flatten-pdf",
+    name: "Flatten PDF",
+    metaTitle: "Flatten PDF — Make Forms & Annotations Permanent | IXDocs",
+    metaDescription:
+      "Flatten interactive PDF forms and annotations into static page content. Lock form fields and protect document formatting in your browser. Free on IXDocs.",
+    short: "Lock form fields and annotations into static page artwork.",
+    intro:
+      "Flatten fillable form fields and visual annotations into non-editable PDF layers so documents display identically in every PDF viewer.",
+    category: "Organize",
+    icon: Layers,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF file",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "flattenMode",
+        label: "Flattening method",
+        type: "select",
+        default: "forms-and-annotations",
+        choices: [
+          { value: "forms-and-annotations", label: "Form fields & widgets (Vector, crisp text)" },
+          { value: "full-raster", label: "Complete visual flatten (Rasterize all layers)" },
+        ],
+      },
+    ],
+    actionLabel: "Flatten PDF",
+    steps: [
+      "Select your fillable PDF or annotated document.",
+      "Choose vector form flattening or complete visual rasterization.",
+      "Apply the flattening process.",
+      "Download the secured, read-only PDF.",
+    ],
+    faqs: [
+      {
+        q: "What does flattening a PDF do?",
+        a: "Flattening locks interactive form controls (checkboxes, text inputs, digital signatures) directly into the page content so they can no longer be edited or altered.",
+      },
+      {
+        q: "Why should I flatten a PDF before submitting?",
+        a: "Many legal portals, universities, and government systems require flattened PDFs to prevent accidental field modifications.",
+      },
+    ],
+    related: ["merge-pdf", "pdf-metadata-cleaner", "print-ready-pdf"],
+  },
   /* --------------------------------------------------------------- Edit PDF */
   {
     slug: "watermark-pdf",
@@ -1136,6 +1342,60 @@ const ALL_TOOLS: Tool[] = [
     related: ["pdf-page-size-converter", "pdf-page-numbering", "compress-pdf", "rotate-pdf"],
   },
 
+  {
+    slug: "grayscale-pdf",
+    name: "Grayscale PDF",
+    metaTitle: "Grayscale PDF — Convert PDF to Black & White Online | IXDocs",
+    metaDescription:
+      "Convert color PDF pages into monochrome grayscale in your browser. Save printer ink and create clean black & white documents. Free on IXDocs.",
+    short: "Convert color PDFs to clean black & white grayscale.",
+    intro:
+      "Convert color PDF documents into clean, uniform grayscale. Reduce printer ink usage and prepare documents for black-and-white printing.",
+    category: "Compress & Optimize",
+    icon: Contrast,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF file",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "mode",
+        label: "Conversion style",
+        type: "select",
+        default: "smooth",
+        choices: [
+          { value: "smooth", label: "Smooth Grayscale (Photos & Illustrations)" },
+          { value: "high-contrast", label: "High Contrast B&W (Scans & Text)" },
+        ],
+      },
+      {
+        key: "quality",
+        label: "Resolution & quality",
+        type: "select",
+        default: "standard",
+        choices: [
+          { value: "high", label: "High Quality (300 DPI, Print)" },
+          { value: "standard", label: "Standard (150 DPI, Digital)" },
+          { value: "compact", label: "Compact (100 DPI, Low Size)" },
+        ],
+      },
+    ],
+    actionLabel: "Convert to grayscale",
+    steps: [
+      "Upload your color PDF.",
+      "Choose smooth grayscale or high-contrast black & white.",
+      "Select resolution and quality level.",
+      "Download the monochrome PDF.",
+    ],
+    faqs: [
+      {
+        q: "Why convert a PDF to grayscale?",
+        a: "Grayscale documents save printer toner, prevent color distortion on monochrome printers, and are often required for official submissions.",
+      },
+    ],
+    related: ["compress-pdf", "print-ready-pdf", "pdf-health-checker"],
+  },
   /* ---------------------------------------------------------------- Privacy */
   {
     slug: "pdf-metadata-cleaner",
@@ -1187,8 +1447,7 @@ const ALL_TOOLS: Tool[] = [
       "Optical character recognition turns a scanned page image into real, searchable text you can copy and index.",
     category: "Advanced",
     icon: FileScan,
-    ready: false,
-    notice: "This tool is currently unavailable. Please try one of our available tools.",
+    ready: true,
     accept: PDF,
     acceptLabel: "Scanned PDF file",
     multiple: false,
@@ -1481,14 +1740,12 @@ export function getTool(slug: string): Tool {
 }
 
 export const POPULAR_SLUGS = [
+  "jpg-to-pdf",
+  "pdf-to-jpg",
   "compress-pdf",
   "merge-pdf",
   "split-pdf",
-  "pdf-to-word",
-  "word-to-pdf",
-  "pdf-to-jpg",
   "pdf-to-png",
-  "rotate-pdf",
 ];
 
 export const POPULAR_TOOLS = POPULAR_SLUGS.map((s) => getTool(s)).filter((t) => t.ready !== false);
@@ -1498,6 +1755,14 @@ export function toolsByCategory(category: ToolCategory) {
 }
 
 const SEARCH_ALIASES: Record<string, string[]> = {
+  "pdf-to-text": ["extract text", "txt", "text", "copy text", "read pdf", "pdf to txt", "markdown"],
+  "crop-pdf": ["crop", "trim", "margins", "cut edges", "white space", "resize page", "trim pdf"],
+  "flatten-pdf": ["flatten", "acroform", "form fields", "lock", "read only", "flatten forms", "interactive"],
+  "sign-pdf": ["sign", "signature", "e-sign", "stamp", "initial", "sign document", "digital signature"],
+  "annotate-pdf": ["annotate", "highlight", "markup", "notes", "callout", "draw", "pen"],
+  "add-text-to-pdf": ["type text", "add text", "insert text", "write on pdf", "label", "header", "footer"],
+  "grayscale-pdf": ["grayscale", "black and white", "b&w", "monochrome", "desaturate", "save ink", "printer ink"],
+
   "compress-pdf": [
     "compress",
     "reduce",

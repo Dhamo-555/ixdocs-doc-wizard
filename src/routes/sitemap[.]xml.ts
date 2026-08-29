@@ -42,9 +42,17 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/print-ready-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/pdf-metadata-cleaner", changefreq: "weekly", priority: "0.8" },
           { path: "/application-pdf-optimizer", changefreq: "weekly", priority: "0.8" },
+          { path: "/pdf-to-text", changefreq: "weekly", priority: "0.8" },
+          { path: "/crop-pdf", changefreq: "weekly", priority: "0.8" },
+          { path: "/flatten-pdf", changefreq: "weekly", priority: "0.8" },
+          { path: "/sign-pdf", changefreq: "weekly", priority: "0.8" },
+          { path: "/annotate-pdf", changefreq: "weekly", priority: "0.8" },
+          { path: "/add-text-to-pdf", changefreq: "weekly", priority: "0.8" },
+          { path: "/grayscale-pdf", changefreq: "weekly", priority: "0.8" },
           { path: "/passport-photo", changefreq: "weekly", priority: "0.8" },
           { path: "/document-scanner", changefreq: "weekly", priority: "0.8" },
           { path: "/smart-pdf-analyzer", changefreq: "weekly", priority: "0.8" },
+          { path: "/pdf-ocr", changefreq: "weekly", priority: "0.8" },
         ];
 
         const urls = entries.map((e) =>

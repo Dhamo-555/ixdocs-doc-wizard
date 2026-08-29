@@ -12,6 +12,12 @@ import {
   RotateCcw,
   Trash2,
   UploadCloud,
+  ChevronLeft,
+  ChevronRight,
+  Pen,
+  Highlighter as HighlighterIcon,
+  Type as TypeIcon,
+  Eraser,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -325,6 +331,222 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     Object.fromEntries(tool.options.map((o) => [o.key, o.default])),
   );
 
+  // Active page index in the editor preview (1-indexed)
+  const [editorPage, setEditorPage] = useState(1);
+
+  // Sign PDF states
+  const [sigX, setSigX] = useState(70); // percentage (0 - 100)
+  const [sigY, setSigY] = useState(15); // percentage (0 - 100)
+  const [sigScaleVal, setSigScaleVal] = useState(100); // percentage (50 - 200)
+  const [typedName, setTypedName] = useState("John Doe");
+  const [signatureType, setSignatureType] = useState<"draw" | "type">("type");
+  const [sigColor, setSigColor] = useState("#000080");
+  const [drawCanvasData, setDrawCanvasData] = useState<string | null>(null);
+
+  // Annotate PDF states
+  const [annotTool, setAnnotTool] = useState<"pen" | "highlighter" | "text">("pen");
+  const [annotColor, setAnnotColor] = useState("#ff0000"); // Red default
+  const [annotWidth, setAnnotWidth] = useState(6);
+  const [annotationsMap, setAnnotationsMap] = useState<Record<number, string>>({}); // page -> base64 PNG data
+  const [annotText, setAnnotText] = useState("Approved");
+
+  // Crop PDF states
+  const [cropLeft, setCropLeft] = useState(36); // in points
+  const [cropRight, setCropRight] = useState(36);
+  const [cropTop, setCropTop] = useState(36);
+  const [cropBottom, setCropBottom] = useState(36);
+
+  const sigCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const annotCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const isDrawingSig = useRef(false);
+  const isDrawingAnnot = useRef(false);
+
+  // Synchronize typed signature
+  useEffect(() => {
+    if (tool.slug !== "sign-pdf" || signatureType !== "type") return;
+    const canvas = document.createElement("canvas");
+    canvas.width = 400;
+    canvas.height = 120;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = sigColor;
+      ctx.font = "italic 48px 'Brush Script MT', 'Great Vibes', 'Dancing Script', cursive, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(typedName || "Signature", canvas.width / 2, canvas.height / 2);
+      setDrawCanvasData(canvas.toDataURL("image/png"));
+    }
+  }, [typedName, sigColor, signatureType, tool.slug]);
+
+  // Sync drawn signature context color
+  useEffect(() => {
+    if (tool.slug !== "sign-pdf" || signatureType !== "draw") return;
+    const canvas = sigCanvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) ctx.strokeStyle = sigColor;
+    }
+  }, [sigColor, signatureType, tool.slug]);
+
+  // Synchronize Annotate PDF drawing canvas dimensions and previous annotations
+  useEffect(() => {
+    if (tool.slug !== "annotate-pdf") return;
+    const canvas = annotCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const existing = annotationsMap[editorPage];
+    if (existing) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = existing;
+    }
+  }, [editorPage, annotationsMap, tool.slug]);
+
+  const startSigDraw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = sigCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    isDrawingSig.current = true;
+    const rect = canvas.getBoundingClientRect();
+    const x = ("touches" in e) ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = ("touches" in e) ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.strokeStyle = sigColor;
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+  };
+
+  const drawSig = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawingSig.current) return;
+    const canvas = sigCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ("touches" in e) ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = ("touches" in e) ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
+
+  const stopSigDraw = () => {
+    if (!isDrawingSig.current) return;
+    isDrawingSig.current = false;
+    const canvas = sigCanvasRef.current;
+    if (canvas) {
+      setDrawCanvasData(canvas.toDataURL("image/png"));
+    }
+  };
+
+  const clearSigDraw = () => {
+    const canvas = sigCanvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        setDrawCanvasData(null);
+      }
+    }
+  };
+
+  const startAnnotDraw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = annotCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    isDrawingAnnot.current = true;
+    const rect = canvas.getBoundingClientRect();
+    const x = (("touches" in e) && e.touches[0]) ? e.touches[0].clientX - rect.left : ("clientX" in e) ? e.clientX - rect.left : 0;
+    const y = (("touches" in e) && e.touches[0]) ? e.touches[0].clientY - rect.top : ("clientY" in e) ? e.clientY - rect.top : 0;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.strokeStyle = annotTool === "highlighter" ? "rgba(255, 235, 59, 0.45)" : annotColor;
+    ctx.lineWidth = annotTool === "highlighter" ? annotWidth * 2 : annotWidth;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+  };
+
+  const drawAnnot = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawingAnnot.current) return;
+    const canvas = annotCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = (("touches" in e) && e.touches[0]) ? e.touches[0].clientX - rect.left : ("clientX" in e) ? e.clientX - rect.left : 0;
+    const y = (("touches" in e) && e.touches[0]) ? e.touches[0].clientY - rect.top : ("clientY" in e) ? e.clientY - rect.top : 0;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
+
+  const stopAnnotDraw = () => {
+    if (!isDrawingAnnot.current) return;
+    isDrawingAnnot.current = false;
+    saveAnnotPageData();
+  };
+
+  const saveAnnotPageData = () => {
+    const canvas = annotCanvasRef.current;
+    if (canvas) {
+      const dataUrl = canvas.toDataURL("image/png");
+      setAnnotationsMap((prev) => ({
+        ...prev,
+        [editorPage]: dataUrl,
+      }));
+    }
+  };
+
+  const clearAnnotPage = () => {
+    const canvas = annotCanvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        setAnnotationsMap((prev) => {
+          const next = { ...prev };
+          delete next[editorPage];
+          return next;
+        });
+      }
+    }
+  };
+
+  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (annotTool !== "text") return;
+    const canvas = annotCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ctx.fillStyle = annotColor;
+    ctx.font = `bold ${annotWidth * 2.5}px sans-serif`;
+    ctx.textBaseline = "middle";
+    ctx.fillText(annotText, x, y);
+    saveAnnotPageData();
+  };
+
+  const handlePageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (tool.slug !== "sign-pdf") return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = (1 - ((e.clientY - rect.top) / rect.height)) * 100;
+    setSigX(Math.round(xPercent));
+    setSigY(Math.round(yPercent));
+  };
+
   const visibleOptions = useMemo(
     () =>
       tool.options.filter((o) => {
@@ -389,7 +611,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   useEffect(() => {
     let cancelled = false;
     const file = files[0];
-    if (!file || !tool.pageMode || tool.pageMode === "none" || !file.type.includes("pdf")) {
+    const isEditorTool = tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf";
+    const wantsThumbs = (tool.pageMode && tool.pageMode !== "none") || isEditorTool;
+    if (!file || !wantsThumbs || !file.type.includes("pdf")) {
       setThumbs([]);
       return;
     }
@@ -427,7 +651,22 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     try {
       const res = await runner({
         files,
-        options,
+        options: {
+          ...options,
+          // Sign PDF
+          sigImage: drawCanvasData,
+          sigX,
+          sigY,
+          sigScaleVal,
+          signPageNum: editorPage,
+          // Annotate PDF
+          annotationsMap,
+          // Crop PDF
+          cropLeft,
+          cropRight,
+          cropTop,
+          cropBottom,
+        },
         selectedPages: selected,
         pageOrder: order,
         totalPages: thumbs.length,
@@ -814,6 +1053,386 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          ) : null}
+
+          {/* Interactive Document Editor Viewport */}
+          {thumbs.length && (tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf") ? (
+            <div className="rounded-2xl border border-border bg-surface/50 p-4 sm:p-6 mb-6">
+              <h3 className="text-base font-semibold mb-4">Interactive Page Editor</h3>
+
+              <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_1fr] gap-6">
+                {/* Left Panel: Preview Viewport */}
+                <div className="flex flex-col items-center justify-between rounded-xl border border-border bg-muted/40 p-4">
+                  {/* Page Navigation */}
+                  <div className="flex items-center gap-4 mb-4">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-10"
+                      disabled={editorPage <= 1}
+                      onClick={() => setEditorPage(prev => Math.max(1, prev - 1))}
+                    >
+                      <ChevronLeft className="size-5" />
+                    </Button>
+                    <span className="text-sm font-medium">
+                      Page {editorPage} of {thumbs.length}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-10"
+                      disabled={editorPage >= thumbs.length}
+                      onClick={() => setEditorPage(prev => Math.min(thumbs.length, prev + 1))}
+                    >
+                      <ChevronRight className="size-5" />
+                    </Button>
+                  </div>
+
+                  {/* Canvas Viewport overlay */}
+                  <div
+                    onClick={handlePageClick}
+                    className={cn(
+                      "relative border border-border shadow-md rounded-lg overflow-hidden bg-white max-w-full select-none",
+                      tool.slug === "sign-pdf" && "cursor-crosshair"
+                    )}
+                    style={{ width: "420px", height: "560px" }}
+                  >
+                    <img
+                      src={thumbs[editorPage - 1]?.url}
+                      alt={`Page ${editorPage}`}
+                      className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                    />
+
+                    {/* Sign PDF Overlay */}
+                    {tool.slug === "sign-pdf" && drawCanvasData ? (
+                      <div
+                        className="absolute pointer-events-none border-2 border-dashed border-primary bg-primary/5 rounded"
+                        style={{
+                          left: `${sigX}%`,
+                          bottom: `${sigY}%`,
+                          width: `${120 * (sigScaleVal / 100)}px`,
+                          height: `${40 * (sigScaleVal / 100)}px`,
+                          transform: "translate(-50%, 50%)",
+                          backgroundImage: `url(${drawCanvasData})`,
+                          backgroundSize: "contain",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                          transition: "width 0.1s, height 0.1s"
+                        }}
+                      />
+                    ) : null}
+
+                    {/* Annotate PDF Overlay Canvas */}
+                    {tool.slug === "annotate-pdf" ? (
+                      <canvas
+                        ref={annotCanvasRef}
+                        width={420}
+                        height={560}
+                        onMouseDown={startAnnotDraw}
+                        onMouseMove={drawAnnot}
+                        onMouseUp={stopAnnotDraw}
+                        onMouseLeave={stopAnnotDraw}
+                        onTouchStart={startAnnotDraw}
+                        onTouchMove={drawAnnot}
+                        onTouchEnd={stopAnnotDraw}
+                        onClick={handleCanvasClick}
+                        className={cn(
+                          "absolute inset-0 w-full h-full",
+                          annotTool === "text" ? "cursor-text" : "cursor-crosshair"
+                        )}
+                      />
+                    ) : null}
+
+                    {/* Crop PDF Overlay box */}
+                    {tool.slug === "crop-pdf" ? (
+                      <div
+                        className="absolute border-2 border-dashed border-destructive bg-destructive/5 rounded pointer-events-none"
+                        style={{
+                          left: `${(cropLeft / 72) * 50}px`,
+                          right: `${(cropRight / 72) * 50}px`,
+                          top: `${(cropTop / 72) * 50}px`,
+                          bottom: `${(cropBottom / 72) * 50}px`,
+                        }}
+                      />
+                    ) : null}
+                  </div>
+
+                  {tool.slug === "sign-pdf" ? (
+                    <p className="text-xs text-muted-foreground mt-3">
+                      Click anywhere on the document page to position the signature stamp.
+                    </p>
+                  ) : null}
+                </div>
+
+                {/* Right Panel: Tool settings */}
+                <div className="flex flex-col gap-4">
+                  {tool.slug === "sign-pdf" ? (
+                    <>
+                      <div className="flex gap-2 p-1 border border-border bg-muted/30 rounded-xl">
+                        <Button
+                          variant={signatureType === "type" ? "default" : "ghost"}
+                          className="flex-1"
+                          onClick={() => setSignatureType("type")}
+                        >
+                          Type Name
+                        </Button>
+                        <Button
+                          variant={signatureType === "draw" ? "default" : "ghost"}
+                          className="flex-1"
+                          onClick={() => setSignatureType("draw")}
+                        >
+                          Draw
+                        </Button>
+                      </div>
+
+                      {signatureType === "type" ? (
+                        <div className="space-y-3">
+                          <Label className="text-xs font-semibold">Signature Text</Label>
+                          <Input
+                            type="text"
+                            value={typedName}
+                            onChange={(e) => setTypedName(e.target.value)}
+                            placeholder="Your signature name"
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <Label className="text-xs font-semibold">Draw signature</Label>
+                            <Button variant="ghost" size="sm" className="h-8 text-xs text-destructive" onClick={clearSigDraw}>
+                              Clear
+                            </Button>
+                          </div>
+                          <canvas
+                            ref={sigCanvasRef}
+                            width={300}
+                            height={100}
+                            onMouseDown={startSigDraw}
+                            onMouseMove={drawSig}
+                            onMouseUp={stopSigDraw}
+                            onMouseLeave={stopSigDraw}
+                            onTouchStart={startSigDraw}
+                            onTouchMove={drawSig}
+                            onTouchEnd={stopSigDraw}
+                            className="w-full h-[100px] border border-border bg-white rounded-lg cursor-crosshair shadow-inner"
+                          />
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        <Label className="text-xs font-semibold">Ink Color</Label>
+                        <Select value={sigColor} onValueChange={setSigColor}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="#000080">Navy Blue (Default)</SelectItem>
+                            <SelectItem value="#000000">Black</SelectItem>
+                            <SelectItem value="#0000ff">Royal Blue</SelectItem>
+                            <SelectItem value="#8b0000">Dark Red</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Signature Scale</span>
+                          <span>{sigScaleVal}%</span>
+                        </div>
+                        <Slider
+                          value={[sigScaleVal]}
+                          min={50}
+                          max={200}
+                          step={5}
+                          onValueChange={(val) => setSigScaleVal(val[0] || 100)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Horizontal position (X)</span>
+                          <span>{sigX}%</span>
+                        </div>
+                        <Slider
+                          value={[sigX]}
+                          min={0}
+                          max={100}
+                          step={1}
+                          onValueChange={(val) => setSigX(val[0] || 0)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Vertical position (Y)</span>
+                          <span>{sigY}%</span>
+                        </div>
+                        <Slider
+                          value={[sigY]}
+                          min={0}
+                          max={100}
+                          step={1}
+                          onValueChange={(val) => setSigY(val[0] || 0)}
+                        />
+                      </div>
+                    </>
+                  ) : null}
+
+                  {tool.slug === "annotate-pdf" ? (
+                    <>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Button
+                          variant={annotTool === "pen" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setAnnotTool("pen")}
+                        >
+                          <Pen className="size-4 mr-1.5" /> Pen
+                        </Button>
+                        <Button
+                          variant={annotTool === "highlighter" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setAnnotTool("highlighter")}
+                        >
+                          <HighlighterIcon className="size-4 mr-1.5" /> Highlight
+                        </Button>
+                        <Button
+                          variant={annotTool === "text" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setAnnotTool("text")}
+                        >
+                          <TypeIcon className="size-4 mr-1.5" /> Text
+                        </Button>
+                      </div>
+
+                      <div className="space-y-3">
+                        <Label className="text-xs font-semibold">Color</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {["#ff0000", "#4caf50", "#2196f3", "#ffeb3b", "#ff9800", "#9c27b0"].map((c) => (
+                            <button
+                              key={c}
+                              type="button"
+                              onClick={() => setAnnotColor(c)}
+                              className={cn(
+                                "size-8 rounded-full border border-border shadow-sm transition-transform",
+                                annotColor === c ? "scale-115 ring-2 ring-primary" : "opacity-80 hover:opacity-100"
+                              )}
+                              style={{ backgroundColor: c }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      {annotTool === "text" ? (
+                        <div className="space-y-2">
+                          <Label className="text-xs font-semibold">Text annotation</Label>
+                          <Input
+                            type="text"
+                            value={annotText}
+                            onChange={(e) => setAnnotText(e.target.value)}
+                            placeholder="Type text and click on page"
+                          />
+                        </div>
+                      ) : null}
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Brush size / Text size</span>
+                          <span>{annotWidth}px</span>
+                        </div>
+                        <Slider
+                          value={[annotWidth]}
+                          min={2}
+                          max={30}
+                          step={1}
+                          onValueChange={(val) => setAnnotWidth(val[0] || 6)}
+                        />
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        className="mt-4 border-destructive/30 hover:border-destructive text-destructive min-h-11"
+                        onClick={clearAnnotPage}
+                      >
+                        <Eraser className="size-4 mr-1.5" /> Clear Annotations on Page {editorPage}
+                      </Button>
+                    </>
+                  ) : null}
+
+                  {tool.slug === "crop-pdf" ? (
+                    <>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Trim Top</span>
+                          <span>{cropTop} pt</span>
+                        </div>
+                        <Slider
+                          value={[cropTop]}
+                          min={0}
+                          max={150}
+                          step={6}
+                          onValueChange={(val) => setCropTop(val[0] || 0)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Trim Bottom</span>
+                          <span>{cropBottom} pt</span>
+                        </div>
+                        <Slider
+                          value={[cropBottom]}
+                          min={0}
+                          max={150}
+                          step={6}
+                          onValueChange={(val) => setCropBottom(val[0] || 0)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Trim Left</span>
+                          <span>{cropLeft} pt</span>
+                        </div>
+                        <Slider
+                          value={[cropLeft]}
+                          min={0}
+                          max={150}
+                          step={6}
+                          onValueChange={(val) => setCropLeft(val[0] || 0)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Trim Right</span>
+                          <span>{cropRight} pt</span>
+                        </div>
+                        <Slider
+                          value={[cropRight]}
+                          min={0}
+                          max={150}
+                          step={6}
+                          onValueChange={(val) => setCropRight(val[0] || 0)}
+                        />
+                      </div>
+
+                      <div className="flex gap-2 mt-4">
+                        <Button variant="outline" className="flex-1" onClick={() => {
+                          setCropTop(36); setCropBottom(36); setCropLeft(36); setCropRight(36);
+                        }}>
+                          0.5 inch (36pt)
+                        </Button>
+                        <Button variant="outline" className="flex-1" onClick={() => {
+                          setCropTop(0); setCropBottom(0); setCropLeft(0); setCropRight(0);
+                        }}>
+                          Reset
+                        </Button>
+                      </div>
+                    </>
+                  ) : null}
+                </div>
               </div>
             </div>
           ) : null}

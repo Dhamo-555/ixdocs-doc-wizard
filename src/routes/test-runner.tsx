@@ -702,6 +702,36 @@ function TestRunnerPage() {
           status: "FAIL",
         });
       }
+
+      // 29. pdf-ocr
+      try {
+        const f = await createMockPdf(1, "Scanned Text Page");
+        const runner = RUNNERS["pdf-ocr"]!;
+        // Use a mock of Tesseract if needed or actual. In test page, it will load Tesseract.js.
+        // We'll test output format text to avoid layout complexity in quick tests.
+        const result = await runner({
+          files: [f],
+          options: { language: "eng", output: "text" },
+          selectedPages: [],
+          pageOrder: [],
+          totalPages: 1,
+          onProgress: () => {},
+        });
+        addResult({
+          name: "PDF OCR",
+          expected: "OCR text output file generated",
+          actual: `Output size: ${result.outputs[0].size} bytes`,
+          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+        });
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : "Unknown error";
+        addResult({
+          name: "PDF OCR",
+          expected: "OCR text output file",
+          actual: `Error: ${msg}`,
+          status: "FAIL",
+        });
+      }
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Unknown error";
       console.error("Critical test runner error:", e);
@@ -720,7 +750,7 @@ function TestRunnerPage() {
     <div className="container mx-auto p-6 max-w-4xl">
       <h1 className="text-2xl font-bold mb-2">IXDocs PDF Tools Test Suite</h1>
       <p className="text-sm text-muted-foreground mb-6">
-        Programmatic browser-side execution of all 21 active tools.
+        Programmatic browser-side execution of all 29 active tools.
       </p>
 
       {running ? (
