@@ -175,7 +175,7 @@ const ALL_TOOLS: Tool[] = [
         a: "JPG and PNG images are embedded as-is, so no re-compression happens. WebP images are re-encoded to JPEG because PDF has no native WebP support.",
       },
     ],
-    related: ["pdf-to-jpg", "merge-pdf", "compress-pdf", "print-ready-pdf"],
+    related: ["pdf-to-jpg", "pdf-to-png", "merge-pdf", "compress-pdf"],
     popular: true,
   },
   {
@@ -234,7 +234,7 @@ const ALL_TOOLS: Tool[] = [
         a: "Each page is rendered on your device. Higher resolutions mean more pixels, so print-quality exports of long documents take longer.",
       },
     ],
-    related: ["pdf-to-png", "jpg-to-pdf", "compress-pdf", "extract-pdf-pages"],
+    related: ["pdf-to-png", "jpg-to-pdf", "pdf-ocr", "compress-pdf"],
     popular: true,
   },
   {
@@ -283,7 +283,7 @@ const ALL_TOOLS: Tool[] = [
         a: "Pages are rendered on a white background, matching how the PDF prints.",
       },
     ],
-    related: ["pdf-to-jpg", "jpg-to-pdf", "pdf-page-size-converter", "compress-pdf"],
+    related: ["pdf-to-jpg", "jpg-to-pdf", "pdf-page-size-converter", "extract-pdf-pages"],
     popular: true,
   },
   {
@@ -466,7 +466,7 @@ const ALL_TOOLS: Tool[] = [
         a: "Encrypted PDFs must be unlocked first — the browser cannot read their pages while they are protected.",
       },
     ],
-    related: ["split-pdf", "reorder-pdf-pages", "extract-pdf-pages", "compress-pdf"],
+    related: ["split-pdf", "reorder-pdf-pages", "extract-pdf-pages", "delete-pdf-pages"],
     popular: true,
   },
   {
@@ -522,7 +522,7 @@ const ALL_TOOLS: Tool[] = [
         a: "No. Pages are copied without re-encoding, so the content is identical to the original.",
       },
     ],
-    related: ["merge-pdf", "extract-pdf-pages", "delete-pdf-pages", "reorder-pdf-pages"],
+    related: ["merge-pdf", "extract-pdf-pages", "delete-pdf-pages", "compress-pdf"],
     popular: true,
   },
   {
@@ -1101,8 +1101,8 @@ const ALL_TOOLS: Tool[] = [
     related: [
       "compress-pdf-to-target-size",
       "pdf-health-checker",
+      "application-pdf-optimizer",
       "pdf-page-size-converter",
-      "merge-pdf",
     ],
     popular: true,
   },
