@@ -37,6 +37,7 @@ import { TOOL_MAP, toolPath, type Tool, type ToolOption } from "@/lib/tools";
 import { RUNNERS } from "@/lib/tool-runners";
 import {
   ToolError,
+  baseName,
   formatBytes,
   openRenderDoc,
   renderPageToCanvas,
