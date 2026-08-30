@@ -331,6 +331,44 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     Object.fromEntries(tool.options.map((o) => [o.key, o.default])),
   );
 
+  // Custom output names
+  const [customNames, setCustomNames] = useState<Record<string, string>>({});
+
+  // Helper to sanitize download filenames
+  const sanitizeDownloadName = (input: string, originalName: string): string => {
+    const match = originalName.match(/\.[^.]+$/);
+    const ext = match ? match[0] : "";
+    const extRaw = match ? match[0].substring(1) : "";
+
+    let name = input.trim();
+    if (!name) return originalName;
+
+    // Remove OS-invalid characters
+    name = name.replace(/[\/\\:\*\?"<>\|]/g, "");
+
+    // Clean leading/trailing dots and path parts
+    name = name.replace(/^\.+/, "").replace(/\.+$/, "").trim();
+    if (!name) return originalName;
+
+    // Deduplicate extensions and preserve correct extension
+    if (ext) {
+      const extRegex = new RegExp(`\\${ext}$`, "i");
+      if (extRegex.test(name)) {
+        const multiExtRegex = new RegExp(`(\\${ext})+$`, "i");
+        name = name.replace(multiExtRegex, ext);
+      } else {
+        const nameWithoutExt = name.replace(/\.[^.]+$/, "");
+        const nameExtMatch = name.match(/\.[^.]+$/);
+        if (nameExtMatch && nameExtMatch[0].toLowerCase() !== ext.toLowerCase()) {
+          name = nameWithoutExt + ext;
+        } else {
+          name = name + ext;
+        }
+      }
+    }
+    return name;
+  };
+
   // Active page index in the editor preview (1-indexed)
   const [editorPage, setEditorPage] = useState(1);
 
@@ -568,6 +606,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     setSelected([]);
     setOrder([]);
     setProgress(null);
+    setCustomNames({});
   }, []);
 
   const addFiles = useCallback(
@@ -845,34 +884,73 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                   : "Your file"}
               </h3>
               <ul className="mt-3 space-y-2">
-                {result.outputs.map((output) => (
-                  <li
-                    key={output.name}
-                    className="grid gap-3 rounded-xl border border-border bg-background p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
-                  >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium" title={output.name}>
-                        {output.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{formatBytes(output.size)}</p>
-                    </div>
-                    <Button
-                      className="min-h-12 w-full sm:w-auto"
-                      onClick={() => download(output.name, output.blob)}
+                {result.outputs.map((output) => {
+                  const extMatch = output.name.match(/\.[^.]+$/);
+                  const ext = extMatch ? extMatch[0] : "";
+                  const currentCustomVal = customNames[output.name] ?? baseName(output.name);
+
+                  return (
+                    <li
+                      key={output.name}
+                      className="grid gap-4 rounded-xl border border-border bg-background p-3 sm:grid-cols-[1fr_auto] sm:items-end"
                     >
-                      <Download className="size-4" />
-                      <span>Download</span>
-                    </Button>
-                  </li>
-                ))}
+                      <div className="flex flex-col gap-3 w-full min-w-0">
+                        <div className="min-w-0">
+                          <p className="truncate text-xs text-muted-foreground mb-1" title={output.name}>
+                            Original: {output.name} ({formatBytes(output.size)})
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-1.5 max-w-md w-full">
+                          <Label htmlFor={`filename-${output.name}`} className="text-xs font-semibold text-foreground">
+                            Download Filename
+                          </Label>
+                          <div className="relative flex items-center">
+                            <Input
+                              id={`filename-${output.name}`}
+                              type="text"
+                              value={currentCustomVal}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setCustomNames((prev) => ({
+                                  ...prev,
+                                  [output.name]: val,
+                                }));
+                              }}
+                              placeholder="Enter output name"
+                              className="h-10 text-sm pr-12 w-full"
+                            />
+                            {ext ? (
+                              <span className="absolute right-3 text-xs text-muted-foreground font-semibold select-none pointer-events-none">
+                                {ext}
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        className="min-h-12 w-full sm:w-auto self-end"
+                        onClick={() => {
+                          const rawInput = customNames[output.name] ?? baseName(output.name);
+                          const sanitized = sanitizeDownloadName(rawInput, output.name);
+                          download(sanitized, output.blob);
+                        }}
+                      >
+                        <Download className="size-4" />
+                        <span>Download</span>
+                      </Button>
+                    </li>
+                  );
+                })}
               </ul>
               {result.outputs.length > 1 ? (
                 <Button
                   className="mt-3 min-h-12 w-full sm:w-auto"
                   onClick={() =>
-                    result.outputs.forEach((o, i) =>
-                      setTimeout(() => download(o.name, o.blob), i * 300),
-                    )
+                    result.outputs.forEach((o, i) => {
+                      const rawInput = customNames[o.name] ?? baseName(o.name);
+                      const sanitized = sanitizeDownloadName(rawInput, o.name);
+                      setTimeout(() => download(sanitized, o.blob), i * 300);
+                    })
                   }
                 >
                   <Download className="size-4" />
