@@ -22,7 +22,10 @@ export function toolRouteHead(slug: string) {
       { property: "og:description", content: tool.metaDescription },
       { property: "og:type", content: "website" },
       { property: "og:url", content: url },
+      { property: "og:image", content: "https://ixdocs.com/ixdocs-og-image.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: tool.metaTitle },
+      { name: "twitter:description", content: tool.metaDescription },
     ],
     links: [{ rel: "canonical", href: url }],
     scripts: [
