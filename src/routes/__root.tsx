@@ -122,15 +122,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "IXDocs",
-          url: "https://ixdocs.com/",
-          description: "Free, fast and easy-to-use tools for your documents and PDFs.",
-          publisher: {
-            "@type": "Organization",
-            name: "IXDocs",
-            url: "https://ixdocs.com/",
-          },
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://ixdocs.com/#organization",
+              "name": "IXDocs",
+              "url": "https://ixdocs.com/",
+              "logo": "https://ixdocs.com/favicon.svg"
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://ixdocs.com/#website",
+              "name": "IXDocs",
+              "url": "https://ixdocs.com/",
+              "description": "Free, fast and easy-to-use tools for your documents and PDFs.",
+              "publisher": {
+                "@id": "https://ixdocs.com/#organization"
+              }
+            }
+          ]
         }),
       },
     ],

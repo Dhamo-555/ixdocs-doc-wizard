@@ -14,6 +14,77 @@ const SITE_URL = "https://ixdocs.com";
 export function toolRouteHead(slug: string) {
   const tool = getTool(slug);
   const url = `${SITE_URL}/${slug}`;
+
+  let ogImage = "https://ixdocs.com/ixdocs-og-image.png";
+  if (slug === "compress-pdf") {
+    ogImage = "https://ixdocs.com/og-compress-pdf.png";
+  } else if (slug === "merge-pdf") {
+    ogImage = "https://ixdocs.com/og-merge-pdf.png";
+  } else if (slug === "split-pdf") {
+    ogImage = "https://ixdocs.com/og-split-pdf.png";
+  } else if (slug === "jpg-to-pdf") {
+    ogImage = "https://ixdocs.com/og-jpg-to-pdf.png";
+  } else if (slug === "pdf-to-jpg") {
+    ogImage = "https://ixdocs.com/og-pdf-to-jpg.jpg";
+  }
+
+  const scripts = [
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: tool.faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }),
+    },
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "IXDocs", item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: "Tools", item: `${SITE_URL}/tools` },
+          { "@type": "ListItem", position: 3, name: tool.name, item: url },
+        ],
+      }),
+    },
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: tool.name,
+        url,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web browser",
+        description: tool.metaDescription,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      }),
+    },
+  ];
+
+  if (tool.steps && tool.steps.length > 0) {
+    scripts.push({
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        name: `How to use ${tool.name}`,
+        description: tool.metaDescription,
+        step: tool.steps.map((step, index) => ({
+          "@type": "HowToStep",
+          position: index + 1,
+          text: step,
+        })),
+      }),
+    });
+  }
+
   return {
     meta: [
       { title: tool.metaTitle },
@@ -22,51 +93,15 @@ export function toolRouteHead(slug: string) {
       { property: "og:description", content: tool.metaDescription },
       { property: "og:type", content: "website" },
       { property: "og:url", content: url },
-      { property: "og:image", content: "https://ixdocs.com/ixdocs-og-image.png" },
+      { property: "og:image", content: ogImage },
+      { property: "og:image:type", content: ogImage.endsWith(".jpg") ? "image/jpeg" : "image/png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: tool.metaTitle },
       { name: "twitter:description", content: tool.metaDescription },
+      { name: "twitter:image", content: ogImage },
     ],
     links: [{ rel: "canonical", href: url }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: tool.faqs.map((f) => ({
-            "@type": "Question",
-            name: f.q,
-            acceptedAnswer: { "@type": "Answer", text: f.a },
-          })),
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "IXDocs", item: `${SITE_URL}/` },
-            { "@type": "ListItem", position: 2, name: "Tools", item: `${SITE_URL}/tools` },
-            { "@type": "ListItem", position: 3, name: tool.name, item: url },
-          ],
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: tool.name,
-          url,
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web browser",
-          description: tool.metaDescription,
-          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        }),
-      },
-    ],
+    scripts,
   };
 }
 
