@@ -13,6 +13,9 @@ interface TestResult {
 }
 
 export const Route = createFileRoute("/test-runner")({
+  head: () => ({
+    meta: [{ name: "robots", content: "noindex, nofollow" }],
+  }),
   component: TestRunnerPage,
 });
 

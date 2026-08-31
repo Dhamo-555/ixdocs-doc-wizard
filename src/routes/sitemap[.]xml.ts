@@ -53,6 +53,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/document-scanner", changefreq: "weekly", priority: "0.8" },
           { path: "/smart-pdf-analyzer", changefreq: "weekly", priority: "0.8" },
           { path: "/pdf-ocr", changefreq: "weekly", priority: "0.8" },
+          { path: "/word-to-pdf", changefreq: "weekly", priority: "0.8" },
+          { path: "/pdf-to-word", changefreq: "weekly", priority: "0.8" },
+          { path: "/password-protect-pdf", changefreq: "weekly", priority: "0.8" },
         ];
 
         const urls = entries.map((e) =>
