@@ -737,7 +737,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
   const selectedElement = currentElements.find((el) => el.id === selectedElementId);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full min-w-0">
       <input
         ref={imageInputRef}
         type="file"
@@ -1139,7 +1139,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
         </div>
 
         {/* EDITOR AREA */}
-        <div className="flex flex-col items-center justify-start rounded-2xl border border-border bg-muted/30 p-4 sm:p-6 overflow-auto max-h-[820px]">
+        <div className="flex flex-col items-center justify-start rounded-2xl border border-border bg-muted/30 p-2 sm:p-6 overflow-auto max-h-[820px] w-full min-w-0">
           <p className="mb-3 text-center text-xs text-muted-foreground max-w-xl">
             Edit PDF with basic tools directly in your browser. Add text, remove content, add images, draw, highlight, and add shapes. Existing PDF text is not directly rewritten or automatically reflowed.
           </p>
@@ -1369,47 +1369,47 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
       </div>
 
       {/* FOOTER ACTIONS BAR */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-4 shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Label htmlFor="filename" className="text-xs font-semibold text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 rounded-2xl border border-border bg-surface p-3 sm:p-4 shadow-xs w-full min-w-0">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0 w-full sm:w-auto">
+          <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
+            <Label htmlFor="filename" className="text-xs font-semibold text-muted-foreground shrink-0">
               Filename:
             </Label>
             <Input
               id="filename"
               value={customFilename}
               onChange={(e) => setCustomFilename(e.target.value)}
-              className="h-8 text-xs font-medium w-48 sm:w-64"
+              className="h-8 text-xs font-medium w-full min-w-0 sm:w-64"
             />
           </div>
           {pagesState[currentPage]?.drawingsDataUrl ? (
-            <Button variant="outline" size="sm" onClick={clearDrawings} className="h-8 text-xs">
+            <Button variant="outline" size="sm" onClick={clearDrawings} className="h-8 text-xs shrink-0">
               Clear Drawings
             </Button>
           ) : null}
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={onReset}>
+        <div className="flex flex-col xs:flex-row sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+          <Button variant="outline" size="sm" onClick={onReset} className="w-full sm:w-auto justify-center">
             Choose Another File
           </Button>
           <Button
             variant="default"
             size="sm"
-            className="bg-primary text-primary-foreground font-semibold"
+            className="bg-primary text-primary-foreground font-semibold w-full sm:w-auto justify-center"
             disabled={isExporting}
             onClick={handleExportPdf}
           >
             {isExporting ? (
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 justify-center">
                 <RotateCcw className="size-4 animate-spin" /> Exporting...
               </span>
             ) : downloadSuccess ? (
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 justify-center">
                 <Download className="size-4" /> Download PDF
               </span>
             ) : (
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 justify-center">
                 <Download className="size-4" /> Export & Download PDF
               </span>
             )}
