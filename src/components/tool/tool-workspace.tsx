@@ -43,6 +43,9 @@ import {
   renderPageToCanvas,
   type RunResult,
 } from "@/lib/pdf-engine";
+import { triggerBrowserDownload, sanitizeDownloadFilename } from "@/lib/download";
+import { PdfEditorWorkspace } from "@/components/tool/pdf-editor-workspace";
+import { QrCodeWorkspace } from "@/components/tool/qr-code-workspace";
 
 /* ------------------------------------------------------------ shared cards */
 
@@ -77,17 +80,15 @@ export function AdSlot({
   label?: string;
   className?: string;
 }) {
+  const adsActive = typeof window !== "undefined" && (window as any).IXDOCS_ADS_ACTIVE === true;
+  if (!adsActive) return null;
+
   return (
     <aside
       aria-label={label}
-      className={cn(
-        "grid min-h-24 place-items-center rounded-xl border border-dashed border-border bg-surface px-4 py-6 text-center",
-        className,
-      )}
+      className={cn("w-full overflow-hidden transition-all", className)}
     >
-      <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-        {label} — reserved space
-      </span>
+      <div id="ixdocs-ad-container" className="w-full flex justify-center empty:hidden" />
     </aside>
   );
 }
@@ -337,37 +338,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
 
   // Helper to sanitize download filenames
   const sanitizeDownloadName = (input: string, originalName: string): string => {
-    const match = originalName.match(/\.[^.]+$/);
-    const ext = match ? match[0] : "";
-    const extRaw = match ? match[0].substring(1) : "";
-
-    let name = input.trim();
-    if (!name) return originalName;
-
-    // Remove OS-invalid characters
-    name = name.replace(/[\/\\:\*\?"<>\|]/g, "");
-
-    // Clean leading/trailing dots and path parts
-    name = name.replace(/^\.+/, "").replace(/\.+$/, "").trim();
-    if (!name) return originalName;
-
-    // Deduplicate extensions and preserve correct extension
-    if (ext) {
-      const extRegex = new RegExp(`\\${ext}$`, "i");
-      if (extRegex.test(name)) {
-        const multiExtRegex = new RegExp(`(\\${ext})+$`, "i");
-        name = name.replace(multiExtRegex, ext);
-      } else {
-        const nameWithoutExt = name.replace(/\.[^.]+$/, "");
-        const nameExtMatch = name.match(/\.[^.]+$/);
-        if (nameExtMatch && nameExtMatch[0].toLowerCase() !== ext.toLowerCase()) {
-          name = nameWithoutExt + ext;
-        } else {
-          name = name + ext;
-        }
-      }
-    }
-    return name;
+    return sanitizeDownloadFilename(input, originalName);
   };
 
   // Active page index in the editor preview (1-indexed)
@@ -728,12 +699,12 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   };
 
   const download = (name: string, blob: Blob) => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = name;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 20_000);
+    triggerBrowserDownload({
+      filename: name,
+      blobOrBytes: blob,
+      mimeType: blob.type,
+      defaultExt: name.match(/\.[^.]+$/)?.[0] || ".pdf",
+    });
   };
 
   const move = (index: number, delta: number) => {
@@ -968,8 +939,12 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
             </Button>
           </div>
         </div>
+      ) : tool.slug === "qr-code-generator" ? (
+        <QrCodeWorkspace />
       ) : files.length === 0 ? (
         <UploadBox tool={tool} onFiles={addFiles} />
+      ) : tool.slug === "edit-pdf" ? (
+        <PdfEditorWorkspace file={files[0]!} onReset={reset} />
       ) : (
         <div className="space-y-6">
           <div>

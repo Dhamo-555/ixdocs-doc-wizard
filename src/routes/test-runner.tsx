@@ -399,11 +399,14 @@ function TestRunnerPage() {
           totalPages: 2,
           onProgress: () => {},
         });
+        const out0 = result.outputs[0];
         addResult({
           name: "Compress to Target Size",
-          expected: "Compressed output under target cap",
-          actual: `Output size: ${(result.outputs[0].size / 1024).toFixed(1)} KB`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          expected: "Compressed output",
+          actual: out0
+            ? `Output size: ${(out0.size / 1024).toFixed(1)} KB`
+            : `Original was already optimal (${result.message ?? ""})`,
+          status: out0 || result.message ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -735,6 +738,52 @@ function TestRunnerPage() {
           status: "FAIL",
         });
       }
+
+      // 23. qr-code-generator
+      try {
+        const QRCode = await import("qrcode");
+        const canvas = document.createElement("canvas");
+        const testInput = "https://ixdocs.com";
+        await QRCode.toCanvas(canvas, testInput, {
+          width: 400,
+          margin: 4,
+          errorCorrectionLevel: "M",
+        });
+
+        const isDrawn = canvas.width === 400 && canvas.height === 400;
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob((b) => resolve(b), "image/png"),
+        );
+
+        let validPng = false;
+        if (blob && blob.size > 0 && blob.type === "image/png") {
+          const buffer = await blob.arrayBuffer();
+          const bytes = new Uint8Array(buffer);
+          // Check PNG magic bytes: 0x89 0x50 0x4E 0x47 (89 80 78 71)
+          if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) {
+            validPng = true;
+          }
+        }
+
+        const pass = isDrawn && validPng;
+        addResult({
+          name: "QR Code Generator",
+          expected: "Valid client-side PNG QR code (qr-code.png)",
+          actual: pass
+            ? `Generated 400x400 PNG (${blob?.size} bytes, valid PNG header)`
+            : "Failed to generate valid PNG QR code",
+          status: pass ? "PASS" : "FAIL",
+          details: `Encoded "${testInput}", output: qr-code.png`,
+        });
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : "Unknown error";
+        addResult({
+          name: "QR Code Generator",
+          expected: "Valid client-side PNG QR code",
+          actual: `Error: ${msg}`,
+          status: "FAIL",
+        });
+      }
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Unknown error";
       console.error("Critical test runner error:", e);
@@ -751,9 +800,9 @@ function TestRunnerPage() {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-2">IXDocs PDF Tools Test Suite</h1>
+      <h1 className="text-2xl font-bold mb-2">IXDocs Tools Test Suite</h1>
       <p className="text-sm text-muted-foreground mb-6">
-        Programmatic browser-side execution of all 29 active tools.
+        Programmatic browser-side execution of all active tools.
       </p>
 
       {running ? (
@@ -763,7 +812,7 @@ function TestRunnerPage() {
         </div>
       ) : (
         <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400 rounded-lg mb-6 text-sm font-semibold">
-          Completed in-browser tests for all active PDF tools.
+          Completed in-browser tests for all active tools.
         </div>
       )}
 

@@ -53,11 +53,11 @@ function Home() {
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground text-pretty sm:mt-5 sm:text-lg">
             <span className="font-semibold text-foreground">Documents. Simplified.</span> Compress,
-            merge, split, rotate and convert PDFs — most tools run right in your browser.
+            merge, split, edit and convert PDFs — most tools run right in your browser.
           </p>
           <div className="mx-auto mt-8 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
             <Button asChild size="lg" className="min-h-12 w-full sm:w-auto">
-              <Link to="/compress-pdf">
+              <Link to="/edit-pdf">
                 Start with a file <ArrowRight className="size-4" />
               </Link>
             </Button>

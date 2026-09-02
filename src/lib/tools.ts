@@ -8,6 +8,7 @@ import {
   FileArchive,
   FileCheck2,
   FileCog,
+  FileEdit,
   FileImage,
   FileScan,
   FileSearch,
@@ -23,6 +24,7 @@ import {
   Lock,
   PenLine,
   Printer,
+  QrCode,
   RotateCw,
   Scissors,
   ShieldCheck,
@@ -839,6 +841,50 @@ const ALL_TOOLS: Tool[] = [
     related: ["merge-pdf", "pdf-metadata-cleaner", "print-ready-pdf"],
   },
   /* --------------------------------------------------------------- Edit PDF */
+  {
+    slug: "edit-pdf",
+    name: "Edit PDF",
+    metaTitle: "Edit PDF Online Free — Add Text & Remove Content | IXDocs",
+    metaDescription:
+      "Edit PDF files online for free with IXDocs. Add text, remove unwanted content, add images, draw, highlight, and make basic PDF edits directly in your browser.",
+    short: "Add text, remove content, add images, draw, and highlight.",
+    intro:
+      "Basic PDF editing, directly in your browser. Add text, remove unwanted content, add images, draw, highlight, and make simple PDF edits without uploading your document to a server.",
+    category: "Edit PDF",
+    icon: FileEdit,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF file",
+    multiple: false,
+    pageMode: "none",
+    options: [],
+    actionLabel: "Export Edited PDF",
+    steps: [
+      "Upload your PDF document.",
+      "Use the toolbar to add text, remove unwanted content with clean whiteout, insert images, draw, highlight, or add shapes.",
+      "Move, resize, or adjust any added annotations on any page.",
+      "Download your edited PDF directly in your browser.",
+    ],
+    faqs: [
+      {
+        q: "Is this PDF editor free to use?",
+        a: "Yes, IXDocs Edit PDF is 100% free with no file limits, watermarks, or account registration required.",
+      },
+      {
+        q: "Are my files uploaded to a server?",
+        a: "No. All PDF viewing, text additions, content removal, and export processing happen locally in your browser. Your files never leave your device.",
+      },
+      {
+        q: "How does Remove Text work?",
+        a: "Remove Text covers the selected area with a clean vector mask. It does not modify or delete underlying native PDF objects.",
+      },
+      {
+        q: "Can I add images or signatures to my PDF?",
+        a: "Yes. You can insert PNG, JPG, or WebP images, reposition and resize them anywhere on any page, and draw signatures using the freehand pen tool.",
+      },
+    ],
+    related: ["compress-pdf", "add-text-to-pdf", "annotate-pdf", "sign-pdf", "merge-pdf"],
+  },
   {
     slug: "watermark-pdf",
     name: "Watermark PDF",
@@ -1940,6 +1986,44 @@ const ALL_TOOLS: Tool[] = [
     ],
     related: ["pdf-health-checker", "pdf-ocr", "compress-pdf", "pdf-metadata-cleaner"],
   },
+  {
+    slug: "qr-code-generator",
+    name: "QR Code Generator",
+    metaTitle: "QR Code Generator — Create QR Codes Online Free | IXDocs",
+    metaDescription:
+      "Create QR codes from text or URLs online for free. Generate and download QR codes instantly in your browser with IXDocs.",
+    short: "Create a QR code from any text or URL instantly.",
+    intro:
+      "Create a QR code from any text or URL. Generate it instantly in your browser and download it as an image.",
+    category: "Convert",
+    icon: QrCode,
+    ready: true,
+    accept: "",
+    acceptLabel: "Text or URL",
+    multiple: false,
+    options: [],
+    actionLabel: "Generate QR Code",
+    steps: [
+      "Enter or paste your text or URL.",
+      "Click Generate QR Code to create the preview.",
+      "Download the generated QR code as a PNG image.",
+    ],
+    faqs: [
+      {
+        q: "Is my text or URL uploaded to a server?",
+        a: "No. The QR code is generated directly inside your browser using client-side JavaScript. Your text or URL never leaves your device.",
+      },
+      {
+        q: "What format is the QR code saved in?",
+        a: "The QR code is exported as a standard PNG image with crisp square pixels and a safe margin for easy scanning.",
+      },
+      {
+        q: "Can any phone or scanner read this QR code?",
+        a: "Yes. Standard QR codes generated here can be scanned with any smartphone camera or standard QR scanner app.",
+      },
+    ],
+    related: ["pdf-to-png", "pdf-to-jpg", "jpg-to-pdf", "document-scanner"],
+  },
 ];
 
 export const TOOLS: Tool[] = ALL_TOOLS.filter((t) => t.ready !== false);
@@ -1953,6 +2037,7 @@ export function getTool(slug: string): Tool {
 }
 
 export const POPULAR_SLUGS = [
+  "edit-pdf",
   "jpg-to-pdf",
   "pdf-to-jpg",
   "compress-pdf",
@@ -1968,6 +2053,7 @@ export function toolsByCategory(category: ToolCategory) {
 }
 
 const SEARCH_ALIASES: Record<string, string[]> = {
+  "edit-pdf": ["edit pdf", "editor", "modify pdf", "change text", "add image", "whiteout", "draw on pdf", "highlight", "edit pdf online", "free pdf editor", "edit pdf in browser", "add text to pdf", "replace pdf text", "move pdf objects", "add images to pdf", "draw on pdf", "highlight pdf", "whiteout pdf", "basic pdf editing"],
   "pdf-to-text": ["extract text", "txt", "text", "copy text", "read pdf", "pdf to txt", "markdown"],
   "crop-pdf": ["crop", "trim", "margins", "cut edges", "white space", "resize page", "trim pdf"],
   "flatten-pdf": ["flatten", "acroform", "form fields", "lock", "read only", "flatten forms", "interactive"],
@@ -2146,6 +2232,18 @@ const SEARCH_ALIASES: Record<string, string[]> = {
     "images",
     "audit",
     "problem",
+  ],
+  "qr-code-generator": [
+    "qr code generator",
+    "free qr code generator",
+    "qr code generator online",
+    "create qr code",
+    "generate qr code",
+    "qr code maker",
+    "url qr code generator",
+    "text to qr code",
+    "barcode",
+    "link to qr",
   ],
 };
 

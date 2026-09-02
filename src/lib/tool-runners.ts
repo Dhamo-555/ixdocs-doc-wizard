@@ -423,22 +423,27 @@ const compressToTarget: Runner = async (ctx) => {
   if (!best) throw new ToolError("Compression failed before producing a result. Please try again.");
 
   const out = pdfBlobOutput(best, `${baseName(file.name)}-${targetKb}kb.pdf`);
+  const grew = out.size >= file.size;
   const met = out.size <= targetBytes;
   return {
-    outputs: [out],
-    partial: !met,
+    outputs: grew ? [] : [out],
+    partial: !met || grew,
     stats: [
       { label: "Original", value: formatBytes(file.size) },
       { label: "Target", value: formatBytes(targetBytes) },
-      { label: "Result", value: formatBytes(out.size), tone: met ? "success" : "warning" },
+      { label: "Result", value: formatBytes(out.size), tone: met && !grew ? "success" : "warning" },
       {
-        label: "Reduction",
-        value: `${Math.max(0, ((file.size - out.size) / file.size) * 100).toFixed(1)}% smaller`,
+        label: grew ? "Increase" : "Reduction",
+        value: grew
+          ? `${Math.abs(((file.size - out.size) / file.size) * 100).toFixed(1)}% larger`
+          : `${Math.max(0, ((file.size - out.size) / file.size) * 100).toFixed(1)}% smaller`,
       },
     ],
-    message: met
+    message: grew
+      ? `This document is already well optimized — compression produced a larger file (${formatBytes(out.size)}), so your original is already the smallest version.`
+      : met
       ? `The file now fits inside your ${formatBytes(targetBytes)} limit.`
-      : `We could not reach ${formatBytes(targetBytes)} while keeping the pages readable. This is the smallest version we produced at ${formatBytes(out.size)} — the document simply carries more visual detail than that limit allows. Removing pages first usually helps.`,
+      : `We could not reach ${formatBytes(targetBytes)} while keeping the pages readable. This is the smallest version we produced at ${formatBytes(out.size)} — the document carries more detail than that limit allows. Removing pages first usually helps.`,
   };
 };
 
@@ -1680,7 +1685,175 @@ const pdfOcr: Runner = async (ctx) => {
 };
 
 
+const editPdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const { rgb, StandardFonts } = await import("pdf-lib");
+  const doc = await loadPdfDoc(file);
+
+  const fontHelvetica = await doc.embedFont(StandardFonts.Helvetica);
+  const fontHelveticaBold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const fontHelveticaOblique = await doc.embedFont(StandardFonts.HelveticaOblique);
+  const fontTimes = await doc.embedFont(StandardFonts.TimesRoman);
+  const fontTimesBold = await doc.embedFont(StandardFonts.TimesRomanBold);
+  const fontCourier = await doc.embedFont(StandardFonts.Courier);
+
+  function hexToRgb(hex: string): [number, number, number] {
+    const clean = hex.replace("#", "");
+    if (clean.length === 6) {
+      return [
+        parseInt(clean.slice(0, 2), 16) / 255,
+        parseInt(clean.slice(2, 4), 16) / 255,
+        parseInt(clean.slice(4, 6), 16) / 255,
+      ];
+    }
+    return [0, 0, 0];
+  }
+
+  const pagesState = ctx.options["pagesState"] || {};
+  const pageCount = doc.getPageCount();
+  let totalModifications = 0;
+
+  for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
+    const pageData = pagesState[pageNum];
+    if (!pageData) continue;
+
+    const page = doc.getPage(pageNum - 1);
+    const { width: pW, height: pH } = page.getSize();
+
+    const elements: any[] = pageData.elements || [];
+    const sorted = [...elements].sort((a, b) => {
+      const order: Record<string, number> = { whiteout: 1, rectangle: 2, line: 3, image: 4, text: 5 };
+      return (order[a.type] || 5) - (order[b.type] || 5);
+    });
+
+    for (const el of sorted) {
+      const elX = (el.x / 100) * pW;
+      const elW = (el.width / 100) * pW;
+      const elH = (el.height / 100) * pH;
+      const elY = pH - ((el.y / 100) * pH) - elH;
+
+      if (el.type === "whiteout") {
+        const [r, g, b] = hexToRgb(el.bgColor || "#ffffff");
+        page.drawRectangle({
+          x: elX,
+          y: elY,
+          width: elW,
+          height: elH,
+          color: rgb(r, g, b),
+          opacity: 1,
+        });
+        totalModifications++;
+      } else if (el.type === "rectangle") {
+        const noBorder = !el.color || el.color === "transparent" || el.lineWidth === 0;
+        const rectBgColor = el.bgColor ? rgb(...hexToRgb(el.bgColor)) : undefined;
+        page.drawRectangle({
+          x: elX,
+          y: elY,
+          width: elW,
+          height: elH,
+          ...(noBorder ? {} : { borderColor: rgb(...hexToRgb(el.color!)), borderWidth: el.lineWidth || 2 }),
+          ...(rectBgColor ? { color: rectBgColor } : {}),
+          opacity: el.opacity ?? 1,
+        });
+        totalModifications++;
+      } else if (el.type === "line") {
+        const [r, g, b] = hexToRgb(el.color || "#000000");
+        page.drawLine({
+          start: { x: elX, y: elY + elH },
+          end: { x: elX + elW, y: elY },
+          thickness: el.lineWidth || 2,
+          color: rgb(r, g, b),
+          opacity: el.opacity ?? 1,
+        });
+        totalModifications++;
+      } else if (el.type === "image" && el.imageData) {
+        try {
+          const base64Data = el.imageData.split(",")[1];
+          if (base64Data) {
+            const bytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+            const embedded = el.imageData.includes("png")
+              ? await doc.embedPng(bytes)
+              : await doc.embedJpg(bytes);
+            page.drawImage(embedded, {
+              x: elX,
+              y: elY,
+              width: elW,
+              height: elH,
+              opacity: el.opacity ?? 1,
+            });
+            totalModifications++;
+          }
+        } catch (e) {
+          console.warn("Failed to embed image in editPdf runner:", e);
+        }
+      } else if (el.type === "text" && el.text) {
+        if (el.isReplacement) {
+          const [bgR, bgG, bgB] = hexToRgb(el.bgColor || "#ffffff");
+          page.drawRectangle({
+            x: elX,
+            y: elY,
+            width: elW,
+            height: elH,
+            color: rgb(bgR, bgG, bgB),
+          });
+        }
+        let font = fontHelvetica;
+        if (el.fontFamily === "times") {
+          font = el.bold ? fontTimesBold : fontTimes;
+        } else if (el.fontFamily === "courier") {
+          font = fontCourier;
+        } else {
+          font = el.bold ? fontHelveticaBold : el.italic ? fontHelveticaOblique : fontHelvetica;
+        }
+
+        const [r, g, b] = hexToRgb(el.color || "#000000");
+        const fontSize = Math.max(6, (el.fontSize || 14) * (pH / 800));
+
+        page.drawText(el.text, {
+          x: elX,
+          y: elY + (elH * 0.15),
+          size: fontSize,
+          font,
+          color: rgb(r, g, b),
+          opacity: el.opacity ?? 1,
+        });
+        totalModifications++;
+      }
+    }
+
+    if (pageData.drawingsDataUrl) {
+      try {
+        const base64Data = pageData.drawingsDataUrl.split(",")[1];
+        if (base64Data) {
+          const bytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+          const embeddedPng = await doc.embedPng(bytes);
+          page.drawImage(embeddedPng, {
+            x: 0,
+            y: 0,
+            width: pW,
+            height: pH,
+          });
+          totalModifications++;
+        }
+      } catch (e) {
+        console.warn("Failed to embed drawing overlay:", e);
+      }
+    }
+  }
+
+  const out = await saveDoc(doc, `${baseName(file.name)}_edited.pdf`);
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Document Pages", value: String(pageCount) },
+      { label: "Edits Applied", value: `${totalModifications} changes`, tone: "success" },
+    ],
+    message: `Edited PDF generated successfully with ${totalModifications} modifications.`,
+  };
+};
+
 export const RUNNERS: Record<string, Runner> = {
+  "edit-pdf": editPdf,
   "jpg-to-pdf": jpgToPdf,
   "pdf-to-jpg": renderRunner("image/jpeg"),
   "pdf-to-png": renderRunner("image/png"),

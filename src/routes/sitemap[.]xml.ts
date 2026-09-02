@@ -26,6 +26,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/terms", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
           { path: "/cookie-policy", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
           { path: "/disclaimer", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
+          { path: "/edit-pdf", changefreq: "weekly", priority: "0.9", lastmod: LASTMOD },
           { path: "/jpg-to-pdf", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
           { path: "/pdf-to-jpg", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
           { path: "/pdf-to-png", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
@@ -58,6 +59,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/word-to-pdf", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
           { path: "/pdf-to-word", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
           { path: "/password-protect-pdf", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
+          { path: "/qr-code-generator", changefreq: "weekly", priority: "0.8", lastmod: LASTMOD },
         ];
 
         const urls = entries.map((e) =>

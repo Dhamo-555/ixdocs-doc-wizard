@@ -22,6 +22,7 @@ import { Route as CropPdfRouteImport } from './routes/crop-pdf'
 import { Route as DeletePdfPagesRouteImport } from './routes/delete-pdf-pages'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DocumentScannerRouteImport } from './routes/document-scanner'
+import { Route as EditPdfRouteImport } from './routes/edit-pdf'
 import { Route as ExtractPdfPagesRouteImport } from './routes/extract-pdf-pages'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FlattenPdfRouteImport } from './routes/flatten-pdf'
@@ -42,6 +43,7 @@ import { Route as PdfToTextRouteImport } from './routes/pdf-to-text'
 import { Route as PdfToWordRouteImport } from './routes/pdf-to-word'
 import { Route as PrintReadyPdfRouteImport } from './routes/print-ready-pdf'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as QrCodeGeneratorRouteImport } from './routes/qr-code-generator'
 import { Route as ReorderPdfPagesRouteImport } from './routes/reorder-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
 import { Route as SignPdfRouteImport } from './routes/sign-pdf'
@@ -117,6 +119,11 @@ const DisclaimerRoute = DisclaimerRouteImport.update({
 const DocumentScannerRoute = DocumentScannerRouteImport.update({
   id: '/document-scanner',
   path: '/document-scanner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditPdfRoute = EditPdfRouteImport.update({
+  id: '/edit-pdf',
+  path: '/edit-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExtractPdfPagesRoute = ExtractPdfPagesRouteImport.update({
@@ -219,6 +226,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QrCodeGeneratorRoute = QrCodeGeneratorRouteImport.update({
+  id: '/qr-code-generator',
+  path: '/qr-code-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReorderPdfPagesRoute = ReorderPdfPagesRouteImport.update({
   id: '/reorder-pdf-pages',
   path: '/reorder-pdf-pages',
@@ -289,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
+  '/edit-pdf': typeof EditPdfRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
   '/flatten-pdf': typeof FlattenPdfRoute
@@ -309,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/pdf-to-word': typeof PdfToWordRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/qr-code-generator': typeof QrCodeGeneratorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sign-pdf': typeof SignPdfRoute
@@ -335,6 +349,7 @@ export interface FileRoutesByTo {
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
+  '/edit-pdf': typeof EditPdfRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
   '/flatten-pdf': typeof FlattenPdfRoute
@@ -355,6 +370,7 @@ export interface FileRoutesByTo {
   '/pdf-to-word': typeof PdfToWordRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/qr-code-generator': typeof QrCodeGeneratorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sign-pdf': typeof SignPdfRoute
@@ -382,6 +398,7 @@ export interface FileRoutesById {
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
+  '/edit-pdf': typeof EditPdfRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
   '/flatten-pdf': typeof FlattenPdfRoute
@@ -402,6 +419,7 @@ export interface FileRoutesById {
   '/pdf-to-word': typeof PdfToWordRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/qr-code-generator': typeof QrCodeGeneratorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sign-pdf': typeof SignPdfRoute
@@ -430,6 +448,7 @@ export interface FileRouteTypes {
     | '/delete-pdf-pages'
     | '/disclaimer'
     | '/document-scanner'
+    | '/edit-pdf'
     | '/extract-pdf-pages'
     | '/faq'
     | '/flatten-pdf'
@@ -450,6 +469,7 @@ export interface FileRouteTypes {
     | '/pdf-to-word'
     | '/print-ready-pdf'
     | '/privacy-policy'
+    | '/qr-code-generator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sign-pdf'
@@ -476,6 +496,7 @@ export interface FileRouteTypes {
     | '/delete-pdf-pages'
     | '/disclaimer'
     | '/document-scanner'
+    | '/edit-pdf'
     | '/extract-pdf-pages'
     | '/faq'
     | '/flatten-pdf'
@@ -496,6 +517,7 @@ export interface FileRouteTypes {
     | '/pdf-to-word'
     | '/print-ready-pdf'
     | '/privacy-policy'
+    | '/qr-code-generator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sign-pdf'
@@ -522,6 +544,7 @@ export interface FileRouteTypes {
     | '/delete-pdf-pages'
     | '/disclaimer'
     | '/document-scanner'
+    | '/edit-pdf'
     | '/extract-pdf-pages'
     | '/faq'
     | '/flatten-pdf'
@@ -542,6 +565,7 @@ export interface FileRouteTypes {
     | '/pdf-to-word'
     | '/print-ready-pdf'
     | '/privacy-policy'
+    | '/qr-code-generator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sign-pdf'
@@ -569,6 +593,7 @@ export interface RootRouteChildren {
   DeletePdfPagesRoute: typeof DeletePdfPagesRoute
   DisclaimerRoute: typeof DisclaimerRoute
   DocumentScannerRoute: typeof DocumentScannerRoute
+  EditPdfRoute: typeof EditPdfRoute
   ExtractPdfPagesRoute: typeof ExtractPdfPagesRoute
   FaqRoute: typeof FaqRoute
   FlattenPdfRoute: typeof FlattenPdfRoute
@@ -589,6 +614,7 @@ export interface RootRouteChildren {
   PdfToWordRoute: typeof PdfToWordRoute
   PrintReadyPdfRoute: typeof PrintReadyPdfRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  QrCodeGeneratorRoute: typeof QrCodeGeneratorRoute
   ReorderPdfPagesRoute: typeof ReorderPdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
   SignPdfRoute: typeof SignPdfRoute
@@ -693,6 +719,13 @@ declare module '@tanstack/react-router' {
       path: '/document-scanner'
       fullPath: '/document-scanner'
       preLoaderRoute: typeof DocumentScannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edit-pdf': {
+      id: '/edit-pdf'
+      path: '/edit-pdf'
+      fullPath: '/edit-pdf'
+      preLoaderRoute: typeof EditPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/extract-pdf-pages': {
@@ -835,6 +868,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/qr-code-generator': {
+      id: '/qr-code-generator'
+      path: '/qr-code-generator'
+      fullPath: '/qr-code-generator'
+      preLoaderRoute: typeof QrCodeGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reorder-pdf-pages': {
       id: '/reorder-pdf-pages'
       path: '/reorder-pdf-pages'
@@ -929,6 +969,7 @@ const rootRouteChildren: RootRouteChildren = {
   DeletePdfPagesRoute: DeletePdfPagesRoute,
   DisclaimerRoute: DisclaimerRoute,
   DocumentScannerRoute: DocumentScannerRoute,
+  EditPdfRoute: EditPdfRoute,
   ExtractPdfPagesRoute: ExtractPdfPagesRoute,
   FaqRoute: FaqRoute,
   FlattenPdfRoute: FlattenPdfRoute,
@@ -949,6 +990,7 @@ const rootRouteChildren: RootRouteChildren = {
   PdfToWordRoute: PdfToWordRoute,
   PrintReadyPdfRoute: PrintReadyPdfRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  QrCodeGeneratorRoute: QrCodeGeneratorRoute,
   ReorderPdfPagesRoute: ReorderPdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
   SignPdfRoute: SignPdfRoute,

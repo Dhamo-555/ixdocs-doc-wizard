@@ -18,6 +18,8 @@ export function toolRouteHead(slug: string) {
   let ogImage = "https://ixdocs.com/ixdocs-og-image.png";
   if (slug === "compress-pdf") {
     ogImage = "https://ixdocs.com/og-compress-pdf.png";
+  } else if (slug === "edit-pdf") {
+    ogImage = "https://ixdocs.com/og-edit-pdf.png";
   } else if (slug === "merge-pdf") {
     ogImage = "https://ixdocs.com/og-merge-pdf.png";
   } else if (slug === "split-pdf") {
@@ -159,7 +161,9 @@ export function ToolRoutePage({ slug }: { slug: string }) {
         </li>
         <li className="flex items-start gap-2 rounded-lg border border-border bg-surface px-3 py-2">
           <Gauge className="mt-px size-4 shrink-0 text-primary" aria-hidden="true" />
-          <span className="min-w-0">Files up to 100 MB</span>
+          <span className="min-w-0">
+            {tool.slug === "qr-code-generator" ? "Instant client-side generation" : "Files up to 100 MB"}
+          </span>
         </li>
         <li className="flex items-start gap-2 rounded-lg border border-border bg-surface px-3 py-2">
           <ShieldCheck className="mt-px size-4 shrink-0 text-primary" aria-hidden="true" />
