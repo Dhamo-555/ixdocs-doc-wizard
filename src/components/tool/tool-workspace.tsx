@@ -46,8 +46,30 @@ import {
 import { triggerBrowserDownload, sanitizeDownloadFilename } from "@/lib/download";
 import { PdfEditorWorkspace } from "@/components/tool/pdf-editor-workspace";
 import { QrCodeWorkspace } from "@/components/tool/qr-code-workspace";
+import { loadMonetagInPagePush } from "@/lib/monetag";
 
-/* ------------------------------------------------------------ shared cards */
+/* ------------------------------------------------------------ shared cards & ad slots */
+
+export function AdSlot({
+  className,
+}: {
+  label?: string;
+  className?: string;
+}) {
+  useEffect(() => {
+    loadMonetagInPagePush();
+  }, []);
+
+  return (
+    <div
+      aria-hidden="true"
+      className={cn(
+        "ixdocs-ad-container w-full max-w-full overflow-hidden transition-all duration-200 empty:hidden empty:m-0 empty:p-0",
+        className
+      )}
+    />
+  );
+}
 
 export function ToolCard({ tool, showCategory = false }: { tool: Tool; showCategory?: boolean }) {
   return (
@@ -70,26 +92,6 @@ export function ToolCard({ tool, showCategory = false }: { tool: Tool; showCateg
         </span>
       ) : null}
     </Link>
-  );
-}
-
-export function AdSlot({
-  label = "Advertisement",
-  className,
-}: {
-  label?: string;
-  className?: string;
-}) {
-  const adsActive = typeof window !== "undefined" && (window as any).IXDOCS_ADS_ACTIVE === true;
-  if (!adsActive) return null;
-
-  return (
-    <aside
-      aria-label={label}
-      className={cn("w-full overflow-hidden transition-all", className)}
-    >
-      <div id="ixdocs-ad-container" className="w-full flex justify-center empty:hidden" />
-    </aside>
   );
 }
 
