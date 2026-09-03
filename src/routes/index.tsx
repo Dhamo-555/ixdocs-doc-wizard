@@ -92,8 +92,6 @@ function Home() {
         </div>
       </section>
 
-      <AdSlot className="container-page" />
-
       <section aria-labelledby="smart" className="container-page py-14 sm:py-16">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
