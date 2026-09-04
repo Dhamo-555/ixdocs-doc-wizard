@@ -11,6 +11,8 @@ import {
   TOOLS,
   toolsByCategory,
 } from "@/lib/tools";
+import { isCalculatorHost } from "@/lib/calc-host";
+import { CalcHome } from "@/components/calc/calc-home";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,8 +38,16 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "https://ixdocs.com/" }],
   }),
-  component: Home,
+  component: RootIndex,
 });
+
+function RootIndex() {
+  const isCalc = typeof window !== "undefined" && isCalculatorHost();
+  if (isCalc) {
+    return <CalcHome />;
+  }
+  return <Home />;
+}
 
 function Home() {
   return (

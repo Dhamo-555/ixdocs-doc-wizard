@@ -12,13 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AddTextToPdfRouteImport } from './routes/add-text-to-pdf'
+import { Route as AgeCalculatorRouteImport } from './routes/age-calculator'
 import { Route as AnnotatePdfRouteImport } from './routes/annotate-pdf'
 import { Route as ApplicationPdfOptimizerRouteImport } from './routes/application-pdf-optimizer'
+import { Route as BasicCalculatorRouteImport } from './routes/basic-calculator'
+import { Route as CalculatorsRouteImport } from './routes/calculators'
 import { Route as CompressPdfRouteImport } from './routes/compress-pdf'
 import { Route as CompressPdfToTargetSizeRouteImport } from './routes/compress-pdf-to-target-size'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as CropPdfRouteImport } from './routes/crop-pdf'
+import { Route as DateCalculatorRouteImport } from './routes/date-calculator'
 import { Route as DeletePdfPagesRouteImport } from './routes/delete-pdf-pages'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DocumentScannerRouteImport } from './routes/document-scanner'
@@ -28,9 +32,11 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FlattenPdfRouteImport } from './routes/flatten-pdf'
 import { Route as GrayscalePdfRouteImport } from './routes/grayscale-pdf'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as InterestCalculatorRouteImport } from './routes/interest-calculator'
 import { Route as JpgToPdfRouteImport } from './routes/jpg-to-pdf'
 import { Route as MergePdfRouteImport } from './routes/merge-pdf'
 import { Route as PassportPhotoRouteImport } from './routes/passport-photo'
+import { Route as PasswordGeneratorRouteImport } from './routes/password-generator'
 import { Route as PasswordProtectPdfRouteImport } from './routes/password-protect-pdf'
 import { Route as PdfHealthCheckerRouteImport } from './routes/pdf-health-checker'
 import { Route as PdfMetadataCleanerRouteImport } from './routes/pdf-metadata-cleaner'
@@ -44,6 +50,8 @@ import { Route as PdfToWordRouteImport } from './routes/pdf-to-word'
 import { Route as PrintReadyPdfRouteImport } from './routes/print-ready-pdf'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as QrCodeGeneratorRouteImport } from './routes/qr-code-generator'
+import { Route as QrGeneratorRouteImport } from './routes/qr-generator'
+import { Route as RandomPasswordGeneratorRouteImport } from './routes/random-password-generator'
 import { Route as ReorderPdfPagesRouteImport } from './routes/reorder-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
 import { Route as SignPdfRouteImport } from './routes/sign-pdf'
@@ -52,8 +60,11 @@ import { Route as SmartPdfAnalyzerRouteImport } from './routes/smart-pdf-analyze
 import { Route as SplitPdfRouteImport } from './routes/split-pdf'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TestRunnerRouteImport } from './routes/test-runner'
+import { Route as TimezoneConverterRouteImport } from './routes/timezone-converter'
 import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as UnitConverterRouteImport } from './routes/unit-converter'
 import { Route as WatermarkPdfRouteImport } from './routes/watermark-pdf'
+import { Route as WordCounterRouteImport } from './routes/word-counter'
 import { Route as WordToPdfRouteImport } from './routes/word-to-pdf'
 
 const IndexRoute = IndexRouteImport.update({
@@ -71,6 +82,11 @@ const AddTextToPdfRoute = AddTextToPdfRouteImport.update({
   path: '/add-text-to-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgeCalculatorRoute = AgeCalculatorRouteImport.update({
+  id: '/age-calculator',
+  path: '/age-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnnotatePdfRoute = AnnotatePdfRouteImport.update({
   id: '/annotate-pdf',
   path: '/annotate-pdf',
@@ -79,6 +95,16 @@ const AnnotatePdfRoute = AnnotatePdfRouteImport.update({
 const ApplicationPdfOptimizerRoute = ApplicationPdfOptimizerRouteImport.update({
   id: '/application-pdf-optimizer',
   path: '/application-pdf-optimizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BasicCalculatorRoute = BasicCalculatorRouteImport.update({
+  id: '/basic-calculator',
+  path: '/basic-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculatorsRoute = CalculatorsRouteImport.update({
+  id: '/calculators',
+  path: '/calculators',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompressPdfRoute = CompressPdfRouteImport.update({
@@ -104,6 +130,11 @@ const CookiePolicyRoute = CookiePolicyRouteImport.update({
 const CropPdfRoute = CropPdfRouteImport.update({
   id: '/crop-pdf',
   path: '/crop-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DateCalculatorRoute = DateCalculatorRouteImport.update({
+  id: '/date-calculator',
+  path: '/date-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeletePdfPagesRoute = DeletePdfPagesRouteImport.update({
@@ -151,6 +182,11 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
   path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InterestCalculatorRoute = InterestCalculatorRouteImport.update({
+  id: '/interest-calculator',
+  path: '/interest-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JpgToPdfRoute = JpgToPdfRouteImport.update({
   id: '/jpg-to-pdf',
   path: '/jpg-to-pdf',
@@ -164,6 +200,11 @@ const MergePdfRoute = MergePdfRouteImport.update({
 const PassportPhotoRoute = PassportPhotoRouteImport.update({
   id: '/passport-photo',
   path: '/passport-photo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PasswordGeneratorRoute = PasswordGeneratorRouteImport.update({
+  id: '/password-generator',
+  path: '/password-generator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PasswordProtectPdfRoute = PasswordProtectPdfRouteImport.update({
@@ -231,6 +272,16 @@ const QrCodeGeneratorRoute = QrCodeGeneratorRouteImport.update({
   path: '/qr-code-generator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QrGeneratorRoute = QrGeneratorRouteImport.update({
+  id: '/qr-generator',
+  path: '/qr-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RandomPasswordGeneratorRoute = RandomPasswordGeneratorRouteImport.update({
+  id: '/random-password-generator',
+  path: '/random-password-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReorderPdfPagesRoute = ReorderPdfPagesRouteImport.update({
   id: '/reorder-pdf-pages',
   path: '/reorder-pdf-pages',
@@ -271,14 +322,29 @@ const TestRunnerRoute = TestRunnerRouteImport.update({
   path: '/test-runner',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TimezoneConverterRoute = TimezoneConverterRouteImport.update({
+  id: '/timezone-converter',
+  path: '/timezone-converter',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UnitConverterRoute = UnitConverterRouteImport.update({
+  id: '/unit-converter',
+  path: '/unit-converter',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WatermarkPdfRoute = WatermarkPdfRouteImport.update({
   id: '/watermark-pdf',
   path: '/watermark-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WordCounterRoute = WordCounterRouteImport.update({
+  id: '/word-counter',
+  path: '/word-counter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WordToPdfRoute = WordToPdfRouteImport.update({
@@ -291,13 +357,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/add-text-to-pdf': typeof AddTextToPdfRoute
+  '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
+  '/basic-calculator': typeof BasicCalculatorRoute
+  '/calculators': typeof CalculatorsRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/crop-pdf': typeof CropPdfRoute
+  '/date-calculator': typeof DateCalculatorRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
@@ -307,9 +377,11 @@ export interface FileRoutesByFullPath {
   '/flatten-pdf': typeof FlattenPdfRoute
   '/grayscale-pdf': typeof GrayscalePdfRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/interest-calculator': typeof InterestCalculatorRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/passport-photo': typeof PassportPhotoRoute
+  '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
   '/pdf-metadata-cleaner': typeof PdfMetadataCleanerRoute
@@ -323,6 +395,8 @@ export interface FileRoutesByFullPath {
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/qr-code-generator': typeof QrCodeGeneratorRoute
+  '/qr-generator': typeof QrGeneratorRoute
+  '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sign-pdf': typeof SignPdfRoute
@@ -331,21 +405,28 @@ export interface FileRoutesByFullPath {
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
+  '/timezone-converter': typeof TimezoneConverterRoute
   '/tools': typeof ToolsRoute
+  '/unit-converter': typeof UnitConverterRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
+  '/word-counter': typeof WordCounterRoute
   '/word-to-pdf': typeof WordToPdfRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/add-text-to-pdf': typeof AddTextToPdfRoute
+  '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
+  '/basic-calculator': typeof BasicCalculatorRoute
+  '/calculators': typeof CalculatorsRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/crop-pdf': typeof CropPdfRoute
+  '/date-calculator': typeof DateCalculatorRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
@@ -355,9 +436,11 @@ export interface FileRoutesByTo {
   '/flatten-pdf': typeof FlattenPdfRoute
   '/grayscale-pdf': typeof GrayscalePdfRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/interest-calculator': typeof InterestCalculatorRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/passport-photo': typeof PassportPhotoRoute
+  '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
   '/pdf-metadata-cleaner': typeof PdfMetadataCleanerRoute
@@ -371,6 +454,8 @@ export interface FileRoutesByTo {
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/qr-code-generator': typeof QrCodeGeneratorRoute
+  '/qr-generator': typeof QrGeneratorRoute
+  '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sign-pdf': typeof SignPdfRoute
@@ -379,8 +464,11 @@ export interface FileRoutesByTo {
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
+  '/timezone-converter': typeof TimezoneConverterRoute
   '/tools': typeof ToolsRoute
+  '/unit-converter': typeof UnitConverterRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
+  '/word-counter': typeof WordCounterRoute
   '/word-to-pdf': typeof WordToPdfRoute
 }
 export interface FileRoutesById {
@@ -388,13 +476,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/add-text-to-pdf': typeof AddTextToPdfRoute
+  '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
+  '/basic-calculator': typeof BasicCalculatorRoute
+  '/calculators': typeof CalculatorsRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/crop-pdf': typeof CropPdfRoute
+  '/date-calculator': typeof DateCalculatorRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/document-scanner': typeof DocumentScannerRoute
@@ -404,9 +496,11 @@ export interface FileRoutesById {
   '/flatten-pdf': typeof FlattenPdfRoute
   '/grayscale-pdf': typeof GrayscalePdfRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/interest-calculator': typeof InterestCalculatorRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/passport-photo': typeof PassportPhotoRoute
+  '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
   '/pdf-metadata-cleaner': typeof PdfMetadataCleanerRoute
@@ -420,6 +514,8 @@ export interface FileRoutesById {
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/qr-code-generator': typeof QrCodeGeneratorRoute
+  '/qr-generator': typeof QrGeneratorRoute
+  '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sign-pdf': typeof SignPdfRoute
@@ -428,8 +524,11 @@ export interface FileRoutesById {
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
+  '/timezone-converter': typeof TimezoneConverterRoute
   '/tools': typeof ToolsRoute
+  '/unit-converter': typeof UnitConverterRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
+  '/word-counter': typeof WordCounterRoute
   '/word-to-pdf': typeof WordToPdfRoute
 }
 export interface FileRouteTypes {
@@ -438,13 +537,17 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/add-text-to-pdf'
+    | '/age-calculator'
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
+    | '/basic-calculator'
+    | '/calculators'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
     | '/cookie-policy'
     | '/crop-pdf'
+    | '/date-calculator'
     | '/delete-pdf-pages'
     | '/disclaimer'
     | '/document-scanner'
@@ -454,9 +557,11 @@ export interface FileRouteTypes {
     | '/flatten-pdf'
     | '/grayscale-pdf'
     | '/how-it-works'
+    | '/interest-calculator'
     | '/jpg-to-pdf'
     | '/merge-pdf'
     | '/passport-photo'
+    | '/password-generator'
     | '/password-protect-pdf'
     | '/pdf-health-checker'
     | '/pdf-metadata-cleaner'
@@ -470,6 +575,8 @@ export interface FileRouteTypes {
     | '/print-ready-pdf'
     | '/privacy-policy'
     | '/qr-code-generator'
+    | '/qr-generator'
+    | '/random-password-generator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sign-pdf'
@@ -478,21 +585,28 @@ export interface FileRouteTypes {
     | '/split-pdf'
     | '/terms'
     | '/test-runner'
+    | '/timezone-converter'
     | '/tools'
+    | '/unit-converter'
     | '/watermark-pdf'
+    | '/word-counter'
     | '/word-to-pdf'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/add-text-to-pdf'
+    | '/age-calculator'
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
+    | '/basic-calculator'
+    | '/calculators'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
     | '/cookie-policy'
     | '/crop-pdf'
+    | '/date-calculator'
     | '/delete-pdf-pages'
     | '/disclaimer'
     | '/document-scanner'
@@ -502,9 +616,11 @@ export interface FileRouteTypes {
     | '/flatten-pdf'
     | '/grayscale-pdf'
     | '/how-it-works'
+    | '/interest-calculator'
     | '/jpg-to-pdf'
     | '/merge-pdf'
     | '/passport-photo'
+    | '/password-generator'
     | '/password-protect-pdf'
     | '/pdf-health-checker'
     | '/pdf-metadata-cleaner'
@@ -518,6 +634,8 @@ export interface FileRouteTypes {
     | '/print-ready-pdf'
     | '/privacy-policy'
     | '/qr-code-generator'
+    | '/qr-generator'
+    | '/random-password-generator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sign-pdf'
@@ -526,21 +644,28 @@ export interface FileRouteTypes {
     | '/split-pdf'
     | '/terms'
     | '/test-runner'
+    | '/timezone-converter'
     | '/tools'
+    | '/unit-converter'
     | '/watermark-pdf'
+    | '/word-counter'
     | '/word-to-pdf'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/add-text-to-pdf'
+    | '/age-calculator'
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
+    | '/basic-calculator'
+    | '/calculators'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
     | '/cookie-policy'
     | '/crop-pdf'
+    | '/date-calculator'
     | '/delete-pdf-pages'
     | '/disclaimer'
     | '/document-scanner'
@@ -550,9 +675,11 @@ export interface FileRouteTypes {
     | '/flatten-pdf'
     | '/grayscale-pdf'
     | '/how-it-works'
+    | '/interest-calculator'
     | '/jpg-to-pdf'
     | '/merge-pdf'
     | '/passport-photo'
+    | '/password-generator'
     | '/password-protect-pdf'
     | '/pdf-health-checker'
     | '/pdf-metadata-cleaner'
@@ -566,6 +693,8 @@ export interface FileRouteTypes {
     | '/print-ready-pdf'
     | '/privacy-policy'
     | '/qr-code-generator'
+    | '/qr-generator'
+    | '/random-password-generator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sign-pdf'
@@ -574,8 +703,11 @@ export interface FileRouteTypes {
     | '/split-pdf'
     | '/terms'
     | '/test-runner'
+    | '/timezone-converter'
     | '/tools'
+    | '/unit-converter'
     | '/watermark-pdf'
+    | '/word-counter'
     | '/word-to-pdf'
   fileRoutesById: FileRoutesById
 }
@@ -583,13 +715,17 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AddTextToPdfRoute: typeof AddTextToPdfRoute
+  AgeCalculatorRoute: typeof AgeCalculatorRoute
   AnnotatePdfRoute: typeof AnnotatePdfRoute
   ApplicationPdfOptimizerRoute: typeof ApplicationPdfOptimizerRoute
+  BasicCalculatorRoute: typeof BasicCalculatorRoute
+  CalculatorsRoute: typeof CalculatorsRoute
   CompressPdfRoute: typeof CompressPdfRoute
   CompressPdfToTargetSizeRoute: typeof CompressPdfToTargetSizeRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
   CropPdfRoute: typeof CropPdfRoute
+  DateCalculatorRoute: typeof DateCalculatorRoute
   DeletePdfPagesRoute: typeof DeletePdfPagesRoute
   DisclaimerRoute: typeof DisclaimerRoute
   DocumentScannerRoute: typeof DocumentScannerRoute
@@ -599,9 +735,11 @@ export interface RootRouteChildren {
   FlattenPdfRoute: typeof FlattenPdfRoute
   GrayscalePdfRoute: typeof GrayscalePdfRoute
   HowItWorksRoute: typeof HowItWorksRoute
+  InterestCalculatorRoute: typeof InterestCalculatorRoute
   JpgToPdfRoute: typeof JpgToPdfRoute
   MergePdfRoute: typeof MergePdfRoute
   PassportPhotoRoute: typeof PassportPhotoRoute
+  PasswordGeneratorRoute: typeof PasswordGeneratorRoute
   PasswordProtectPdfRoute: typeof PasswordProtectPdfRoute
   PdfHealthCheckerRoute: typeof PdfHealthCheckerRoute
   PdfMetadataCleanerRoute: typeof PdfMetadataCleanerRoute
@@ -615,6 +753,8 @@ export interface RootRouteChildren {
   PrintReadyPdfRoute: typeof PrintReadyPdfRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   QrCodeGeneratorRoute: typeof QrCodeGeneratorRoute
+  QrGeneratorRoute: typeof QrGeneratorRoute
+  RandomPasswordGeneratorRoute: typeof RandomPasswordGeneratorRoute
   ReorderPdfPagesRoute: typeof ReorderPdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
   SignPdfRoute: typeof SignPdfRoute
@@ -623,8 +763,11 @@ export interface RootRouteChildren {
   SplitPdfRoute: typeof SplitPdfRoute
   TermsRoute: typeof TermsRoute
   TestRunnerRoute: typeof TestRunnerRoute
+  TimezoneConverterRoute: typeof TimezoneConverterRoute
   ToolsRoute: typeof ToolsRoute
+  UnitConverterRoute: typeof UnitConverterRoute
   WatermarkPdfRoute: typeof WatermarkPdfRoute
+  WordCounterRoute: typeof WordCounterRoute
   WordToPdfRoute: typeof WordToPdfRoute
 }
 
@@ -651,6 +794,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddTextToPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/age-calculator': {
+      id: '/age-calculator'
+      path: '/age-calculator'
+      fullPath: '/age-calculator'
+      preLoaderRoute: typeof AgeCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/annotate-pdf': {
       id: '/annotate-pdf'
       path: '/annotate-pdf'
@@ -663,6 +813,20 @@ declare module '@tanstack/react-router' {
       path: '/application-pdf-optimizer'
       fullPath: '/application-pdf-optimizer'
       preLoaderRoute: typeof ApplicationPdfOptimizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/basic-calculator': {
+      id: '/basic-calculator'
+      path: '/basic-calculator'
+      fullPath: '/basic-calculator'
+      preLoaderRoute: typeof BasicCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculators': {
+      id: '/calculators'
+      path: '/calculators'
+      fullPath: '/calculators'
+      preLoaderRoute: typeof CalculatorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compress-pdf': {
@@ -698,6 +862,13 @@ declare module '@tanstack/react-router' {
       path: '/crop-pdf'
       fullPath: '/crop-pdf'
       preLoaderRoute: typeof CropPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/date-calculator': {
+      id: '/date-calculator'
+      path: '/date-calculator'
+      fullPath: '/date-calculator'
+      preLoaderRoute: typeof DateCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/delete-pdf-pages': {
@@ -763,6 +934,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/interest-calculator': {
+      id: '/interest-calculator'
+      path: '/interest-calculator'
+      fullPath: '/interest-calculator'
+      preLoaderRoute: typeof InterestCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/jpg-to-pdf': {
       id: '/jpg-to-pdf'
       path: '/jpg-to-pdf'
@@ -782,6 +960,13 @@ declare module '@tanstack/react-router' {
       path: '/passport-photo'
       fullPath: '/passport-photo'
       preLoaderRoute: typeof PassportPhotoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/password-generator': {
+      id: '/password-generator'
+      path: '/password-generator'
+      fullPath: '/password-generator'
+      preLoaderRoute: typeof PasswordGeneratorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/password-protect-pdf': {
@@ -875,6 +1060,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QrCodeGeneratorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/qr-generator': {
+      id: '/qr-generator'
+      path: '/qr-generator'
+      fullPath: '/qr-generator'
+      preLoaderRoute: typeof QrGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/random-password-generator': {
+      id: '/random-password-generator'
+      path: '/random-password-generator'
+      fullPath: '/random-password-generator'
+      preLoaderRoute: typeof RandomPasswordGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reorder-pdf-pages': {
       id: '/reorder-pdf-pages'
       path: '/reorder-pdf-pages'
@@ -931,6 +1130,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestRunnerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/timezone-converter': {
+      id: '/timezone-converter'
+      path: '/timezone-converter'
+      fullPath: '/timezone-converter'
+      preLoaderRoute: typeof TimezoneConverterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -938,11 +1144,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/unit-converter': {
+      id: '/unit-converter'
+      path: '/unit-converter'
+      fullPath: '/unit-converter'
+      preLoaderRoute: typeof UnitConverterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/watermark-pdf': {
       id: '/watermark-pdf'
       path: '/watermark-pdf'
       fullPath: '/watermark-pdf'
       preLoaderRoute: typeof WatermarkPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/word-counter': {
+      id: '/word-counter'
+      path: '/word-counter'
+      fullPath: '/word-counter'
+      preLoaderRoute: typeof WordCounterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/word-to-pdf': {
@@ -959,13 +1179,17 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AddTextToPdfRoute: AddTextToPdfRoute,
+  AgeCalculatorRoute: AgeCalculatorRoute,
   AnnotatePdfRoute: AnnotatePdfRoute,
   ApplicationPdfOptimizerRoute: ApplicationPdfOptimizerRoute,
+  BasicCalculatorRoute: BasicCalculatorRoute,
+  CalculatorsRoute: CalculatorsRoute,
   CompressPdfRoute: CompressPdfRoute,
   CompressPdfToTargetSizeRoute: CompressPdfToTargetSizeRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
   CropPdfRoute: CropPdfRoute,
+  DateCalculatorRoute: DateCalculatorRoute,
   DeletePdfPagesRoute: DeletePdfPagesRoute,
   DisclaimerRoute: DisclaimerRoute,
   DocumentScannerRoute: DocumentScannerRoute,
@@ -975,9 +1199,11 @@ const rootRouteChildren: RootRouteChildren = {
   FlattenPdfRoute: FlattenPdfRoute,
   GrayscalePdfRoute: GrayscalePdfRoute,
   HowItWorksRoute: HowItWorksRoute,
+  InterestCalculatorRoute: InterestCalculatorRoute,
   JpgToPdfRoute: JpgToPdfRoute,
   MergePdfRoute: MergePdfRoute,
   PassportPhotoRoute: PassportPhotoRoute,
+  PasswordGeneratorRoute: PasswordGeneratorRoute,
   PasswordProtectPdfRoute: PasswordProtectPdfRoute,
   PdfHealthCheckerRoute: PdfHealthCheckerRoute,
   PdfMetadataCleanerRoute: PdfMetadataCleanerRoute,
@@ -991,6 +1217,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrintReadyPdfRoute: PrintReadyPdfRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   QrCodeGeneratorRoute: QrCodeGeneratorRoute,
+  QrGeneratorRoute: QrGeneratorRoute,
+  RandomPasswordGeneratorRoute: RandomPasswordGeneratorRoute,
   ReorderPdfPagesRoute: ReorderPdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
   SignPdfRoute: SignPdfRoute,
@@ -999,8 +1227,11 @@ const rootRouteChildren: RootRouteChildren = {
   SplitPdfRoute: SplitPdfRoute,
   TermsRoute: TermsRoute,
   TestRunnerRoute: TestRunnerRoute,
+  TimezoneConverterRoute: TimezoneConverterRoute,
   ToolsRoute: ToolsRoute,
+  UnitConverterRoute: UnitConverterRoute,
   WatermarkPdfRoute: WatermarkPdfRoute,
+  WordCounterRoute: WordCounterRoute,
   WordToPdfRoute: WordToPdfRoute,
 }
 export const routeTree = rootRouteImport

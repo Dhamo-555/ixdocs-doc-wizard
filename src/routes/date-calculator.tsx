@@ -1,0 +1,256 @@
+import { useState, useMemo } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { format } from "date-fns";
+import { Calendar, Plus, Minus, ArrowRight, Briefcase, Sun } from "lucide-react";
+import { CalcPageLayout } from "@/components/calc/calc-page-layout";
+import { getCalculatorBySlug } from "@/lib/calculators";
+import { calculateDateDifference, addOrSubtractFromDate } from "@/lib/calc-engines/date-calculator";
+
+const calcMeta = getCalculatorBySlug("date-calculator")!;
+
+export const Route = createFileRoute("/date-calculator")({
+  head: () => ({
+    meta: [
+      { title: `${calcMeta.name} — Days Between Dates | IXDocs Calculator` },
+      { name: "description", content: calcMeta.metaDescription },
+      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
+      { property: "og:description", content: calcMeta.metaDescription },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: `https://calculator.ixdocs.com/${calcMeta.slug}` },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: `https://calculator.ixdocs.com/${calcMeta.slug}` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: calcMeta.name,
+          url: `https://calculator.ixdocs.com/${calcMeta.slug}`,
+          description: calcMeta.metaDescription,
+          applicationCategory: "UtilitiesApplication",
+          operatingSystem: "All",
+        }),
+      },
+    ],
+  }),
+  component: DateCalculatorPage,
+});
+
+function getTodayString(): string {
+  return format(new Date(), "yyyy-MM-dd");
+}
+
+function DateCalculatorPage() {
+  const [tab, setTab] = useState<"diff" | "add">("diff");
+
+  // Difference inputs
+  const [startDate, setStartDate] = useState(getTodayString());
+  const [endDate, setEndDate] = useState(() => {
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    return format(nextMonth, "yyyy-MM-dd");
+  });
+
+  // Add / Subtract inputs
+  const [baseDate, setBaseDate] = useState(getTodayString());
+  const [amount, setAmount] = useState(30);
+  const [unit, setUnit] = useState<"days" | "weeks" | "months" | "years">("days");
+  const [operation, setOperation] = useState<"add" | "subtract">("add");
+
+  const diffResult = useMemo(() => {
+    try {
+      const d1 = new Date(startDate + "T00:00:00");
+      const d2 = new Date(endDate + "T00:00:00");
+      return calculateDateDifference(d1, d2);
+    } catch {
+      return null;
+    }
+  }, [startDate, endDate]);
+
+  const addResult = useMemo(() => {
+    try {
+      const d = new Date(baseDate + "T00:00:00");
+      return addOrSubtractFromDate(d, amount, unit, operation);
+    } catch {
+      return null;
+    }
+  }, [baseDate, amount, unit, operation]);
+
+  return (
+    <CalcPageLayout calc={calcMeta}>
+      <div className="space-y-6">
+        {/* Mode Selector Tabs */}
+        <div className="flex rounded-xl border border-border bg-surface p-1 max-w-md">
+          <button
+            type="button"
+            onClick={() => setTab("diff")}
+            className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-all ${
+              tab === "diff"
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Duration Between Dates
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("add")}
+            className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-all ${
+              tab === "add"
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Add / Subtract Days
+          </button>
+        </div>
+
+        {tab === "diff" ? (
+          <div className="space-y-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                />
+              </div>
+            </div>
+
+            {diffResult ? (
+              <div className="space-y-4">
+                {/* Highlight banner */}
+                <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-6">
+                  <div className="text-xs font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
+                    Total Duration
+                  </div>
+                  <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+                    {diffResult.totalDays} Days
+                  </div>
+                  <div className="mt-2 text-sm font-medium text-muted-foreground">
+                    Equals {diffResult.formattedSummary} ({diffResult.totalWeeks} weeks and{" "}
+                    {diffResult.remainingDays} days)
+                  </div>
+                </div>
+
+                {/* Breakdown cards */}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                      <Briefcase className="size-5" />
+                    </span>
+                    <div>
+                      <div className="text-xs text-muted-foreground font-medium">
+                        Business / Workdays
+                      </div>
+                      <div className="text-lg font-bold text-foreground">
+                        {diffResult.businessDays} days
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                      <Sun className="size-5" />
+                    </span>
+                    <div>
+                      <div className="text-xs text-muted-foreground font-medium">Weekend Days</div>
+                      <div className="text-lg font-bold text-foreground">
+                        {diffResult.weekendDays} days
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="grid gap-4 sm:grid-cols-3 sm:items-end">
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  Base Date
+                </label>
+                <input
+                  type="date"
+                  value={baseDate}
+                  onChange={(e) => setBaseDate(e.target.value)}
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  Action & Quantity
+                </label>
+                <div className="flex gap-2">
+                  <select
+                    value={operation}
+                    onChange={(e) => setOperation(e.target.value as "add" | "subtract")}
+                    className="h-11 rounded-xl border border-border bg-background px-2.5 text-sm font-semibold text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                  >
+                    <option value="add">+ Add</option>
+                    <option value="subtract">− Subtract</option>
+                  </select>
+                  <input
+                    type="number"
+                    min="1"
+                    value={amount}
+                    onChange={(e) => setAmount(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                    className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm font-mono font-bold text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Unit</label>
+                <select
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value as "days" | "weeks" | "months" | "years")}
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                >
+                  <option value="days">Days</option>
+                  <option value="weeks">Weeks</option>
+                  <option value="months">Months</option>
+                  <option value="years">Years</option>
+                </select>
+              </div>
+            </div>
+
+            {addResult ? (
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-6">
+                <div className="text-xs font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
+                  Resulting Date
+                </div>
+                <div className="mt-1 text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+                  {addResult.formattedDate}
+                </div>
+                <div className="mt-1 text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                  Falls on a {addResult.dayOfWeek}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </CalcPageLayout>
+  );
+}

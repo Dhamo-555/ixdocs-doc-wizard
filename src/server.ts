@@ -47,8 +47,16 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const url = new URL(request.url);
+      const host = request.headers.get("host") || url.hostname;
+      let req = request;
+      if (host.startsWith("calculator.") && url.pathname === "/") {
+        const rewritten = new URL(request.url);
+        rewritten.pathname = "/calculators";
+        req = new Request(rewritten.toString(), request);
+      }
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handler.fetch(req, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);

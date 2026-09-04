@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -14,6 +15,9 @@ import { reportAppError } from "../lib/app-error-reporting";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { CookieConsent } from "@/components/site/cookie-consent";
+import { CalcHeader } from "@/components/calc/calc-header";
+import { CalcFooter } from "@/components/calc/calc-footer";
+import { isCalculatorRoute } from "@/lib/calc-host";
 
 function NotFoundComponent() {
   return (
@@ -126,21 +130,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             {
               "@type": "Organization",
               "@id": "https://ixdocs.com/#organization",
-              "name": "IXDocs",
-              "url": "https://ixdocs.com/",
-              "logo": "https://ixdocs.com/favicon.svg"
+              name: "IXDocs",
+              url: "https://ixdocs.com/",
+              logo: "https://ixdocs.com/favicon.svg",
             },
             {
               "@type": "WebSite",
               "@id": "https://ixdocs.com/#website",
-              "name": "IXDocs",
-              "url": "https://ixdocs.com/",
-              "description": "Free, fast and easy-to-use tools for your documents and PDFs.",
-              "publisher": {
-                "@id": "https://ixdocs.com/#organization"
-              }
-            }
-          ]
+              name: "IXDocs",
+              url: "https://ixdocs.com/",
+              description: "Free, fast and easy-to-use tools for your documents and PDFs.",
+              publisher: {
+                "@id": "https://ixdocs.com/#organization",
+              },
+            },
+          ],
         }),
       },
     ],
@@ -167,16 +171,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isCalc = isCalculatorRoute(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-dvh flex-col">
-        <SiteHeader />
+        {isCalc ? <CalcHeader /> : <SiteHeader />}
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <main className="flex-1">
           <Outlet />
         </main>
-        <SiteFooter />
+        {isCalc ? <CalcFooter /> : <SiteFooter />}
         <CookieConsent />
       </div>
     </QueryClientProvider>
