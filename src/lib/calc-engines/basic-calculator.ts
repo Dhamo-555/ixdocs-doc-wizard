@@ -72,6 +72,7 @@ function tokenize(str: string): Token[] {
 
   while (i < str.length) {
     const ch = str[i];
+    if (!ch) break;
 
     if ("+-*/%^".includes(ch)) {
       // Check if minus is unary negation
@@ -81,8 +82,10 @@ function tokenize(str: string): Token[] {
           // Unary minus: read the following number
           i++;
           let numStr = "-";
-          while (i < str.length && /[0-9.]/.test(str[i])) {
-            numStr += str[i];
+          while (i < str.length) {
+            const nextCh = str[i];
+            if (!nextCh || !/[0-9.]/.test(nextCh)) break;
+            numStr += nextCh;
             i++;
           }
           if (numStr === "-") {
@@ -95,7 +98,7 @@ function tokenize(str: string): Token[] {
         }
       }
 
-      tokens.push({ type: "op", value: ch as Token & { type: "op" }["value"] });
+      tokens.push({ type: "op", value: ch as "+" | "-" | "*" | "/" | "%" | "^" });
       i++;
       continue;
     }
@@ -108,8 +111,10 @@ function tokenize(str: string): Token[] {
 
     if (/[0-9.]/.test(ch)) {
       let numStr = "";
-      while (i < str.length && /[0-9.]/.test(str[i])) {
-        numStr += str[i];
+      while (i < str.length) {
+        const nextCh = str[i];
+        if (!nextCh || !/[0-9.]/.test(nextCh)) break;
+        numStr += nextCh;
         i++;
       }
       const num = parseFloat(numStr);

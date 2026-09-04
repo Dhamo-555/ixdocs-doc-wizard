@@ -2,42 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Download, Copy, Check, QrCode as QrIcon } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
-import { getCalculatorBySlug } from "@/lib/calculators";
+import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import { generateQrCodeDataUrl } from "@/lib/calc-engines/qr-generator";
 
-const calcMeta = getCalculatorBySlug("qr-generator")!;
-
 export const Route = createFileRoute("/qr-generator")({
-  head: () => ({
-    meta: [
-      { title: `${calcMeta.name} — Free Online QR Maker | IXDocs Calculator` },
-      { name: "description", content: calcMeta.metaDescription },
-      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
-      { property: "og:description", content: calcMeta.metaDescription },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `https://calculator.ixdocs.com/${calcMeta.slug}` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `https://calculator.ixdocs.com/${calcMeta.slug}` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: calcMeta.name,
-          url: `https://calculator.ixdocs.com/${calcMeta.slug}`,
-          description: calcMeta.metaDescription,
-          applicationCategory: "UtilitiesApplication",
-          operatingSystem: "All",
-        }),
-      },
-    ],
-  }),
+  head: () => calcRouteHead("qr-generator"),
   component: QrGeneratorPage,
 });
 
 function QrGeneratorPage() {
+  const calcMeta = getCalculatorBySlug("qr-generator")!;
   const [text, setText] = useState("https://calculator.ixdocs.com");
   const [dataUrl, setDataUrl] = useState<string>("");
   const [size, setSize] = useState(300);

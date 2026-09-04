@@ -468,6 +468,7 @@ export const CALCULATORS: CalculatorMeta[] = [
 export const POPULAR_CALCULATORS = CALCULATORS.filter((c) => c.popular);
 
 export function getCalculatorBySlug(slug: string): CalculatorMeta | undefined {
+  if (!Array.isArray(CALCULATORS)) return undefined;
   return CALCULATORS.find((c) => c.slug === slug);
 }
 
@@ -477,4 +478,57 @@ export function getRelatedCalculators(currentSlug: string): CalculatorMeta[] {
   return current.relatedSlugs
     .map((s) => getCalculatorBySlug(s))
     .filter((c): c is CalculatorMeta => c !== undefined);
+}
+
+export function calcRouteHead(slug: string) {
+  const calcMeta = getCalculatorBySlug(slug);
+  if (!calcMeta) {
+    return {
+      meta: [{ title: "IXDocs Calculator" }],
+    };
+  }
+  const url = `https://calculator.ixdocs.com/${calcMeta.slug}`;
+  return {
+    meta: [
+      { title: `${calcMeta.name} — Free Online Tool | IXDocs Calculator` },
+      { name: "description", content: calcMeta.metaDescription },
+      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
+      { property: "og:description", content: calcMeta.metaDescription },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: url },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: url }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: calcMeta.name,
+          url,
+          description: calcMeta.metaDescription,
+          applicationCategory: "UtilityApplication",
+          operatingSystem: "Any",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: calcMeta.faqs.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
+          })),
+        }),
+      },
+    ],
+  };
 }

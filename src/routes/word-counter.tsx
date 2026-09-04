@@ -2,38 +2,11 @@ import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Copy, Check, Trash2, Clock, Volume2, Type, FileText } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
-import { getCalculatorBySlug } from "@/lib/calculators";
+import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import { analyzeText } from "@/lib/calc-engines/word-counter";
 
-const calcMeta = getCalculatorBySlug("word-counter")!;
-
 export const Route = createFileRoute("/word-counter")({
-  head: () => ({
-    meta: [
-      { title: `${calcMeta.name} — Real-Time Text Statistics | IXDocs Calculator` },
-      { name: "description", content: calcMeta.metaDescription },
-      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
-      { property: "og:description", content: calcMeta.metaDescription },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `https://calculator.ixdocs.com/${calcMeta.slug}` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `https://calculator.ixdocs.com/${calcMeta.slug}` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: calcMeta.name,
-          url: `https://calculator.ixdocs.com/${calcMeta.slug}`,
-          description: calcMeta.metaDescription,
-          applicationCategory: "UtilitiesApplication",
-          operatingSystem: "All",
-        }),
-      },
-    ],
-  }),
+  head: () => calcRouteHead("word-counter"),
   component: WordCounterPage,
 });
 
@@ -41,6 +14,7 @@ const SAMPLE_TEXT =
   "IXDocs is an all-in-one suite of free document and calculation tools designed for speed, privacy, and simplicity. All processing happens entirely inside your web browser, ensuring your data is never uploaded to any remote server.";
 
 function WordCounterPage() {
+  const calcMeta = getCalculatorBySlug("word-counter")!;
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
 

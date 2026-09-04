@@ -2,46 +2,20 @@ import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { DollarSign, TrendingUp, Percent, Calendar } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
-import { getCalculatorBySlug } from "@/lib/calculators";
+import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import {
   calculateInterest,
   type InterestType,
   type CompoundingFrequency,
 } from "@/lib/calc-engines/interest-calculator";
 
-const calcMeta = getCalculatorBySlug("interest-calculator")!;
-
 export const Route = createFileRoute("/interest-calculator")({
-  head: () => ({
-    meta: [
-      { title: `${calcMeta.name} — Simple & Compound | IXDocs Calculator` },
-      { name: "description", content: calcMeta.metaDescription },
-      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
-      { property: "og:description", content: calcMeta.metaDescription },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `https://calculator.ixdocs.com/${calcMeta.slug}` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `https://calculator.ixdocs.com/${calcMeta.slug}` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: calcMeta.name,
-          url: `https://calculator.ixdocs.com/${calcMeta.slug}`,
-          description: calcMeta.metaDescription,
-          applicationCategory: "UtilitiesApplication",
-          operatingSystem: "All",
-        }),
-      },
-    ],
-  }),
+  head: () => calcRouteHead("interest-calculator"),
   component: InterestCalculatorPage,
 });
 
 function InterestCalculatorPage() {
+  const calcMeta = getCalculatorBySlug("interest-calculator")!;
   const [principal, setPrincipal] = useState<number>(10000);
   const [rate, setRate] = useState<number>(6.5);
   const [years, setYears] = useState<number>(5);

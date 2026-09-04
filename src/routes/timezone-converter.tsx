@@ -2,38 +2,11 @@ import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, ArrowRight, Globe, ArrowLeftRight } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
-import { getCalculatorBySlug } from "@/lib/calculators";
+import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import { POPULAR_TIMEZONES, convertTimezone } from "@/lib/calc-engines/timezone-converter";
 
-const calcMeta = getCalculatorBySlug("timezone-converter")!;
-
 export const Route = createFileRoute("/timezone-converter")({
-  head: () => ({
-    meta: [
-      { title: `${calcMeta.name} — Global World Clock | IXDocs Calculator` },
-      { name: "description", content: calcMeta.metaDescription },
-      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
-      { property: "og:description", content: calcMeta.metaDescription },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `https://calculator.ixdocs.com/${calcMeta.slug}` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `https://calculator.ixdocs.com/${calcMeta.slug}` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: calcMeta.name,
-          url: `https://calculator.ixdocs.com/${calcMeta.slug}`,
-          description: calcMeta.metaDescription,
-          applicationCategory: "UtilitiesApplication",
-          operatingSystem: "All",
-        }),
-      },
-    ],
-  }),
+  head: () => calcRouteHead("timezone-converter"),
   component: TimezoneConverterPage,
 });
 
@@ -48,6 +21,7 @@ function getLocalIsoDateTime(): string {
 }
 
 function TimezoneConverterPage() {
+  const calcMeta = getCalculatorBySlug("timezone-converter")!;
   const [dateTime, setDateTime] = useState(getLocalIsoDateTime());
   const [fromTz, setFromTz] = useState("America/New_York");
   const [toTz, setToTz] = useState("Europe/London");

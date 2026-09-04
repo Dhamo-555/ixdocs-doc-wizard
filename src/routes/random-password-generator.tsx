@@ -2,45 +2,19 @@ import { useState, useEffect, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Copy, Check, RefreshCw, Shield, Key, Hash, Sparkles } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
-import { getCalculatorBySlug } from "@/lib/calculators";
+import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import {
   generateByPreset,
   type RandomPasswordPreset,
 } from "@/lib/calc-engines/random-password-generator";
 
-const calcMeta = getCalculatorBySlug("random-password-generator")!;
-
 export const Route = createFileRoute("/random-password-generator")({
-  head: () => ({
-    meta: [
-      { title: `${calcMeta.name} — Instant Random PINs & Passphrases | IXDocs Calculator` },
-      { name: "description", content: calcMeta.metaDescription },
-      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
-      { property: "og:description", content: calcMeta.metaDescription },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `https://calculator.ixdocs.com/${calcMeta.slug}` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `https://calculator.ixdocs.com/${calcMeta.slug}` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: calcMeta.name,
-          url: `https://calculator.ixdocs.com/${calcMeta.slug}`,
-          description: calcMeta.metaDescription,
-          applicationCategory: "UtilitiesApplication",
-          operatingSystem: "All",
-        }),
-      },
-    ],
-  }),
+  head: () => calcRouteHead("random-password-generator"),
   component: RandomPasswordGeneratorPage,
 });
 
 function RandomPasswordGeneratorPage() {
+  const calcMeta = getCalculatorBySlug("random-password-generator")!;
   const [preset, setPreset] = useState<RandomPasswordPreset>("strong");
   const [pinLength, setPinLength] = useState<number>(6);
   const [wordCount, setWordCount] = useState<number>(4);

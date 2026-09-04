@@ -50,7 +50,7 @@ export function CalcSearch() {
                 return (
                   <Link
                     key={calc.slug}
-                    to={`/${calc.slug}`}
+                    to={("/" + calc.slug) as any}
                     onClick={() => setQuery("")}
                     className="flex items-center justify-between gap-3 rounded-xl p-3 transition-colors hover:bg-surface"
                   >

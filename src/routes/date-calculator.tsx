@@ -3,38 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { Calendar, Plus, Minus, ArrowRight, Briefcase, Sun } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
-import { getCalculatorBySlug } from "@/lib/calculators";
+import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import { calculateDateDifference, addOrSubtractFromDate } from "@/lib/calc-engines/date-calculator";
 
-const calcMeta = getCalculatorBySlug("date-calculator")!;
-
 export const Route = createFileRoute("/date-calculator")({
-  head: () => ({
-    meta: [
-      { title: `${calcMeta.name} — Days Between Dates | IXDocs Calculator` },
-      { name: "description", content: calcMeta.metaDescription },
-      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
-      { property: "og:description", content: calcMeta.metaDescription },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `https://calculator.ixdocs.com/${calcMeta.slug}` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `https://calculator.ixdocs.com/${calcMeta.slug}` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: calcMeta.name,
-          url: `https://calculator.ixdocs.com/${calcMeta.slug}`,
-          description: calcMeta.metaDescription,
-          applicationCategory: "UtilitiesApplication",
-          operatingSystem: "All",
-        }),
-      },
-    ],
-  }),
+  head: () => calcRouteHead("date-calculator"),
   component: DateCalculatorPage,
 });
 
@@ -43,6 +16,7 @@ function getTodayString(): string {
 }
 
 function DateCalculatorPage() {
+  const calcMeta = getCalculatorBySlug("date-calculator")!;
   const [tab, setTab] = useState<"diff" | "add">("diff");
 
   // Difference inputs
