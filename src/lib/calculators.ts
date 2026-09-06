@@ -10,10 +10,11 @@ import {
   Percent,
   Cake,
   ShieldAlert,
+  Receipt,
 } from "lucide-react";
 
 export type CalculatorCategory =
-  "math" | "conversion" | "security" | "text" | "datetime" | "finance" | "utility";
+  "math" | "conversion" | "security" | "text" | "datetime" | "finance" | "utility" | "billing";
 
 export interface CalculatorFaq {
   question: string;
@@ -46,6 +47,7 @@ export const CATEGORY_LABELS: Record<CalculatorCategory, string> = {
   datetime: "Date & Age",
   finance: "Finance & Interest",
   utility: "Utilities & Tools",
+  billing: "Billing & Invoicing",
 };
 
 export const CALCULATORS: CalculatorMeta[] = [
@@ -91,7 +93,7 @@ export const CALCULATORS: CalculatorMeta[] = [
           "Yes, recent calculations are displayed in your session history directly on this page.",
       },
     ],
-    relatedSlugs: ["interest-calculator", "unit-converter", "date-calculator"],
+    relatedSlugs: ["interest-calculator", "unit-converter", "bill-calculator"],
   },
   {
     id: "unit-converter",
@@ -380,7 +382,7 @@ export const CALCULATORS: CalculatorMeta[] = [
           "Yes, an annual growth schedule is automatically generated showing beginning balance, interest earned, and ending balance for each year.",
       },
     ],
-    relatedSlugs: ["basic-calculator", "date-calculator", "unit-converter"],
+    relatedSlugs: ["basic-calculator", "bill-calculator", "unit-converter"],
   },
   {
     id: "age-calculator",
@@ -463,6 +465,56 @@ export const CALCULATORS: CalculatorMeta[] = [
     ],
     relatedSlugs: ["password-generator", "qr-generator", "word-counter"],
   },
+  {
+    id: "bill-calculator",
+    slug: "bill-calculator",
+    name: "Bill Calculator",
+    shortDescription:
+      "Create professional bills with GST support, scan barcodes with your camera, and download clean PDF receipts.",
+    metaDescription:
+      "Free online bill calculator. Create invoices with GST, scan product barcodes, and generate PDF receipts — 100% in your browser. No data uploaded.",
+    category: "billing",
+    icon: Receipt,
+    popular: false,
+    keywords: [
+      "bill calculator",
+      "invoice generator",
+      "receipt maker",
+      "GST calculator",
+      "barcode scanner",
+      "billing tool",
+      "POS calculator",
+      "retail bill",
+    ],
+    formula: "Subtotal = Σ(Qty × Price) | GST = Subtotal × Rate% | Total = Subtotal + GST",
+    explanation:
+      "Create bills and invoices with multiple products, GST calculation, and PDF generation — all in your browser. Switch to Barcode Bill mode to use your device camera to scan product barcodes.",
+    howItWorks: [
+      "Enter your company or shop name.",
+      "Add products manually (Basic Bill) or scan barcodes with your camera (Barcode Bill).",
+      "Set quantity and unit price for each item. Line totals calculate automatically.",
+      "Optionally enable GST and choose a percentage.",
+      "Click 'Generate PDF Bill' to download a clean, professional receipt.",
+    ],
+    faqs: [
+      {
+        question: "Does the barcode scanner upload camera footage?",
+        answer:
+          "No. Barcode detection uses the browser's native BarcodeDetector API and runs entirely locally on your device. Camera footage is never sent to any server.",
+      },
+      {
+        question: "Which browsers support barcode scanning?",
+        answer:
+          "Chrome 83+, Edge 83+, and Samsung Internet support the BarcodeDetector API. Firefox and Safari users can still create bills manually using Basic Bill mode.",
+      },
+      {
+        question: "Can I apply GST to my bill?",
+        answer:
+          "Yes. Toggle GST on and enter any percentage. Quick-pick buttons for 5%, 12%, 18%, and 28% are provided for Indian GST slabs.",
+      },
+    ],
+    relatedSlugs: ["basic-calculator", "interest-calculator", "qr-generator"],
+  },
 ];
 
 export const POPULAR_CALCULATORS = CALCULATORS.filter((c) => c.popular);
@@ -487,7 +539,7 @@ export function calcRouteHead(slug: string) {
       meta: [{ title: "IXDocs Calculator" }],
     };
   }
-  const url = `https://calculator.ixdocs.com/${calcMeta.slug}`;
+  const url = `https://calc.ixdocs.com/${calcMeta.slug}`;
   return {
     meta: [
       { title: `${calcMeta.name} — Free Online Tool | IXDocs Calculator` },

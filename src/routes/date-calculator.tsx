@@ -1,9 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { Calendar, Plus, Minus, ArrowRight, Briefcase, Sun } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
+import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
+import { buildCalcReportInput, type CalcReportInput } from "@/lib/calc-pdf-report";
 import { calculateDateDifference, addOrSubtractFromDate } from "@/lib/calc-engines/date-calculator";
 
 export const Route = createFileRoute("/date-calculator")({
@@ -51,6 +53,67 @@ function DateCalculatorPage() {
       return null;
     }
   }, [baseDate, amount, unit, operation]);
+
+  const getReportInput = useCallback((): CalcReportInput => {
+    if (tab === "diff") {
+      if (!diffResult) {
+        return buildCalcReportInput("Date Difference Calculator", {}, "Invalid Date Range");
+      }
+
+      const pctBusiness = Math.round(
+        ((diffResult.businessDays || 0) / (diffResult.totalDays || 1)) * 100,
+      );
+
+      const insight = `The interval between ${startDate} and ${endDate} spans ${diffResult.totalDays} calendar days (${diffResult.businessDays} business days and ${diffResult.weekendDays} weekend days). Working days represent ${pctBusiness}% of the total elapsed duration.`;
+
+      return buildCalcReportInput(
+        "Date Duration Calculator",
+        {
+          "Start Date": startDate,
+          "End Date": endDate,
+          "Calendar Summary": diffResult.formattedSummary,
+        },
+        `${diffResult.totalDays} Total Days`,
+        {
+          metrics: [
+            { label: "Business Days", value: `${diffResult.businessDays} days` },
+            { label: "Weekend Days", value: `${diffResult.weekendDays} days` },
+            { label: "Total Weeks", value: `${diffResult.totalWeeks} weeks` },
+          ],
+          formula: "Duration = EndDate - StartDate (excluding or categorizing weekends)",
+          explanation:
+            "Evaluates elapsed duration between two calendar dates, segmenting standard weekdays from weekends.",
+          aiAnalysis: insight,
+        },
+      );
+    } else {
+      if (!addResult) {
+        return buildCalcReportInput("Date Offset Calculator", {}, "Invalid Date");
+      }
+
+      const insight = `${operation === "add" ? "Adding" : "Subtracting"} ${amount} ${unit} to/from ${baseDate} yields ${addResult.formattedDate}, which falls on a ${addResult.dayOfWeek}.`;
+
+      return buildCalcReportInput(
+        "Date Offset Calculator",
+        {
+          "Base Date": baseDate,
+          Operation: operation === "add" ? "Add (+)" : "Subtract (-)",
+          Amount: `${amount} ${unit}`,
+        },
+        addResult.formattedDate,
+        {
+          metrics: [
+            { label: "Day of Week", value: addResult.dayOfWeek },
+            { label: "Target Date", value: addResult.formattedDate },
+          ],
+          formula: `TargetDate = BaseDate ${operation === "add" ? "+" : "-"} Offset`,
+          explanation:
+            "Adjusts a base date forward or backward by a specified duration in days, weeks, months, or years.",
+          aiAnalysis: insight,
+        },
+      );
+    }
+  }, [tab, diffResult, addResult, startDate, endDate, baseDate, amount, unit, operation]);
 
   return (
     <CalcPageLayout calc={calcMeta}>
@@ -224,6 +287,24 @@ function DateCalculatorPage() {
             ) : null}
           </div>
         )}
+
+        {/* Action Bar: Download PDF Report */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
+          <div>
+            <div className="text-xs font-bold text-foreground">
+              Official PDF Date & Timeline Report
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Download a complete summary of date spans, business days, or shifted target dates.
+            </div>
+          </div>
+          <CalcPdfReportButton
+            getInput={getReportInput}
+            filename={`Date-Calculation-${tab}`}
+            label="Download PDF Report"
+            variant="primary"
+          />
+        </div>
       </div>
     </CalcPageLayout>
   );

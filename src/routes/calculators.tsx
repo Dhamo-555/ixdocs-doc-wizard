@@ -20,10 +20,10 @@ export const Route = createFileRoute("/calculators")({
           "Free online calculator platform. Instant calculations run directly in your browser with 100% privacy.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://calculator.ixdocs.com/" },
+      { property: "og:url", content: "https://calc.ixdocs.com/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://calculator.ixdocs.com/" }],
+    links: [{ rel: "canonical", href: "https://calc.ixdocs.com/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/calculators")({
           "@context": "https://schema.org",
           "@type": "WebApplication",
           name: "IXDocs Calculator",
-          url: "https://calculator.ixdocs.com/",
+          url: "https://calc.ixdocs.com/",
           description: "Free, browser-based super calculator platform.",
           applicationCategory: "UtilitiesApplication",
           operatingSystem: "All",

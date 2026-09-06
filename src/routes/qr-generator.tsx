@@ -12,7 +12,7 @@ export const Route = createFileRoute("/qr-generator")({
 
 function QrGeneratorPage() {
   const calcMeta = getCalculatorBySlug("qr-generator")!;
-  const [text, setText] = useState("https://calculator.ixdocs.com");
+  const [text, setText] = useState("https://calc.ixdocs.com");
   const [dataUrl, setDataUrl] = useState<string>("");
   const [size, setSize] = useState(300);
   const [errorLevel, setErrorLevel] = useState<"L" | "M" | "Q" | "H">("M");
@@ -114,7 +114,7 @@ function QrGeneratorPage() {
           <div className="flex flex-wrap gap-2 pt-2">
             <button
               type="button"
-              onClick={() => setText("https://calculator.ixdocs.com")}
+              onClick={() => setText("https://calc.ixdocs.com")}
               className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground"
             >
               Calculator URL

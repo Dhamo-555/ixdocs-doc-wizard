@@ -1,8 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { DollarSign, TrendingUp, Percent, Calendar } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
+import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
+import { buildCalcReportInput, type CalcReportInput } from "@/lib/calc-pdf-report";
 import {
   calculateInterest,
   type InterestType,
@@ -31,6 +33,57 @@ function InterestCalculatorPage() {
       frequency,
     });
   }, [principal, rate, years, type, frequency]);
+
+  const getReportInput = useCallback((): CalcReportInput => {
+    const formattedBalance = `$${result.finalBalance.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+    const formattedInterest = `$${result.totalInterest.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+
+    const returnPct = (
+      result.principal > 0 ? (result.totalInterest / result.principal) * 100 : 0
+    ).toFixed(1);
+
+    const insight =
+      type === "compound"
+        ? `Over a ${years}-year period at ${rate}% annual interest compounded ${frequency}, the initial principal of $${principal.toLocaleString()} accumulates $${formattedInterest.replace(
+            "$",
+            "",
+          )} in interest, achieving a total return of ${returnPct}%. The effective annual yield (APY) is ${result.effectiveRate.toFixed(
+            2,
+          )}%.`
+        : `Using simple interest at ${rate}% per year over ${years} years, the investment generates $${formattedInterest.replace(
+            "$",
+            "",
+          )} in total returns (${returnPct}% overall return).`;
+
+    return buildCalcReportInput(
+      "Interest Calculator",
+      {
+        "Principal Amount": `$${principal.toLocaleString()}`,
+        "Annual Interest Rate": `${rate}%`,
+        "Investment Duration": `${years} Year${years > 1 ? "s" : ""}`,
+        "Calculation Model": type === "compound" ? "Compound Interest" : "Simple Interest",
+        ...(type === "compound" ? { "Compounding Frequency": frequency } : {}),
+      },
+      formattedBalance,
+      {
+        metrics: [
+          { label: "Total Interest", value: `+${formattedInterest}` },
+          { label: "Total Return", value: `${returnPct}%` },
+          { label: "Effective APY", value: `${result.effectiveRate.toFixed(2)}%` },
+        ],
+        formula: type === "compound" ? "A = P * (1 + r / n)^(n * t)" : "A = P * (1 + r * t)",
+        explanation:
+          "Calculates accrued savings growth by compounding returns periodically or evaluating fixed linear yield over time.",
+        aiAnalysis: insight,
+      },
+    );
+  }, [principal, rate, years, type, frequency, result]);
 
   return (
     <CalcPageLayout calc={calcMeta}>
@@ -172,6 +225,22 @@ function InterestCalculatorPage() {
               Compound yield rate
             </div>
           </div>
+        </div>
+
+        {/* Action Bar: Download PDF Report */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
+          <div>
+            <div className="text-xs font-bold text-foreground">Official PDF Calculation Report</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Download complete calculation breakdown and growth metrics as an A4 document.
+            </div>
+          </div>
+          <CalcPdfReportButton
+            getInput={getReportInput}
+            filename={`Interest-Report-${principal}`}
+            label="Download PDF Report"
+            variant="primary"
+          />
         </div>
 
         {/* Growth Table */}

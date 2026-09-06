@@ -9,7 +9,7 @@ export function CalcCard({ calc }: { calc: CalculatorMeta }) {
 
   return (
     <Link
-      to={`/${calc.slug}`}
+      to={("/" + calc.slug) as never}
       className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-md"
     >
       <div>

@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Copy, Check, RotateCcw, Delete } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
+import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
+import { buildCalcReportInput, type CalcReportInput } from "@/lib/calc-pdf-report";
 import { evaluateExpression } from "@/lib/calc-engines/basic-calculator";
 
 export const Route = createFileRoute("/basic-calculator")({
@@ -67,6 +69,37 @@ function BasicCalculatorPage() {
       setTimeout(() => setCopied(false), 1500);
     }
   };
+
+  const getReportInput = useCallback((): CalcReportInput => {
+    const exprString = expression || displayValue || "0";
+    const historyList =
+      history.length > 0
+        ? history.reduce((acc, item, idx) => ({ ...acc, [`Operation #${idx + 1}`]: item }), {})
+        : { Expression: exprString };
+
+    const insight = `Arithmetic calculation of '${exprString}' evaluated to ${displayValue}. The calculator session recorded ${history.length} operations.`;
+
+    return buildCalcReportInput(
+      "Basic Calculator",
+      {
+        "Final Display": displayValue,
+        "Current Expression": exprString,
+        ...historyList,
+      },
+      displayValue,
+      {
+        metrics: [
+          { label: "Result", value: displayValue },
+          { label: "History Entries", value: `${history.length}` },
+        ],
+        formula:
+          "Mathematical expression evaluation following standard operator precedence (BODMAS / PEMDAS)",
+        explanation:
+          "Computes arithmetic results in-browser with precision handling for decimal operations and sequence chaining.",
+        aiAnalysis: insight,
+      },
+    );
+  }, [expression, displayValue, history]);
 
   // Keyboard listener
   useEffect(() => {
@@ -303,6 +336,22 @@ function BasicCalculatorPage() {
             </ul>
           </div>
         ) : null}
+
+        {/* Action Bar: Download PDF Report */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
+          <div>
+            <div className="text-xs font-bold text-foreground">Official Calculation Report</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Export current expression and history entries as a printable A4 calculation summary.
+            </div>
+          </div>
+          <CalcPdfReportButton
+            getInput={getReportInput}
+            filename={`Calculation-Summary-${displayValue}`}
+            label="Download PDF Report"
+            variant="outline"
+          />
+        </div>
       </div>
     </CalcPageLayout>
   );

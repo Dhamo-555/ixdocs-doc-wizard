@@ -9,6 +9,7 @@ export const CALCULATOR_SLUGS = [
   "interest-calculator",
   "age-calculator",
   "random-password-generator",
+  "bill-calculator",
 ] as const;
 
 export const CALCULATOR_PATHS: readonly string[] = [
@@ -22,10 +23,19 @@ export function isCalculatorPath(pathname: string): boolean {
   return CALCULATOR_PATHS.some((p) => p === normalized);
 }
 
+export function isCalculatorHostname(host: string): boolean {
+  return (
+    host.startsWith("calc.") ||
+    host.startsWith("calculator.") ||
+    host === "calc.ixdocs.com" ||
+    host.includes("calc.ixdocs.com")
+  );
+}
+
 export function isCalculatorHost(): boolean {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    return host.startsWith("calculator.") || window.location.search.includes("calc=true");
+    return isCalculatorHostname(host) || window.location.search.includes("calc=true");
   }
   return false;
 }

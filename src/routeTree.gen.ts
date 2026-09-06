@@ -16,6 +16,7 @@ import { Route as AgeCalculatorRouteImport } from './routes/age-calculator'
 import { Route as AnnotatePdfRouteImport } from './routes/annotate-pdf'
 import { Route as ApplicationPdfOptimizerRouteImport } from './routes/application-pdf-optimizer'
 import { Route as BasicCalculatorRouteImport } from './routes/basic-calculator'
+import { Route as BillCalculatorRouteImport } from './routes/bill-calculator'
 import { Route as CalculatorsRouteImport } from './routes/calculators'
 import { Route as CompressPdfRouteImport } from './routes/compress-pdf'
 import { Route as CompressPdfToTargetSizeRouteImport } from './routes/compress-pdf-to-target-size'
@@ -100,6 +101,11 @@ const ApplicationPdfOptimizerRoute = ApplicationPdfOptimizerRouteImport.update({
 const BasicCalculatorRoute = BasicCalculatorRouteImport.update({
   id: '/basic-calculator',
   path: '/basic-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillCalculatorRoute = BillCalculatorRouteImport.update({
+  id: '/bill-calculator',
+  path: '/bill-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalculatorsRoute = CalculatorsRouteImport.update({
@@ -361,6 +367,7 @@ export interface FileRoutesByFullPath {
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
   '/basic-calculator': typeof BasicCalculatorRoute
+  '/bill-calculator': typeof BillCalculatorRoute
   '/calculators': typeof CalculatorsRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
@@ -420,6 +427,7 @@ export interface FileRoutesByTo {
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
   '/basic-calculator': typeof BasicCalculatorRoute
+  '/bill-calculator': typeof BillCalculatorRoute
   '/calculators': typeof CalculatorsRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
@@ -480,6 +488,7 @@ export interface FileRoutesById {
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
   '/basic-calculator': typeof BasicCalculatorRoute
+  '/bill-calculator': typeof BillCalculatorRoute
   '/calculators': typeof CalculatorsRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
@@ -541,6 +550,7 @@ export interface FileRouteTypes {
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
     | '/basic-calculator'
+    | '/bill-calculator'
     | '/calculators'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
@@ -600,6 +610,7 @@ export interface FileRouteTypes {
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
     | '/basic-calculator'
+    | '/bill-calculator'
     | '/calculators'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
@@ -659,6 +670,7 @@ export interface FileRouteTypes {
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
     | '/basic-calculator'
+    | '/bill-calculator'
     | '/calculators'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
@@ -719,6 +731,7 @@ export interface RootRouteChildren {
   AnnotatePdfRoute: typeof AnnotatePdfRoute
   ApplicationPdfOptimizerRoute: typeof ApplicationPdfOptimizerRoute
   BasicCalculatorRoute: typeof BasicCalculatorRoute
+  BillCalculatorRoute: typeof BillCalculatorRoute
   CalculatorsRoute: typeof CalculatorsRoute
   CompressPdfRoute: typeof CompressPdfRoute
   CompressPdfToTargetSizeRoute: typeof CompressPdfToTargetSizeRoute
@@ -820,6 +833,13 @@ declare module '@tanstack/react-router' {
       path: '/basic-calculator'
       fullPath: '/basic-calculator'
       preLoaderRoute: typeof BasicCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bill-calculator': {
+      id: '/bill-calculator'
+      path: '/bill-calculator'
+      fullPath: '/bill-calculator'
+      preLoaderRoute: typeof BillCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calculators': {
@@ -1183,6 +1203,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnnotatePdfRoute: AnnotatePdfRoute,
   ApplicationPdfOptimizerRoute: ApplicationPdfOptimizerRoute,
   BasicCalculatorRoute: BasicCalculatorRoute,
+  BillCalculatorRoute: BillCalculatorRoute,
   CalculatorsRoute: CalculatorsRoute,
   CompressPdfRoute: CompressPdfRoute,
   CompressPdfToTargetSizeRoute: CompressPdfToTargetSizeRoute,

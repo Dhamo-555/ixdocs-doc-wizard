@@ -11,6 +11,7 @@ const CALC_NAV = [
   { label: "Date & Age", to: "/date-calculator" },
   { label: "Finance", to: "/interest-calculator" },
   { label: "Password", to: "/password-generator" },
+  { label: "Bill", to: "/bill-calculator" },
 ] as const;
 
 export function CalcHeader() {

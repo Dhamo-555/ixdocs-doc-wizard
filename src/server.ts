@@ -50,7 +50,13 @@ export default {
       const url = new URL(request.url);
       const host = request.headers.get("host") || url.hostname;
       let req = request;
-      if (host.startsWith("calculator.") && url.pathname === "/") {
+      const isCalcHost =
+        host.startsWith("calc.") ||
+        host.startsWith("calculator.") ||
+        host === "calc.ixdocs.com" ||
+        host.includes("calc.ixdocs.com") ||
+        url.searchParams.has("calc");
+      if (isCalcHost && url.pathname === "/") {
         const rewritten = new URL(request.url);
         rewritten.pathname = "/calculators";
         req = new Request(rewritten.toString(), request);

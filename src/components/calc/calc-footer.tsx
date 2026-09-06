@@ -10,6 +10,7 @@ export function CalcFooter() {
   const securityCalcs = CALCULATORS.filter(
     (c) => c.category === "security" || c.category === "text" || c.category === "utility",
   );
+  const billingCalcs = CALCULATORS.filter((c) => c.category === "billing");
 
   return (
     <footer className="mt-20 border-t border-border bg-surface">
@@ -57,7 +58,7 @@ export function CalcFooter() {
                 {mathCalcs.map((calc) => (
                   <li key={calc.slug}>
                     <Link
-                      to={`/${calc.slug}`}
+                      to={("/" + calc.slug) as never}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {calc.name}
@@ -75,7 +76,7 @@ export function CalcFooter() {
                 {conversionCalcs.map((calc) => (
                   <li key={calc.slug}>
                     <Link
-                      to={`/${calc.slug}`}
+                      to={("/" + calc.slug) as never}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {calc.name}
@@ -93,7 +94,7 @@ export function CalcFooter() {
                 {securityCalcs.map((calc) => (
                   <li key={calc.slug}>
                     <Link
-                      to={`/${calc.slug}`}
+                      to={("/" + calc.slug) as never}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {calc.name}
@@ -102,6 +103,26 @@ export function CalcFooter() {
                 ))}
               </ul>
             </div>
+
+            {billingCalcs.length > 0 && (
+              <div className="min-w-0">
+                <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+                  Billing & Invoicing
+                </h2>
+                <ul className="mt-3 space-y-2">
+                  {billingCalcs.map((calc) => (
+                    <li key={calc.slug}>
+                      <Link
+                        to={("/" + calc.slug) as never}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {calc.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 

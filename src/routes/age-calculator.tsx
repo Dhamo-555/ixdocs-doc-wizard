@@ -1,9 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { Cake, Calendar, Clock, Sparkles } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
+import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
+import { buildCalcReportInput, type CalcReportInput } from "@/lib/calc-pdf-report";
 import { calculateAge } from "@/lib/calc-engines/age-calculator";
 
 export const Route = createFileRoute("/age-calculator")({
@@ -25,6 +27,36 @@ function AgeCalculatorPage() {
       return null;
     }
   }, [birthDate, referenceDate]);
+
+  const getReportInput = useCallback((): CalcReportInput => {
+    if (!ageResult) {
+      return buildCalcReportInput("Age Calculator", {}, "Invalid Date");
+    }
+
+    const primaryResult = `${ageResult.years} Years, ${ageResult.months} Months, ${ageResult.days} Days`;
+    const insight = `Born on a ${ageResult.dayOfWeekBorn}. You have celebrated ${ageResult.years} birthdays and lived through approximately ${ageResult.totalDays.toLocaleString()} days. Your next birthday milestone is in ${ageResult.nextBirthdayCountdown.months} months and ${ageResult.nextBirthdayCountdown.days} days.`;
+
+    return buildCalcReportInput(
+      "Age Calculator",
+      {
+        "Date of Birth": birthDate,
+        "Age as of Date": referenceDate,
+        "Day of Week Born": ageResult.dayOfWeekBorn,
+      },
+      primaryResult,
+      {
+        metrics: [
+          { label: "Total Days", value: ageResult.totalDays.toLocaleString() },
+          { label: "Total Weeks", value: ageResult.totalWeeks.toLocaleString() },
+          { label: "Total Hours", value: ageResult.totalHours.toLocaleString() },
+        ],
+        formula: "Age = TargetDate - DateOfBirth (adjusted for leap years and calendar months)",
+        explanation:
+          "Computes exact chronological age down to days, accounting for variable month lengths and leap years.",
+        aiAnalysis: insight,
+      },
+    );
+  }, [ageResult, birthDate, referenceDate]);
 
   return (
     <CalcPageLayout calc={calcMeta}>
@@ -136,6 +168,25 @@ function AgeCalculatorPage() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Action Bar: Download PDF Report */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
+              <div>
+                <div className="text-xs font-bold text-foreground">
+                  Official PDF Age & Milestone Report
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  Download a printable summary of your exact chronological age and milestone
+                  metrics.
+                </div>
+              </div>
+              <CalcPdfReportButton
+                getInput={getReportInput}
+                filename={`Age-Report-${birthDate}`}
+                label="Download PDF Report"
+                variant="primary"
+              />
             </div>
           </div>
         ) : (
