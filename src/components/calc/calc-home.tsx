@@ -1,24 +1,22 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { Calculator, Sparkles, Zap, ShieldCheck, CheckCircle2, Layers } from "lucide-react";
-import {
-  CALCULATORS,
-  POPULAR_CALCULATORS,
-  CATEGORY_LABELS,
-  type CalculatorCategory,
-} from "@/lib/calculators";
+import { Sparkles, Zap, ShieldCheck, CheckCircle2, Layers } from "lucide-react";
+import { CALCULATORS, POPULAR_CALCULATORS, type CalculatorCategory } from "@/lib/calculators";
 import { CalcCard } from "./calc-card";
 import { CalcSearch } from "./calc-search";
 import { CalcAdSlot } from "./calc-ad-slot";
 
 const CATEGORIES: { id: CalculatorCategory | "all"; label: string }[] = [
   { id: "all", label: "All Calculators" },
-  { id: "math", label: "Math & Arithmetic" },
-  { id: "conversion", label: "Unit Converters" },
-  { id: "datetime", label: "Date & Age" },
-  { id: "finance", label: "Finance & Interest" },
-  { id: "security", label: "Security & Passwords" },
-  { id: "text", label: "Text & Utilities" },
+  { id: "everyday", label: "Everyday" },
+  { id: "finance", label: "Finance" },
+  { id: "math", label: "Math" },
+  { id: "health", label: "Health & Fitness" },
+  { id: "datetime", label: "Time & Date" },
+  { id: "conversion", label: "Converters" },
+  { id: "productivity", label: "Productivity" },
+  { id: "security", label: "Security" },
+  { id: "qr-barcode", label: "QR & Barcode" },
+  { id: "billing", label: "Billing" },
 ];
 
 export function CalcHome() {
@@ -27,12 +25,7 @@ export function CalcHome() {
   const displayedCalculators =
     selectedCategory === "all"
       ? CALCULATORS
-      : CALCULATORS.filter((c) => {
-          if (selectedCategory === "text") {
-            return c.category === "text" || c.category === "utility";
-          }
-          return c.category === selectedCategory;
-        });
+      : CALCULATORS.filter((c) => c.category === selectedCategory);
 
   return (
     <div className="min-h-dvh bg-background">
@@ -42,7 +35,7 @@ export function CalcHome() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50/60 px-3.5 py-1.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-xs">
             <span className="size-2 rounded-full bg-emerald-600 animate-pulse" aria-hidden="true" />
-            <span>Super Calculator Platform · In-Browser</span>
+            <span>Suite of 31 Fast In-Browser Calculators</span>
           </div>
 
           <h1 className="mx-auto mt-6 max-w-3xl text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance">
@@ -50,9 +43,9 @@ export function CalcHome() {
             <span className="text-emerald-600">Fast, Accurate & Private.</span>
           </h1>
 
-          <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:mt-5 sm:text-lg text-pretty">
-            Perform everyday math, unit conversions, financial interest, date calculations, and
-            secure password generation — all computed directly inside your browser.
+          <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:mt-5 sm:text-lg text-pretty">
+            Perform everyday math, financial planning, BMI, health, unit conversions, date
+            arithmetic, barcodes, and billing receipts — all computed 100% in your browser.
           </p>
 
           {/* Search bar */}
@@ -106,7 +99,7 @@ export function CalcHome() {
             <div>
               <h2 className="text-xl font-extrabold text-foreground sm:text-2xl flex items-center gap-2">
                 <Layers className="size-5 text-emerald-600" />
-                <span>All Calculators & Converters</span>
+                <span>All Calculators ({CALCULATORS.length})</span>
               </h2>
               <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
                 Browse our complete suite of browser-based calculation engines.

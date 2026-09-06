@@ -116,12 +116,14 @@ function BillCalculatorPage() {
   const [bill, setBill] = useState<Bill>(createEmptyBill);
   const [pdfFilename, setPdfFilename] = useState("Bill");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generateSuccess, setGenerateSuccess] = useState(false);
   const [lastAddedItemId, setLastAddedItemId] = useState<string | null>(null);
   const [generateError, setGenerateError] = useState<string | null>(null);
 
   // ── Bill mutations ──────────────────────────────────────────────────────
 
   const handleAddItem = useCallback(() => {
+    setGenerateSuccess(false);
     setBill((prev) => {
       const updated = addItem(prev);
       const lastItem = updated.items[updated.items.length - 1];
@@ -135,17 +137,20 @@ function BillCalculatorPage() {
       itemId: string,
       changes: Partial<Pick<BillItem, "productName" | "quantity" | "unitPrice">>,
     ) => {
+      setGenerateSuccess(false);
       setBill((prev) => updateItem(prev, itemId, changes));
     },
     [],
   );
 
   const handleRemoveItem = useCallback((itemId: string) => {
+    setGenerateSuccess(false);
     setLastAddedItemId((prev) => (prev === itemId ? null : prev));
     setBill((prev) => removeItem(prev, itemId));
   }, []);
 
   const handleCompanyNameChange = useCallback((v: string) => {
+    setGenerateSuccess(false);
     setBill((prev) => ({ ...prev, companyName: v }));
     // Auto-suggest PDF filename from company name
     if (v.trim()) {
@@ -168,6 +173,7 @@ function BillCalculatorPage() {
   // ── Barcode scan handler ────────────────────────────────────────────────
 
   const handleBarcodeDetected = useCallback((barcodeValue: string) => {
+    setGenerateSuccess(false);
     setBill((prev) => {
       const { bill: updated, itemId } = scanBarcode(prev, barcodeValue);
       setLastAddedItemId(itemId);
@@ -183,9 +189,11 @@ function BillCalculatorPage() {
       return;
     }
     setGenerateError(null);
+    setGenerateSuccess(false);
     setIsGenerating(true);
     try {
       await generateAndDownloadBillPdf(bill, pdfFilename || bill.companyName || "Bill");
+      setGenerateSuccess(true);
       // No redirect — bill calculator stays on the page (Part 9 exception)
     } catch (err) {
       setGenerateError(
@@ -203,6 +211,7 @@ function BillCalculatorPage() {
     setPdfFilename("Bill");
     setLastAddedItemId(null);
     setGenerateError(null);
+    setGenerateSuccess(false);
   }, []);
 
   // ── Render ──────────────────────────────────────────────────────────────
@@ -407,6 +416,12 @@ function BillCalculatorPage() {
             {generateError && (
               <p className="mt-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-2.5 text-xs font-medium text-destructive">
                 {generateError}
+              </p>
+            )}
+
+            {generateSuccess && (
+              <p className="mt-3 rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 px-4 py-2.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
+                ✓ Bill PDF downloaded successfully!
               </p>
             )}
 

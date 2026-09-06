@@ -1,16 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { Calculator, ShieldCheck, Zap, Lock } from "lucide-react";
-import { CALCULATORS, CATEGORY_LABELS } from "@/lib/calculators";
+import { CALCULATORS } from "@/lib/calculators";
 
 export function CalcFooter() {
-  const mathCalcs = CALCULATORS.filter((c) => c.category === "math" || c.category === "finance");
-  const conversionCalcs = CALCULATORS.filter(
-    (c) => c.category === "conversion" || c.category === "datetime",
+  const everydayMath = CALCULATORS.filter(
+    (c) => c.category === "everyday" || c.category === "math",
   );
-  const securityCalcs = CALCULATORS.filter(
-    (c) => c.category === "security" || c.category === "text" || c.category === "utility",
+  const finance = CALCULATORS.filter((c) => c.category === "finance" || c.category === "billing");
+  const healthConverters = CALCULATORS.filter(
+    (c) => c.category === "health" || c.category === "conversion" || c.category === "datetime",
   );
-  const billingCalcs = CALCULATORS.filter((c) => c.category === "billing");
+  const securityQr = CALCULATORS.filter(
+    (c) =>
+      c.category === "security" || c.category === "qr-barcode" || c.category === "productivity",
+  );
 
   return (
     <footer className="mt-20 border-t border-border bg-surface">
@@ -29,8 +32,8 @@ export function CalcFooter() {
               </span>
             </div>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground leading-relaxed">
-              Super calculator platform — from everyday arithmetic to advanced conversions. Fast,
-              accurate, and runs completely inside your browser.
+              Super calculator platform — 31 fast, accurate, and private browser-based calculation
+              engines. No sign-up, zero server lag.
             </p>
 
             <div className="mt-5 flex flex-col gap-2 text-xs text-muted-foreground">
@@ -49,17 +52,17 @@ export function CalcFooter() {
             </div>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="min-w-0">
               <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
-                Math & Finance
+                Everyday & Math
               </h2>
               <ul className="mt-3 space-y-2">
-                {mathCalcs.map((calc) => (
+                {everydayMath.slice(0, 8).map((calc) => (
                   <li key={calc.slug}>
                     <Link
                       to={("/" + calc.slug) as never}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      className="text-xs text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {calc.name}
                     </Link>
@@ -70,14 +73,14 @@ export function CalcFooter() {
 
             <div className="min-w-0">
               <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
-                Time & Unit Converters
+                Finance & Billing
               </h2>
               <ul className="mt-3 space-y-2">
-                {conversionCalcs.map((calc) => (
+                {finance.slice(0, 8).map((calc) => (
                   <li key={calc.slug}>
                     <Link
                       to={("/" + calc.slug) as never}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      className="text-xs text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {calc.name}
                     </Link>
@@ -88,14 +91,14 @@ export function CalcFooter() {
 
             <div className="min-w-0">
               <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
-                Privacy & Utilities
+                Health & Time
               </h2>
               <ul className="mt-3 space-y-2">
-                {securityCalcs.map((calc) => (
+                {healthConverters.slice(0, 8).map((calc) => (
                   <li key={calc.slug}>
                     <Link
                       to={("/" + calc.slug) as never}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      className="text-xs text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {calc.name}
                     </Link>
@@ -104,25 +107,23 @@ export function CalcFooter() {
               </ul>
             </div>
 
-            {billingCalcs.length > 0 && (
-              <div className="min-w-0">
-                <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
-                  Billing & Invoicing
-                </h2>
-                <ul className="mt-3 space-y-2">
-                  {billingCalcs.map((calc) => (
-                    <li key={calc.slug}>
-                      <Link
-                        to={("/" + calc.slug) as never}
-                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                        {calc.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <div className="min-w-0">
+              <h2 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+                Security & Barcodes
+              </h2>
+              <ul className="mt-3 space-y-2">
+                {securityQr.map((calc) => (
+                  <li key={calc.slug}>
+                    <Link
+                      to={("/" + calc.slug) as never}
+                      className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {calc.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -137,7 +138,7 @@ export function CalcFooter() {
             </a>
             <span>·</span>
             <Link to="/calculators" className="hover:text-foreground">
-              All Calculators
+              All 31 Calculators
             </Link>
           </div>
         </div>

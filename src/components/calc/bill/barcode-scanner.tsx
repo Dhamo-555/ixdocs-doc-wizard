@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Camera, CameraOff, ZapOff, ScanLine } from "lucide-react";
+import { BrowserMultiFormatReader, type IScannerControls } from "@zxing/browser";
 import { BarcodeUnsupported } from "./barcode-unsupported";
 
-// ─── BarcodeDetector type declaration (not in lib.dom.d.ts for all targets) ──
+// ─── Native BarcodeDetector type declaration ──────────────────────────────────
 
 declare global {
   interface Window {
@@ -23,7 +24,7 @@ declare global {
 
 // ─── Barcode formats to detect ────────────────────────────────────────────────
 
-const BARCODE_FORMATS = [
+const NATIVE_BARCODE_FORMATS = [
   "ean_13",
   "ean_8",
   "upc_a",
@@ -49,13 +50,15 @@ type ScannerState =
   "checking" | "unsupported" | "idle" | "requesting" | "scanning" | "denied" | "error";
 
 /**
- * Camera-based barcode scanner using the native BarcodeDetector API.
+ * Camera-based barcode scanner with dual-engine support:
+ * 1. Native BarcodeDetector API (fast hardware acceleration in Chrome/Edge/Android)
+ * 2. ZXing BrowserMultiFormatReader fallback (cross-browser support in Safari/Firefox/Desktop)
  *
  * Privacy guarantees:
  * - Camera stream never uploaded to any server
- * - No images captured or stored
+ * - No images captured or stored remotely
  * - Only the decoded barcode string value is passed to the parent
- * - Camera stream is stopped on component unmount
+ * - Camera stream and decode loop are stopped immediately on component unmount
  */
 export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeScannerProps) {
   const [state, setState] = useState<ScannerState>("checking");
@@ -64,39 +67,44 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const detectorRef = useRef<BarcodeDetectorInstance | null>(null);
+  const nativeDetectorRef = useRef<BarcodeDetectorInstance | null>(null);
+  const zxingControlsRef = useRef<IScannerControls | null>(null);
+  const zxingReaderRef = useRef<BrowserMultiFormatReader | null>(null);
   const rafRef = useRef<number | null>(null);
   const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cooldownRef = useRef(false);
 
-  // ── Check BarcodeDetector support ─────────────────────────────────────────
+  // ── Check camera & mediaDevices support ───────────────────────────────────
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (typeof window.BarcodeDetector === "undefined") {
+    const hasMediaDevices =
+      typeof navigator !== "undefined" &&
+      Boolean(navigator.mediaDevices) &&
+      typeof navigator.mediaDevices.getUserMedia === "function";
+
+    if (!hasMediaDevices) {
       setState("unsupported");
       return;
     }
+
     setState("idle");
   }, []);
 
-  // ── Cleanup on unmount ────────────────────────────────────────────────────
-
-  useEffect(() => {
-    return () => {
-      stopCamera();
-      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ── Camera helpers ────────────────────────────────────────────────────────
-
-  const cooldownRef = useRef(false);
+  // ── Camera cleanup helper ─────────────────────────────────────────────────
 
   const stopCamera = useCallback(() => {
     if (rafRef.current !== null) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
+    }
+    if (zxingControlsRef.current) {
+      try {
+        zxingControlsRef.current.stop();
+      } catch {
+        // ignore errors during stop
+      }
+      zxingControlsRef.current = null;
     }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -107,33 +115,54 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
     }
   }, []);
 
-  // ── Detection loop (requestAnimationFrame) ────────────────────────────────
+  // ── Cleanup on unmount ────────────────────────────────────────────────────
 
-  const startDetectionLoop = useCallback(() => {
+  useEffect(() => {
+    return () => {
+      stopCamera();
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+    };
+  }, [stopCamera]);
+
+  // ── Detection success handler with debouncing ─────────────────────────────
+
+  const handleDetected = useCallback(
+    (value: string) => {
+      if (cooldownRef.current) return;
+      const trimmed = value.trim();
+      if (!trimmed) return;
+
+      setLastScanned(trimmed);
+      setCooldown(true);
+      cooldownRef.current = true;
+      onBarcodeDetected(trimmed);
+
+      // Brief cooldown to prevent multiple rapid scans of the same barcode
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+      cooldownTimer.current = setTimeout(() => {
+        setCooldown(false);
+        cooldownRef.current = false;
+      }, 1500);
+    },
+    [onBarcodeDetected],
+  );
+
+  // ── Native BarcodeDetector loop ───────────────────────────────────────────
+
+  const startNativeDetectionLoop = useCallback(() => {
     const detect = async () => {
-      if (!videoRef.current || !detectorRef.current) return;
+      if (!videoRef.current || !nativeDetectorRef.current) return;
       const video = videoRef.current;
 
       if (video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA && !cooldownRef.current) {
         try {
-          const barcodes = await detectorRef.current.detect(video);
+          const barcodes = await nativeDetectorRef.current.detect(video);
           if (barcodes.length > 0 && barcodes[0]) {
-            const value = barcodes[0].rawValue.trim();
-            if (value) {
-              setLastScanned(value);
-              setCooldown(true);
-              cooldownRef.current = true;
-              onBarcodeDetected(value);
-
-              // Brief cooldown to prevent duplicate scans of the same barcode
-              cooldownTimer.current = setTimeout(() => {
-                setCooldown(false);
-                cooldownRef.current = false;
-              }, 1500);
-            }
+            const raw = barcodes[0].rawValue;
+            if (raw) handleDetected(raw);
           }
         } catch {
-          // Silently ignore detection errors on individual frames
+          // Silently ignore detection errors on individual video frames
         }
       }
 
@@ -141,13 +170,15 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
     };
 
     rafRef.current = requestAnimationFrame(detect);
-  }, [onBarcodeDetected]);
+  }, [handleDetected]);
+
+  // ── Start camera and select best available engine ─────────────────────────
 
   const startCamera = useCallback(async () => {
     setState("requesting");
 
     try {
-      // Use environment-facing camera (rear camera on mobile)
+      // Use environment-facing camera (rear camera on mobile devices)
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: "environment" },
@@ -164,11 +195,42 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
         await videoRef.current.play();
       }
 
-      // Instantiate BarcodeDetector with common barcode formats
-      detectorRef.current = new window.BarcodeDetector!({ formats: BARCODE_FORMATS });
+      // Check if native BarcodeDetector is available
+      if (typeof window.BarcodeDetector !== "undefined") {
+        try {
+          nativeDetectorRef.current = new window.BarcodeDetector({
+            formats: NATIVE_BARCODE_FORMATS,
+          });
+          setState("scanning");
+          startNativeDetectionLoop();
+          return;
+        } catch {
+          // Fall back to ZXing if native constructor fails
+          nativeDetectorRef.current = null;
+        }
+      }
 
-      setState("scanning");
-      startDetectionLoop();
+      // Fallback: ZXing BrowserMultiFormatReader (works on Safari, Firefox, Desktop)
+      if (!zxingReaderRef.current) {
+        zxingReaderRef.current = new BrowserMultiFormatReader();
+      }
+
+      if (videoRef.current) {
+        setState("scanning");
+        const controls = await zxingReaderRef.current.decodeFromVideoElement(
+          videoRef.current,
+          (result, error) => {
+            if (result && !cooldownRef.current) {
+              const text = result.getText();
+              if (text) handleDetected(text);
+            }
+            if (error) {
+              // Standard ZXing frame-level decode misses are expected while moving
+            }
+          },
+        );
+        zxingControlsRef.current = controls;
+      }
     } catch (err) {
       stopCamera();
       const name = err instanceof Error ? err.name : "";
@@ -178,7 +240,7 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
         setState("error");
       }
     }
-  }, [stopCamera, startDetectionLoop]);
+  }, [stopCamera, startNativeDetectionLoop, handleDetected]);
 
   const handleStop = useCallback(() => {
     stopCamera();

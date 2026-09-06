@@ -1,4 +1,5 @@
 export const CALCULATOR_SLUGS = [
+  // 11 Original Calculators
   "basic-calculator",
   "unit-converter",
   "password-generator",
@@ -10,6 +11,28 @@ export const CALCULATOR_SLUGS = [
   "age-calculator",
   "random-password-generator",
   "bill-calculator",
+  // 1 Product Barcode Generator
+  "barcode-generator",
+  // 19 New Calculators
+  "percentage-calculator",
+  "fraction-calculator",
+  "ratio-calculator",
+  "average-calculator",
+  "statistics-calculator",
+  "gpa-calculator",
+  "loan-calculator",
+  "mortgage-calculator",
+  "emi-calculator",
+  "discount-calculator",
+  "tip-calculator",
+  "sales-tax-calculator",
+  "compound-interest-calculator",
+  "time-duration-calculator",
+  "time-calculator",
+  "data-storage-calculator",
+  "fuel-cost-calculator",
+  "bmi-calculator",
+  "calorie-calculator",
 ] as const;
 
 export const CALCULATOR_PATHS: readonly string[] = [

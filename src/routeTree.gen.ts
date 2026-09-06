@@ -15,27 +15,40 @@ import { Route as AddTextToPdfRouteImport } from './routes/add-text-to-pdf'
 import { Route as AgeCalculatorRouteImport } from './routes/age-calculator'
 import { Route as AnnotatePdfRouteImport } from './routes/annotate-pdf'
 import { Route as ApplicationPdfOptimizerRouteImport } from './routes/application-pdf-optimizer'
+import { Route as AverageCalculatorRouteImport } from './routes/average-calculator'
+import { Route as BarcodeGeneratorRouteImport } from './routes/barcode-generator'
 import { Route as BasicCalculatorRouteImport } from './routes/basic-calculator'
 import { Route as BillCalculatorRouteImport } from './routes/bill-calculator'
+import { Route as BmiCalculatorRouteImport } from './routes/bmi-calculator'
 import { Route as CalculatorsRouteImport } from './routes/calculators'
+import { Route as CalorieCalculatorRouteImport } from './routes/calorie-calculator'
+import { Route as CompoundInterestCalculatorRouteImport } from './routes/compound-interest-calculator'
 import { Route as CompressPdfRouteImport } from './routes/compress-pdf'
 import { Route as CompressPdfToTargetSizeRouteImport } from './routes/compress-pdf-to-target-size'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as CropPdfRouteImport } from './routes/crop-pdf'
+import { Route as DataStorageCalculatorRouteImport } from './routes/data-storage-calculator'
 import { Route as DateCalculatorRouteImport } from './routes/date-calculator'
 import { Route as DeletePdfPagesRouteImport } from './routes/delete-pdf-pages'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as DiscountCalculatorRouteImport } from './routes/discount-calculator'
 import { Route as DocumentScannerRouteImport } from './routes/document-scanner'
 import { Route as EditPdfRouteImport } from './routes/edit-pdf'
+import { Route as EmiCalculatorRouteImport } from './routes/emi-calculator'
 import { Route as ExtractPdfPagesRouteImport } from './routes/extract-pdf-pages'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FlattenPdfRouteImport } from './routes/flatten-pdf'
+import { Route as FractionCalculatorRouteImport } from './routes/fraction-calculator'
+import { Route as FuelCostCalculatorRouteImport } from './routes/fuel-cost-calculator'
+import { Route as GpaCalculatorRouteImport } from './routes/gpa-calculator'
 import { Route as GrayscalePdfRouteImport } from './routes/grayscale-pdf'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as InterestCalculatorRouteImport } from './routes/interest-calculator'
 import { Route as JpgToPdfRouteImport } from './routes/jpg-to-pdf'
+import { Route as LoanCalculatorRouteImport } from './routes/loan-calculator'
 import { Route as MergePdfRouteImport } from './routes/merge-pdf'
+import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calculator'
 import { Route as PassportPhotoRouteImport } from './routes/passport-photo'
 import { Route as PasswordGeneratorRouteImport } from './routes/password-generator'
 import { Route as PasswordProtectPdfRouteImport } from './routes/password-protect-pdf'
@@ -48,20 +61,27 @@ import { Route as PdfToJpgRouteImport } from './routes/pdf-to-jpg'
 import { Route as PdfToPngRouteImport } from './routes/pdf-to-png'
 import { Route as PdfToTextRouteImport } from './routes/pdf-to-text'
 import { Route as PdfToWordRouteImport } from './routes/pdf-to-word'
+import { Route as PercentageCalculatorRouteImport } from './routes/percentage-calculator'
 import { Route as PrintReadyPdfRouteImport } from './routes/print-ready-pdf'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as QrCodeGeneratorRouteImport } from './routes/qr-code-generator'
 import { Route as QrGeneratorRouteImport } from './routes/qr-generator'
 import { Route as RandomPasswordGeneratorRouteImport } from './routes/random-password-generator'
+import { Route as RatioCalculatorRouteImport } from './routes/ratio-calculator'
 import { Route as ReorderPdfPagesRouteImport } from './routes/reorder-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
+import { Route as SalesTaxCalculatorRouteImport } from './routes/sales-tax-calculator'
 import { Route as SignPdfRouteImport } from './routes/sign-pdf'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SmartPdfAnalyzerRouteImport } from './routes/smart-pdf-analyzer'
 import { Route as SplitPdfRouteImport } from './routes/split-pdf'
+import { Route as StatisticsCalculatorRouteImport } from './routes/statistics-calculator'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TestRunnerRouteImport } from './routes/test-runner'
+import { Route as TimeCalculatorRouteImport } from './routes/time-calculator'
+import { Route as TimeDurationCalculatorRouteImport } from './routes/time-duration-calculator'
 import { Route as TimezoneConverterRouteImport } from './routes/timezone-converter'
+import { Route as TipCalculatorRouteImport } from './routes/tip-calculator'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UnitConverterRouteImport } from './routes/unit-converter'
 import { Route as WatermarkPdfRouteImport } from './routes/watermark-pdf'
@@ -98,6 +118,16 @@ const ApplicationPdfOptimizerRoute = ApplicationPdfOptimizerRouteImport.update({
   path: '/application-pdf-optimizer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AverageCalculatorRoute = AverageCalculatorRouteImport.update({
+  id: '/average-calculator',
+  path: '/average-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BarcodeGeneratorRoute = BarcodeGeneratorRouteImport.update({
+  id: '/barcode-generator',
+  path: '/barcode-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BasicCalculatorRoute = BasicCalculatorRouteImport.update({
   id: '/basic-calculator',
   path: '/basic-calculator',
@@ -108,11 +138,27 @@ const BillCalculatorRoute = BillCalculatorRouteImport.update({
   path: '/bill-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BmiCalculatorRoute = BmiCalculatorRouteImport.update({
+  id: '/bmi-calculator',
+  path: '/bmi-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CalculatorsRoute = CalculatorsRouteImport.update({
   id: '/calculators',
   path: '/calculators',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CalorieCalculatorRoute = CalorieCalculatorRouteImport.update({
+  id: '/calorie-calculator',
+  path: '/calorie-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompoundInterestCalculatorRoute =
+  CompoundInterestCalculatorRouteImport.update({
+    id: '/compound-interest-calculator',
+    path: '/compound-interest-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CompressPdfRoute = CompressPdfRouteImport.update({
   id: '/compress-pdf',
   path: '/compress-pdf',
@@ -138,6 +184,11 @@ const CropPdfRoute = CropPdfRouteImport.update({
   path: '/crop-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DataStorageCalculatorRoute = DataStorageCalculatorRouteImport.update({
+  id: '/data-storage-calculator',
+  path: '/data-storage-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DateCalculatorRoute = DateCalculatorRouteImport.update({
   id: '/date-calculator',
   path: '/date-calculator',
@@ -153,6 +204,11 @@ const DisclaimerRoute = DisclaimerRouteImport.update({
   path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscountCalculatorRoute = DiscountCalculatorRouteImport.update({
+  id: '/discount-calculator',
+  path: '/discount-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocumentScannerRoute = DocumentScannerRouteImport.update({
   id: '/document-scanner',
   path: '/document-scanner',
@@ -161,6 +217,11 @@ const DocumentScannerRoute = DocumentScannerRouteImport.update({
 const EditPdfRoute = EditPdfRouteImport.update({
   id: '/edit-pdf',
   path: '/edit-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmiCalculatorRoute = EmiCalculatorRouteImport.update({
+  id: '/emi-calculator',
+  path: '/emi-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExtractPdfPagesRoute = ExtractPdfPagesRouteImport.update({
@@ -176,6 +237,21 @@ const FaqRoute = FaqRouteImport.update({
 const FlattenPdfRoute = FlattenPdfRouteImport.update({
   id: '/flatten-pdf',
   path: '/flatten-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FractionCalculatorRoute = FractionCalculatorRouteImport.update({
+  id: '/fraction-calculator',
+  path: '/fraction-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FuelCostCalculatorRoute = FuelCostCalculatorRouteImport.update({
+  id: '/fuel-cost-calculator',
+  path: '/fuel-cost-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GpaCalculatorRoute = GpaCalculatorRouteImport.update({
+  id: '/gpa-calculator',
+  path: '/gpa-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GrayscalePdfRoute = GrayscalePdfRouteImport.update({
@@ -198,9 +274,19 @@ const JpgToPdfRoute = JpgToPdfRouteImport.update({
   path: '/jpg-to-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoanCalculatorRoute = LoanCalculatorRouteImport.update({
+  id: '/loan-calculator',
+  path: '/loan-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MergePdfRoute = MergePdfRouteImport.update({
   id: '/merge-pdf',
   path: '/merge-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MortgageCalculatorRoute = MortgageCalculatorRouteImport.update({
+  id: '/mortgage-calculator',
+  path: '/mortgage-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PassportPhotoRoute = PassportPhotoRouteImport.update({
@@ -263,6 +349,11 @@ const PdfToWordRoute = PdfToWordRouteImport.update({
   path: '/pdf-to-word',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PercentageCalculatorRoute = PercentageCalculatorRouteImport.update({
+  id: '/percentage-calculator',
+  path: '/percentage-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrintReadyPdfRoute = PrintReadyPdfRouteImport.update({
   id: '/print-ready-pdf',
   path: '/print-ready-pdf',
@@ -288,6 +379,11 @@ const RandomPasswordGeneratorRoute = RandomPasswordGeneratorRouteImport.update({
   path: '/random-password-generator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RatioCalculatorRoute = RatioCalculatorRouteImport.update({
+  id: '/ratio-calculator',
+  path: '/ratio-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReorderPdfPagesRoute = ReorderPdfPagesRouteImport.update({
   id: '/reorder-pdf-pages',
   path: '/reorder-pdf-pages',
@@ -296,6 +392,11 @@ const ReorderPdfPagesRoute = ReorderPdfPagesRouteImport.update({
 const RotatePdfRoute = RotatePdfRouteImport.update({
   id: '/rotate-pdf',
   path: '/rotate-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalesTaxCalculatorRoute = SalesTaxCalculatorRouteImport.update({
+  id: '/sales-tax-calculator',
+  path: '/sales-tax-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignPdfRoute = SignPdfRouteImport.update({
@@ -318,6 +419,11 @@ const SplitPdfRoute = SplitPdfRouteImport.update({
   path: '/split-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StatisticsCalculatorRoute = StatisticsCalculatorRouteImport.update({
+  id: '/statistics-calculator',
+  path: '/statistics-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -328,9 +434,24 @@ const TestRunnerRoute = TestRunnerRouteImport.update({
   path: '/test-runner',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TimeCalculatorRoute = TimeCalculatorRouteImport.update({
+  id: '/time-calculator',
+  path: '/time-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimeDurationCalculatorRoute = TimeDurationCalculatorRouteImport.update({
+  id: '/time-duration-calculator',
+  path: '/time-duration-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TimezoneConverterRoute = TimezoneConverterRouteImport.update({
   id: '/timezone-converter',
   path: '/timezone-converter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TipCalculatorRoute = TipCalculatorRouteImport.update({
+  id: '/tip-calculator',
+  path: '/tip-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsRoute = ToolsRouteImport.update({
@@ -366,27 +487,40 @@ export interface FileRoutesByFullPath {
   '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
+  '/average-calculator': typeof AverageCalculatorRoute
+  '/barcode-generator': typeof BarcodeGeneratorRoute
   '/basic-calculator': typeof BasicCalculatorRoute
   '/bill-calculator': typeof BillCalculatorRoute
+  '/bmi-calculator': typeof BmiCalculatorRoute
   '/calculators': typeof CalculatorsRoute
+  '/calorie-calculator': typeof CalorieCalculatorRoute
+  '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/crop-pdf': typeof CropPdfRoute
+  '/data-storage-calculator': typeof DataStorageCalculatorRoute
   '/date-calculator': typeof DateCalculatorRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/discount-calculator': typeof DiscountCalculatorRoute
   '/document-scanner': typeof DocumentScannerRoute
   '/edit-pdf': typeof EditPdfRoute
+  '/emi-calculator': typeof EmiCalculatorRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
   '/flatten-pdf': typeof FlattenPdfRoute
+  '/fraction-calculator': typeof FractionCalculatorRoute
+  '/fuel-cost-calculator': typeof FuelCostCalculatorRoute
+  '/gpa-calculator': typeof GpaCalculatorRoute
   '/grayscale-pdf': typeof GrayscalePdfRoute
   '/how-it-works': typeof HowItWorksRoute
   '/interest-calculator': typeof InterestCalculatorRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
+  '/loan-calculator': typeof LoanCalculatorRoute
   '/merge-pdf': typeof MergePdfRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/passport-photo': typeof PassportPhotoRoute
   '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
@@ -399,20 +533,27 @@ export interface FileRoutesByFullPath {
   '/pdf-to-png': typeof PdfToPngRoute
   '/pdf-to-text': typeof PdfToTextRoute
   '/pdf-to-word': typeof PdfToWordRoute
+  '/percentage-calculator': typeof PercentageCalculatorRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/qr-code-generator': typeof QrCodeGeneratorRoute
   '/qr-generator': typeof QrGeneratorRoute
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
+  '/ratio-calculator': typeof RatioCalculatorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
+  '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
   '/sign-pdf': typeof SignPdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
+  '/statistics-calculator': typeof StatisticsCalculatorRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
+  '/time-calculator': typeof TimeCalculatorRoute
+  '/time-duration-calculator': typeof TimeDurationCalculatorRoute
   '/timezone-converter': typeof TimezoneConverterRoute
+  '/tip-calculator': typeof TipCalculatorRoute
   '/tools': typeof ToolsRoute
   '/unit-converter': typeof UnitConverterRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
@@ -426,27 +567,40 @@ export interface FileRoutesByTo {
   '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
+  '/average-calculator': typeof AverageCalculatorRoute
+  '/barcode-generator': typeof BarcodeGeneratorRoute
   '/basic-calculator': typeof BasicCalculatorRoute
   '/bill-calculator': typeof BillCalculatorRoute
+  '/bmi-calculator': typeof BmiCalculatorRoute
   '/calculators': typeof CalculatorsRoute
+  '/calorie-calculator': typeof CalorieCalculatorRoute
+  '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/crop-pdf': typeof CropPdfRoute
+  '/data-storage-calculator': typeof DataStorageCalculatorRoute
   '/date-calculator': typeof DateCalculatorRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/discount-calculator': typeof DiscountCalculatorRoute
   '/document-scanner': typeof DocumentScannerRoute
   '/edit-pdf': typeof EditPdfRoute
+  '/emi-calculator': typeof EmiCalculatorRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
   '/flatten-pdf': typeof FlattenPdfRoute
+  '/fraction-calculator': typeof FractionCalculatorRoute
+  '/fuel-cost-calculator': typeof FuelCostCalculatorRoute
+  '/gpa-calculator': typeof GpaCalculatorRoute
   '/grayscale-pdf': typeof GrayscalePdfRoute
   '/how-it-works': typeof HowItWorksRoute
   '/interest-calculator': typeof InterestCalculatorRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
+  '/loan-calculator': typeof LoanCalculatorRoute
   '/merge-pdf': typeof MergePdfRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/passport-photo': typeof PassportPhotoRoute
   '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
@@ -459,20 +613,27 @@ export interface FileRoutesByTo {
   '/pdf-to-png': typeof PdfToPngRoute
   '/pdf-to-text': typeof PdfToTextRoute
   '/pdf-to-word': typeof PdfToWordRoute
+  '/percentage-calculator': typeof PercentageCalculatorRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/qr-code-generator': typeof QrCodeGeneratorRoute
   '/qr-generator': typeof QrGeneratorRoute
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
+  '/ratio-calculator': typeof RatioCalculatorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
+  '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
   '/sign-pdf': typeof SignPdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
+  '/statistics-calculator': typeof StatisticsCalculatorRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
+  '/time-calculator': typeof TimeCalculatorRoute
+  '/time-duration-calculator': typeof TimeDurationCalculatorRoute
   '/timezone-converter': typeof TimezoneConverterRoute
+  '/tip-calculator': typeof TipCalculatorRoute
   '/tools': typeof ToolsRoute
   '/unit-converter': typeof UnitConverterRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
@@ -487,27 +648,40 @@ export interface FileRoutesById {
   '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
   '/application-pdf-optimizer': typeof ApplicationPdfOptimizerRoute
+  '/average-calculator': typeof AverageCalculatorRoute
+  '/barcode-generator': typeof BarcodeGeneratorRoute
   '/basic-calculator': typeof BasicCalculatorRoute
   '/bill-calculator': typeof BillCalculatorRoute
+  '/bmi-calculator': typeof BmiCalculatorRoute
   '/calculators': typeof CalculatorsRoute
+  '/calorie-calculator': typeof CalorieCalculatorRoute
+  '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/compress-pdf-to-target-size': typeof CompressPdfToTargetSizeRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/crop-pdf': typeof CropPdfRoute
+  '/data-storage-calculator': typeof DataStorageCalculatorRoute
   '/date-calculator': typeof DateCalculatorRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/discount-calculator': typeof DiscountCalculatorRoute
   '/document-scanner': typeof DocumentScannerRoute
   '/edit-pdf': typeof EditPdfRoute
+  '/emi-calculator': typeof EmiCalculatorRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
   '/flatten-pdf': typeof FlattenPdfRoute
+  '/fraction-calculator': typeof FractionCalculatorRoute
+  '/fuel-cost-calculator': typeof FuelCostCalculatorRoute
+  '/gpa-calculator': typeof GpaCalculatorRoute
   '/grayscale-pdf': typeof GrayscalePdfRoute
   '/how-it-works': typeof HowItWorksRoute
   '/interest-calculator': typeof InterestCalculatorRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
+  '/loan-calculator': typeof LoanCalculatorRoute
   '/merge-pdf': typeof MergePdfRoute
+  '/mortgage-calculator': typeof MortgageCalculatorRoute
   '/passport-photo': typeof PassportPhotoRoute
   '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
@@ -520,20 +694,27 @@ export interface FileRoutesById {
   '/pdf-to-png': typeof PdfToPngRoute
   '/pdf-to-text': typeof PdfToTextRoute
   '/pdf-to-word': typeof PdfToWordRoute
+  '/percentage-calculator': typeof PercentageCalculatorRoute
   '/print-ready-pdf': typeof PrintReadyPdfRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/qr-code-generator': typeof QrCodeGeneratorRoute
   '/qr-generator': typeof QrGeneratorRoute
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
+  '/ratio-calculator': typeof RatioCalculatorRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
+  '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
   '/sign-pdf': typeof SignPdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
+  '/statistics-calculator': typeof StatisticsCalculatorRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
+  '/time-calculator': typeof TimeCalculatorRoute
+  '/time-duration-calculator': typeof TimeDurationCalculatorRoute
   '/timezone-converter': typeof TimezoneConverterRoute
+  '/tip-calculator': typeof TipCalculatorRoute
   '/tools': typeof ToolsRoute
   '/unit-converter': typeof UnitConverterRoute
   '/watermark-pdf': typeof WatermarkPdfRoute
@@ -549,27 +730,40 @@ export interface FileRouteTypes {
     | '/age-calculator'
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
+    | '/average-calculator'
+    | '/barcode-generator'
     | '/basic-calculator'
     | '/bill-calculator'
+    | '/bmi-calculator'
     | '/calculators'
+    | '/calorie-calculator'
+    | '/compound-interest-calculator'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
     | '/cookie-policy'
     | '/crop-pdf'
+    | '/data-storage-calculator'
     | '/date-calculator'
     | '/delete-pdf-pages'
     | '/disclaimer'
+    | '/discount-calculator'
     | '/document-scanner'
     | '/edit-pdf'
+    | '/emi-calculator'
     | '/extract-pdf-pages'
     | '/faq'
     | '/flatten-pdf'
+    | '/fraction-calculator'
+    | '/fuel-cost-calculator'
+    | '/gpa-calculator'
     | '/grayscale-pdf'
     | '/how-it-works'
     | '/interest-calculator'
     | '/jpg-to-pdf'
+    | '/loan-calculator'
     | '/merge-pdf'
+    | '/mortgage-calculator'
     | '/passport-photo'
     | '/password-generator'
     | '/password-protect-pdf'
@@ -582,20 +776,27 @@ export interface FileRouteTypes {
     | '/pdf-to-png'
     | '/pdf-to-text'
     | '/pdf-to-word'
+    | '/percentage-calculator'
     | '/print-ready-pdf'
     | '/privacy-policy'
     | '/qr-code-generator'
     | '/qr-generator'
     | '/random-password-generator'
+    | '/ratio-calculator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
+    | '/sales-tax-calculator'
     | '/sign-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
+    | '/statistics-calculator'
     | '/terms'
     | '/test-runner'
+    | '/time-calculator'
+    | '/time-duration-calculator'
     | '/timezone-converter'
+    | '/tip-calculator'
     | '/tools'
     | '/unit-converter'
     | '/watermark-pdf'
@@ -609,27 +810,40 @@ export interface FileRouteTypes {
     | '/age-calculator'
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
+    | '/average-calculator'
+    | '/barcode-generator'
     | '/basic-calculator'
     | '/bill-calculator'
+    | '/bmi-calculator'
     | '/calculators'
+    | '/calorie-calculator'
+    | '/compound-interest-calculator'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
     | '/cookie-policy'
     | '/crop-pdf'
+    | '/data-storage-calculator'
     | '/date-calculator'
     | '/delete-pdf-pages'
     | '/disclaimer'
+    | '/discount-calculator'
     | '/document-scanner'
     | '/edit-pdf'
+    | '/emi-calculator'
     | '/extract-pdf-pages'
     | '/faq'
     | '/flatten-pdf'
+    | '/fraction-calculator'
+    | '/fuel-cost-calculator'
+    | '/gpa-calculator'
     | '/grayscale-pdf'
     | '/how-it-works'
     | '/interest-calculator'
     | '/jpg-to-pdf'
+    | '/loan-calculator'
     | '/merge-pdf'
+    | '/mortgage-calculator'
     | '/passport-photo'
     | '/password-generator'
     | '/password-protect-pdf'
@@ -642,20 +856,27 @@ export interface FileRouteTypes {
     | '/pdf-to-png'
     | '/pdf-to-text'
     | '/pdf-to-word'
+    | '/percentage-calculator'
     | '/print-ready-pdf'
     | '/privacy-policy'
     | '/qr-code-generator'
     | '/qr-generator'
     | '/random-password-generator'
+    | '/ratio-calculator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
+    | '/sales-tax-calculator'
     | '/sign-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
+    | '/statistics-calculator'
     | '/terms'
     | '/test-runner'
+    | '/time-calculator'
+    | '/time-duration-calculator'
     | '/timezone-converter'
+    | '/tip-calculator'
     | '/tools'
     | '/unit-converter'
     | '/watermark-pdf'
@@ -669,27 +890,40 @@ export interface FileRouteTypes {
     | '/age-calculator'
     | '/annotate-pdf'
     | '/application-pdf-optimizer'
+    | '/average-calculator'
+    | '/barcode-generator'
     | '/basic-calculator'
     | '/bill-calculator'
+    | '/bmi-calculator'
     | '/calculators'
+    | '/calorie-calculator'
+    | '/compound-interest-calculator'
     | '/compress-pdf'
     | '/compress-pdf-to-target-size'
     | '/contact'
     | '/cookie-policy'
     | '/crop-pdf'
+    | '/data-storage-calculator'
     | '/date-calculator'
     | '/delete-pdf-pages'
     | '/disclaimer'
+    | '/discount-calculator'
     | '/document-scanner'
     | '/edit-pdf'
+    | '/emi-calculator'
     | '/extract-pdf-pages'
     | '/faq'
     | '/flatten-pdf'
+    | '/fraction-calculator'
+    | '/fuel-cost-calculator'
+    | '/gpa-calculator'
     | '/grayscale-pdf'
     | '/how-it-works'
     | '/interest-calculator'
     | '/jpg-to-pdf'
+    | '/loan-calculator'
     | '/merge-pdf'
+    | '/mortgage-calculator'
     | '/passport-photo'
     | '/password-generator'
     | '/password-protect-pdf'
@@ -702,20 +936,27 @@ export interface FileRouteTypes {
     | '/pdf-to-png'
     | '/pdf-to-text'
     | '/pdf-to-word'
+    | '/percentage-calculator'
     | '/print-ready-pdf'
     | '/privacy-policy'
     | '/qr-code-generator'
     | '/qr-generator'
     | '/random-password-generator'
+    | '/ratio-calculator'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
+    | '/sales-tax-calculator'
     | '/sign-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
+    | '/statistics-calculator'
     | '/terms'
     | '/test-runner'
+    | '/time-calculator'
+    | '/time-duration-calculator'
     | '/timezone-converter'
+    | '/tip-calculator'
     | '/tools'
     | '/unit-converter'
     | '/watermark-pdf'
@@ -730,27 +971,40 @@ export interface RootRouteChildren {
   AgeCalculatorRoute: typeof AgeCalculatorRoute
   AnnotatePdfRoute: typeof AnnotatePdfRoute
   ApplicationPdfOptimizerRoute: typeof ApplicationPdfOptimizerRoute
+  AverageCalculatorRoute: typeof AverageCalculatorRoute
+  BarcodeGeneratorRoute: typeof BarcodeGeneratorRoute
   BasicCalculatorRoute: typeof BasicCalculatorRoute
   BillCalculatorRoute: typeof BillCalculatorRoute
+  BmiCalculatorRoute: typeof BmiCalculatorRoute
   CalculatorsRoute: typeof CalculatorsRoute
+  CalorieCalculatorRoute: typeof CalorieCalculatorRoute
+  CompoundInterestCalculatorRoute: typeof CompoundInterestCalculatorRoute
   CompressPdfRoute: typeof CompressPdfRoute
   CompressPdfToTargetSizeRoute: typeof CompressPdfToTargetSizeRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
   CropPdfRoute: typeof CropPdfRoute
+  DataStorageCalculatorRoute: typeof DataStorageCalculatorRoute
   DateCalculatorRoute: typeof DateCalculatorRoute
   DeletePdfPagesRoute: typeof DeletePdfPagesRoute
   DisclaimerRoute: typeof DisclaimerRoute
+  DiscountCalculatorRoute: typeof DiscountCalculatorRoute
   DocumentScannerRoute: typeof DocumentScannerRoute
   EditPdfRoute: typeof EditPdfRoute
+  EmiCalculatorRoute: typeof EmiCalculatorRoute
   ExtractPdfPagesRoute: typeof ExtractPdfPagesRoute
   FaqRoute: typeof FaqRoute
   FlattenPdfRoute: typeof FlattenPdfRoute
+  FractionCalculatorRoute: typeof FractionCalculatorRoute
+  FuelCostCalculatorRoute: typeof FuelCostCalculatorRoute
+  GpaCalculatorRoute: typeof GpaCalculatorRoute
   GrayscalePdfRoute: typeof GrayscalePdfRoute
   HowItWorksRoute: typeof HowItWorksRoute
   InterestCalculatorRoute: typeof InterestCalculatorRoute
   JpgToPdfRoute: typeof JpgToPdfRoute
+  LoanCalculatorRoute: typeof LoanCalculatorRoute
   MergePdfRoute: typeof MergePdfRoute
+  MortgageCalculatorRoute: typeof MortgageCalculatorRoute
   PassportPhotoRoute: typeof PassportPhotoRoute
   PasswordGeneratorRoute: typeof PasswordGeneratorRoute
   PasswordProtectPdfRoute: typeof PasswordProtectPdfRoute
@@ -763,20 +1017,27 @@ export interface RootRouteChildren {
   PdfToPngRoute: typeof PdfToPngRoute
   PdfToTextRoute: typeof PdfToTextRoute
   PdfToWordRoute: typeof PdfToWordRoute
+  PercentageCalculatorRoute: typeof PercentageCalculatorRoute
   PrintReadyPdfRoute: typeof PrintReadyPdfRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   QrCodeGeneratorRoute: typeof QrCodeGeneratorRoute
   QrGeneratorRoute: typeof QrGeneratorRoute
   RandomPasswordGeneratorRoute: typeof RandomPasswordGeneratorRoute
+  RatioCalculatorRoute: typeof RatioCalculatorRoute
   ReorderPdfPagesRoute: typeof ReorderPdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
+  SalesTaxCalculatorRoute: typeof SalesTaxCalculatorRoute
   SignPdfRoute: typeof SignPdfRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SmartPdfAnalyzerRoute: typeof SmartPdfAnalyzerRoute
   SplitPdfRoute: typeof SplitPdfRoute
+  StatisticsCalculatorRoute: typeof StatisticsCalculatorRoute
   TermsRoute: typeof TermsRoute
   TestRunnerRoute: typeof TestRunnerRoute
+  TimeCalculatorRoute: typeof TimeCalculatorRoute
+  TimeDurationCalculatorRoute: typeof TimeDurationCalculatorRoute
   TimezoneConverterRoute: typeof TimezoneConverterRoute
+  TipCalculatorRoute: typeof TipCalculatorRoute
   ToolsRoute: typeof ToolsRoute
   UnitConverterRoute: typeof UnitConverterRoute
   WatermarkPdfRoute: typeof WatermarkPdfRoute
@@ -828,6 +1089,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApplicationPdfOptimizerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/average-calculator': {
+      id: '/average-calculator'
+      path: '/average-calculator'
+      fullPath: '/average-calculator'
+      preLoaderRoute: typeof AverageCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/barcode-generator': {
+      id: '/barcode-generator'
+      path: '/barcode-generator'
+      fullPath: '/barcode-generator'
+      preLoaderRoute: typeof BarcodeGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/basic-calculator': {
       id: '/basic-calculator'
       path: '/basic-calculator'
@@ -842,11 +1117,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BillCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bmi-calculator': {
+      id: '/bmi-calculator'
+      path: '/bmi-calculator'
+      fullPath: '/bmi-calculator'
+      preLoaderRoute: typeof BmiCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/calculators': {
       id: '/calculators'
       path: '/calculators'
       fullPath: '/calculators'
       preLoaderRoute: typeof CalculatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calorie-calculator': {
+      id: '/calorie-calculator'
+      path: '/calorie-calculator'
+      fullPath: '/calorie-calculator'
+      preLoaderRoute: typeof CalorieCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compound-interest-calculator': {
+      id: '/compound-interest-calculator'
+      path: '/compound-interest-calculator'
+      fullPath: '/compound-interest-calculator'
+      preLoaderRoute: typeof CompoundInterestCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compress-pdf': {
@@ -884,6 +1180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CropPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/data-storage-calculator': {
+      id: '/data-storage-calculator'
+      path: '/data-storage-calculator'
+      fullPath: '/data-storage-calculator'
+      preLoaderRoute: typeof DataStorageCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/date-calculator': {
       id: '/date-calculator'
       path: '/date-calculator'
@@ -905,6 +1208,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discount-calculator': {
+      id: '/discount-calculator'
+      path: '/discount-calculator'
+      fullPath: '/discount-calculator'
+      preLoaderRoute: typeof DiscountCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/document-scanner': {
       id: '/document-scanner'
       path: '/document-scanner'
@@ -917,6 +1227,13 @@ declare module '@tanstack/react-router' {
       path: '/edit-pdf'
       fullPath: '/edit-pdf'
       preLoaderRoute: typeof EditPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/emi-calculator': {
+      id: '/emi-calculator'
+      path: '/emi-calculator'
+      fullPath: '/emi-calculator'
+      preLoaderRoute: typeof EmiCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/extract-pdf-pages': {
@@ -938,6 +1255,27 @@ declare module '@tanstack/react-router' {
       path: '/flatten-pdf'
       fullPath: '/flatten-pdf'
       preLoaderRoute: typeof FlattenPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fraction-calculator': {
+      id: '/fraction-calculator'
+      path: '/fraction-calculator'
+      fullPath: '/fraction-calculator'
+      preLoaderRoute: typeof FractionCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fuel-cost-calculator': {
+      id: '/fuel-cost-calculator'
+      path: '/fuel-cost-calculator'
+      fullPath: '/fuel-cost-calculator'
+      preLoaderRoute: typeof FuelCostCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gpa-calculator': {
+      id: '/gpa-calculator'
+      path: '/gpa-calculator'
+      fullPath: '/gpa-calculator'
+      preLoaderRoute: typeof GpaCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/grayscale-pdf': {
@@ -968,11 +1306,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JpgToPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/loan-calculator': {
+      id: '/loan-calculator'
+      path: '/loan-calculator'
+      fullPath: '/loan-calculator'
+      preLoaderRoute: typeof LoanCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merge-pdf': {
       id: '/merge-pdf'
       path: '/merge-pdf'
       fullPath: '/merge-pdf'
       preLoaderRoute: typeof MergePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mortgage-calculator': {
+      id: '/mortgage-calculator'
+      path: '/mortgage-calculator'
+      fullPath: '/mortgage-calculator'
+      preLoaderRoute: typeof MortgageCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/passport-photo': {
@@ -1059,6 +1411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PdfToWordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/percentage-calculator': {
+      id: '/percentage-calculator'
+      path: '/percentage-calculator'
+      fullPath: '/percentage-calculator'
+      preLoaderRoute: typeof PercentageCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/print-ready-pdf': {
       id: '/print-ready-pdf'
       path: '/print-ready-pdf'
@@ -1094,6 +1453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RandomPasswordGeneratorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ratio-calculator': {
+      id: '/ratio-calculator'
+      path: '/ratio-calculator'
+      fullPath: '/ratio-calculator'
+      preLoaderRoute: typeof RatioCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reorder-pdf-pages': {
       id: '/reorder-pdf-pages'
       path: '/reorder-pdf-pages'
@@ -1106,6 +1472,13 @@ declare module '@tanstack/react-router' {
       path: '/rotate-pdf'
       fullPath: '/rotate-pdf'
       preLoaderRoute: typeof RotatePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sales-tax-calculator': {
+      id: '/sales-tax-calculator'
+      path: '/sales-tax-calculator'
+      fullPath: '/sales-tax-calculator'
+      preLoaderRoute: typeof SalesTaxCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sign-pdf': {
@@ -1136,6 +1509,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SplitPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/statistics-calculator': {
+      id: '/statistics-calculator'
+      path: '/statistics-calculator'
+      fullPath: '/statistics-calculator'
+      preLoaderRoute: typeof StatisticsCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -1150,11 +1530,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestRunnerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/time-calculator': {
+      id: '/time-calculator'
+      path: '/time-calculator'
+      fullPath: '/time-calculator'
+      preLoaderRoute: typeof TimeCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/time-duration-calculator': {
+      id: '/time-duration-calculator'
+      path: '/time-duration-calculator'
+      fullPath: '/time-duration-calculator'
+      preLoaderRoute: typeof TimeDurationCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/timezone-converter': {
       id: '/timezone-converter'
       path: '/timezone-converter'
       fullPath: '/timezone-converter'
       preLoaderRoute: typeof TimezoneConverterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tip-calculator': {
+      id: '/tip-calculator'
+      path: '/tip-calculator'
+      fullPath: '/tip-calculator'
+      preLoaderRoute: typeof TipCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools': {
@@ -1202,27 +1603,40 @@ const rootRouteChildren: RootRouteChildren = {
   AgeCalculatorRoute: AgeCalculatorRoute,
   AnnotatePdfRoute: AnnotatePdfRoute,
   ApplicationPdfOptimizerRoute: ApplicationPdfOptimizerRoute,
+  AverageCalculatorRoute: AverageCalculatorRoute,
+  BarcodeGeneratorRoute: BarcodeGeneratorRoute,
   BasicCalculatorRoute: BasicCalculatorRoute,
   BillCalculatorRoute: BillCalculatorRoute,
+  BmiCalculatorRoute: BmiCalculatorRoute,
   CalculatorsRoute: CalculatorsRoute,
+  CalorieCalculatorRoute: CalorieCalculatorRoute,
+  CompoundInterestCalculatorRoute: CompoundInterestCalculatorRoute,
   CompressPdfRoute: CompressPdfRoute,
   CompressPdfToTargetSizeRoute: CompressPdfToTargetSizeRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
   CropPdfRoute: CropPdfRoute,
+  DataStorageCalculatorRoute: DataStorageCalculatorRoute,
   DateCalculatorRoute: DateCalculatorRoute,
   DeletePdfPagesRoute: DeletePdfPagesRoute,
   DisclaimerRoute: DisclaimerRoute,
+  DiscountCalculatorRoute: DiscountCalculatorRoute,
   DocumentScannerRoute: DocumentScannerRoute,
   EditPdfRoute: EditPdfRoute,
+  EmiCalculatorRoute: EmiCalculatorRoute,
   ExtractPdfPagesRoute: ExtractPdfPagesRoute,
   FaqRoute: FaqRoute,
   FlattenPdfRoute: FlattenPdfRoute,
+  FractionCalculatorRoute: FractionCalculatorRoute,
+  FuelCostCalculatorRoute: FuelCostCalculatorRoute,
+  GpaCalculatorRoute: GpaCalculatorRoute,
   GrayscalePdfRoute: GrayscalePdfRoute,
   HowItWorksRoute: HowItWorksRoute,
   InterestCalculatorRoute: InterestCalculatorRoute,
   JpgToPdfRoute: JpgToPdfRoute,
+  LoanCalculatorRoute: LoanCalculatorRoute,
   MergePdfRoute: MergePdfRoute,
+  MortgageCalculatorRoute: MortgageCalculatorRoute,
   PassportPhotoRoute: PassportPhotoRoute,
   PasswordGeneratorRoute: PasswordGeneratorRoute,
   PasswordProtectPdfRoute: PasswordProtectPdfRoute,
@@ -1235,20 +1649,27 @@ const rootRouteChildren: RootRouteChildren = {
   PdfToPngRoute: PdfToPngRoute,
   PdfToTextRoute: PdfToTextRoute,
   PdfToWordRoute: PdfToWordRoute,
+  PercentageCalculatorRoute: PercentageCalculatorRoute,
   PrintReadyPdfRoute: PrintReadyPdfRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   QrCodeGeneratorRoute: QrCodeGeneratorRoute,
   QrGeneratorRoute: QrGeneratorRoute,
   RandomPasswordGeneratorRoute: RandomPasswordGeneratorRoute,
+  RatioCalculatorRoute: RatioCalculatorRoute,
   ReorderPdfPagesRoute: ReorderPdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
+  SalesTaxCalculatorRoute: SalesTaxCalculatorRoute,
   SignPdfRoute: SignPdfRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SmartPdfAnalyzerRoute: SmartPdfAnalyzerRoute,
   SplitPdfRoute: SplitPdfRoute,
+  StatisticsCalculatorRoute: StatisticsCalculatorRoute,
   TermsRoute: TermsRoute,
   TestRunnerRoute: TestRunnerRoute,
+  TimeCalculatorRoute: TimeCalculatorRoute,
+  TimeDurationCalculatorRoute: TimeDurationCalculatorRoute,
   TimezoneConverterRoute: TimezoneConverterRoute,
+  TipCalculatorRoute: TipCalculatorRoute,
   ToolsRoute: ToolsRoute,
   UnitConverterRoute: UnitConverterRoute,
   WatermarkPdfRoute: WatermarkPdfRoute,

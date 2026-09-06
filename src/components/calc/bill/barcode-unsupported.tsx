@@ -6,10 +6,8 @@ interface BarcodeUnsupportedProps {
 }
 
 /**
- * Shown when the browser does not support the BarcodeDetector API.
+ * Shown when camera access / getUserMedia is unavailable on the device or protocol.
  * Provides a clear, friendly message and guides the user to Basic Bill mode.
- *
- * Triggered for: Firefox, Safari, older Chrome versions.
  */
 export function BarcodeUnsupported({ onSwitchToBasic }: BarcodeUnsupportedProps) {
   return (
@@ -19,16 +17,12 @@ export function BarcodeUnsupported({ onSwitchToBasic }: BarcodeUnsupportedProps)
       </span>
 
       <div className="max-w-xs">
-        <h3 className="text-base font-bold text-foreground">
-          Barcode scanning is not supported by this browser
-        </h3>
+        <h3 className="text-base font-bold text-foreground">Camera not detected or supported</h3>
         <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-          Your browser does not support the{" "}
-          <code className="rounded bg-surface px-1 py-0.5 text-xs font-mono">BarcodeDetector</code>{" "}
-          API. Try Chrome or Edge for barcode scanning.
+          Camera scanning requires a connected camera and a secure HTTPS connection.
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
-          You can still create bills by entering products manually.
+          You can create bills anytime by entering products manually using Basic Bill mode.
         </p>
       </div>
 
@@ -41,7 +35,7 @@ export function BarcodeUnsupported({ onSwitchToBasic }: BarcodeUnsupportedProps)
       </button>
 
       <p className="text-xs text-muted-foreground">
-        Supported browsers for barcode scanning: Chrome 83+, Edge 83+, Samsung Internet
+        Works on Chrome, Edge, Safari, Firefox, and mobile browsers.
       </p>
     </div>
   );

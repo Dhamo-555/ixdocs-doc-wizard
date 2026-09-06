@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Download, Loader2, CheckCircle2, Sparkles } from "lucide-react";
 import {
   generateCalcPdfReport,
+  buildCalcReportInput,
   type CalcReportInput,
   type CalcReportOptions,
 } from "@/lib/calc-pdf-report";
@@ -9,7 +10,13 @@ import { cn } from "@/lib/utils";
 
 export interface CalcPdfReportButtonProps {
   /** Function returning the report payload at the moment of click */
-  getInput: () => CalcReportInput;
+  getInput?: () => CalcReportInput;
+  /** Alias for getInput */
+  getReportInput?: () => CalcReportInput;
+  /** Calculator name if passing inputs/results directly */
+  calcName?: string;
+  inputs?: Record<string, string> | { label: string; value: string }[];
+  results?: string | { label: string; value: string }[];
   /** Optional custom filename without extension */
   filename?: string;
   /** Button text override, defaults to "Download PDF Report" */
@@ -30,6 +37,10 @@ type Status = "idle" | "generating" | "redirecting" | "error";
  */
 export function CalcPdfReportButton({
   getInput,
+  getReportInput,
+  calcName,
+  inputs,
+  results,
   filename,
   label = "Download PDF Report",
   variant = "outline",
@@ -39,6 +50,39 @@ export function CalcPdfReportButton({
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const resolveReportInput = useCallback((): CalcReportInput => {
+    if (getInput) return getInput();
+    if (getReportInput) return getReportInput();
+
+    // Fallback: build from calcName, inputs, results
+    const name = calcName || "Calculation";
+    const inputsRecord: Record<string, string> = {};
+    if (Array.isArray(inputs)) {
+      inputs.forEach((i) => {
+        inputsRecord[i.label] = i.value;
+      });
+    } else if (inputs) {
+      Object.assign(inputsRecord, inputs);
+    }
+
+    let mainResult = "Completed";
+    const metrics: { label: string; value: string }[] = [];
+
+    if (typeof results === "string") {
+      mainResult = results;
+    } else if (Array.isArray(results)) {
+      if (results.length > 0 && results[0]) {
+        mainResult = results[0].value;
+      }
+      results.forEach((r) => metrics.push({ label: r.label, value: r.value }));
+    }
+
+    return buildCalcReportInput(name, inputsRecord, mainResult, {
+      metrics,
+      explanation: `Generated via IXDocs Calculator at ${name}.`,
+    });
+  }, [getInput, getReportInput, calcName, inputs, results]);
+
   const handleDownload = useCallback(async () => {
     if (status !== "idle" || disabled) return;
 
@@ -46,7 +90,7 @@ export function CalcPdfReportButton({
     setErrorMsg(null);
 
     try {
-      const input = getInput();
+      const input = resolveReportInput();
       const options: CalcReportOptions = {
         filename: filename || `${input.calculatorName}-Report`,
         redirectAfterDownload: true,
@@ -58,68 +102,55 @@ export function CalcPdfReportButton({
 
       await generateCalcPdfReport(input, options);
     } catch (err) {
-      console.error("Failed to generate calculator PDF report:", err);
-      setErrorMsg("Failed to generate PDF report. Please try again.");
       setStatus("error");
-      setTimeout(() => setStatus("idle"), 3500);
+      setErrorMsg(err instanceof Error ? err.message : "Failed to generate report");
+      setTimeout(() => {
+        setStatus("idle");
+        setErrorMsg(null);
+      }, 4000);
     }
-  }, [getInput, filename, status, disabled]);
-
-  const variantStyles = {
-    primary:
-      "bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs border-transparent active:scale-[0.98]",
-    secondary:
-      "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 hover:bg-emerald-100 border-emerald-500/20 active:scale-[0.98]",
-    outline:
-      "border-border bg-surface text-foreground hover:bg-muted/60 hover:border-emerald-500/40 active:scale-[0.98]",
-  };
+  }, [status, disabled, resolveReportInput, filename]);
 
   return (
-    <div className="inline-flex flex-col items-start gap-1">
+    <div className="flex flex-col items-end gap-1.5">
       <button
         type="button"
         onClick={handleDownload}
         disabled={disabled || status === "generating" || status === "redirecting"}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-semibold transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
-          variantStyles[variant],
+          "inline-flex items-center gap-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed",
+          variant === "primary" &&
+            "bg-emerald-600 text-white shadow-xs hover:bg-emerald-700 active:scale-[0.98] px-4 py-2.5",
+          variant === "secondary" &&
+            "bg-surface text-foreground hover:bg-muted active:scale-[0.98] px-4 py-2.5",
+          variant === "outline" &&
+            "border border-border bg-background text-foreground shadow-xs hover:bg-surface hover:border-border active:scale-[0.98] px-3.5 py-2",
           className,
         )}
       >
-        {status === "idle" && (
-          <>
-            <Download className="size-3.5 text-emerald-600" />
-            <span>{label}</span>
-            <span className="hidden sm:inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[0.65rem] font-medium text-emerald-700 dark:text-emerald-300">
-              <Sparkles className="size-2.5" />
-              <span>Insights</span>
-            </span>
-          </>
-        )}
+        {status === "generating" && <Loader2 className="size-3.5 animate-spin text-emerald-600" />}
+        {status === "redirecting" && <CheckCircle2 className="size-3.5 text-emerald-600" />}
+        {status === "idle" && <Download className="size-3.5 text-emerald-600" />}
+        {status === "error" && <Sparkles className="size-3.5 text-destructive" />}
 
-        {status === "generating" && (
-          <>
-            <Loader2 className="size-3.5 animate-spin text-emerald-600" />
-            <span>Generating PDF Report…</span>
-          </>
-        )}
-
-        {status === "redirecting" && (
-          <>
-            <CheckCircle2 className="size-3.5 text-emerald-600" />
-            <span>Report downloaded! Redirecting to Calculator Home…</span>
-          </>
-        )}
-
-        {status === "error" && (
-          <>
-            <Download className="size-3.5 text-red-500" />
-            <span className="text-red-600">Error Generating</span>
-          </>
-        )}
+        <span>
+          {status === "generating" && "Generating PDF…"}
+          {status === "redirecting" && "Report downloaded! Redirecting…"}
+          {status === "error" && "Error generating"}
+          {status === "idle" && label}
+        </span>
       </button>
 
-      {errorMsg && <span className="text-[0.7rem] text-red-600 font-medium">{errorMsg}</span>}
+      {status === "redirecting" && (
+        <a
+          href="https://calc.ixdocs.com/"
+          className="text-[0.68rem] text-emerald-600 hover:underline font-medium"
+        >
+          Click here if not redirected automatically →
+        </a>
+      )}
+
+      {errorMsg && <p className="text-[0.68rem] text-destructive font-medium">{errorMsg}</p>}
     </div>
   );
 }

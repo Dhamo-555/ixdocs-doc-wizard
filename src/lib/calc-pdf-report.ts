@@ -450,17 +450,20 @@ export async function generateCalcPdfReport(
   triggerPdfDownload(pdfBytes, filename);
 
   // 2. Perform post-download product discovery redirect if requested
-  if (options.redirectAfterDownload) {
-    if (typeof window !== "undefined") {
-      options.onRedirectStarting?.();
+  if (options.redirectAfterDownload && typeof window !== "undefined") {
+    options.onRedirectStarting?.();
+    const targetUrl = options.redirectUrl || "https://calc.ixdocs.com/";
 
-      const targetUrl = options.redirectUrl || "https://calc.ixdocs.com/";
-
-      // Wait approximately 1500 ms so the download prompt is initiated
+    await new Promise<void>((resolve) => {
       setTimeout(() => {
-        window.location.href = targetUrl;
+        try {
+          window.location.assign(targetUrl);
+        } catch {
+          window.location.href = targetUrl;
+        }
+        resolve();
       }, 1500);
-    }
+    });
   }
 }
 
