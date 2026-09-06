@@ -358,11 +358,17 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
         </div>
       )}
 
-      {/* Privacy notice */}
-      <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-        <span className="inline-block size-2 rounded-full bg-emerald-600 shrink-0" />
-        Camera footage is never uploaded. Barcodes are decoded locally in your browser.
-      </p>
+      {/* Privacy notice & compatibility requirement */}
+      <div className="space-y-1 text-xs text-muted-foreground">
+        <p className="flex items-center gap-1.5">
+          <span className="inline-block size-2 rounded-full bg-emerald-600 shrink-0" />
+          Camera scanning requires HTTPS, camera permission, and a compatible device. Manual barcode
+          and item entry are always available.
+        </p>
+        <p className="text-[11px] text-muted-foreground/80 pl-3.5">
+          Camera footage is never uploaded. Barcodes are decoded 100% locally in your browser.
+        </p>
+      </div>
     </div>
   );
 }

@@ -3,6 +3,8 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
+import { CALCULATOR_SLUGS } from "./lib/calc-host";
+
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
@@ -16,6 +18,35 @@ async function getServerEntry(): Promise<ServerEntry> {
     );
   }
   return serverEntryPromise;
+}
+
+function generateCalcSitemapXml(): string {
+  const LASTMOD = "2026-09-06";
+  const urls = [
+    `  <url>\n    <loc>https://calc.ixdocs.com/</loc>\n    <lastmod>${LASTMOD}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>`,
+    `  <url>\n    <loc>https://calc.ixdocs.com/calculators</loc>\n    <lastmod>${LASTMOD}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>`,
+    ...CALCULATOR_SLUGS.map((slug) => {
+      const isPopular = [
+        "basic-calculator",
+        "percentage-calculator",
+        "interest-calculator",
+        "discount-calculator",
+        "tip-calculator",
+        "loan-calculator",
+        "bmi-calculator",
+        "bill-calculator",
+        "barcode-generator",
+      ].includes(slug);
+      return `  <url>\n    <loc>https://calc.ixdocs.com/${slug}</loc>\n    <lastmod>${LASTMOD}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${isPopular ? "0.9" : "0.8"}</priority>\n  </url>`;
+    }),
+  ];
+
+  return [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    ...urls,
+    `</urlset>`,
+  ].join("\n");
 }
 
 // h3 swallows in-handler throws into a normal 500 Response with body
@@ -56,6 +87,28 @@ export default {
         host === "calc.ixdocs.com" ||
         host.includes("calc.ixdocs.com") ||
         url.searchParams.has("calc");
+
+      // Dynamic sitemap for calculator platform
+      if (isCalcHost && url.pathname === "/sitemap.xml") {
+        return new Response(generateCalcSitemapXml(), {
+          headers: {
+            "Content-Type": "application/xml; charset=utf-8",
+            "Cache-Control": "public, max-age=3600",
+          },
+        });
+      }
+
+      // Dynamic robots.txt for calculator platform
+      if (isCalcHost && url.pathname === "/robots.txt") {
+        const robots = `User-agent: *\nAllow: /\n\nSitemap: https://calc.ixdocs.com/sitemap.xml\n`;
+        return new Response(robots, {
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+            "Cache-Control": "public, max-age=3600",
+          },
+        });
+      }
+
       if (isCalcHost && url.pathname === "/") {
         const rewritten = new URL(request.url);
         rewritten.pathname = "/calculators";

@@ -1,6 +1,16 @@
 import { useState, useCallback } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { Plus, FileDown, RotateCcw, Receipt, ScanLine, Pencil, ShieldCheck } from "lucide-react";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import {
+  Plus,
+  FileDown,
+  RotateCcw,
+  Receipt,
+  ScanLine,
+  Pencil,
+  ShieldCheck,
+  BookOpen,
+  ChevronRight,
+} from "lucide-react";
 
 import {
   createEmptyBill,
@@ -18,90 +28,13 @@ import { BillCompanyHeader } from "@/components/calc/bill/bill-company-header";
 import { BillItemRow } from "@/components/calc/bill/bill-item-row";
 import { BillSummary } from "@/components/calc/bill/bill-summary";
 import { BarcodeScanner } from "@/components/calc/bill/barcode-scanner";
+import { calcRouteHead, getRelatedCalculators } from "@/lib/calculators";
+import { CalcCard } from "@/components/calc/calc-card";
 
 // ─── Route ────────────────────────────────────────────────────────────────────
 
 export const Route = createFileRoute("/bill-calculator")({
-  head: () => ({
-    meta: [
-      { title: "Bill Calculator — Free Billing & Receipt Generator | IXDocs Calculator" },
-      {
-        name: "description",
-        content:
-          "Free online bill calculator. Create professional invoices, scan barcodes, add GST, and generate downloadable PDF receipts — all in your browser. No data sent to server.",
-      },
-      {
-        property: "og:title",
-        content: "Bill Calculator — Free Billing & Receipt Generator | IXDocs Calculator",
-      },
-      {
-        property: "og:description",
-        content:
-          "Create bills with GST support and barcode scanning. Download PDF receipts instantly. 100% browser-based.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://calc.ixdocs.com/bill-calculator" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: "https://calc.ixdocs.com/bill-calculator" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          name: "Bill Calculator",
-          url: "https://calc.ixdocs.com/bill-calculator",
-          description:
-            "Free browser-based bill calculator with GST, barcode scanning, and PDF receipt generation.",
-          applicationCategory: "UtilityApplication",
-          operatingSystem: "Any",
-          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: [
-            {
-              "@type": "Question",
-              name: "Can I generate a PDF bill?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Yes. Click 'Generate PDF Bill' to download a professional PDF receipt. Generation happens entirely in your browser — no data is uploaded.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Does the barcode scanner upload camera footage?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "No. Barcode detection uses the browser's native BarcodeDetector API and runs locally on your device. Camera footage is never sent to any server.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Which browsers support barcode scanning?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Chrome 83+, Edge 83+, and Samsung Internet support the BarcodeDetector API. Firefox and Safari users can still create bills manually using the Basic Bill mode.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Can I apply GST to my bill?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Yes. Toggle GST on and enter any percentage. Quick-pick buttons for 5%, 12%, 18%, and 28% are provided for Indian GST slabs.",
-              },
-            },
-          ],
-        }),
-      },
-    ],
-  }),
+  head: () => calcRouteHead("bill-calculator"),
   component: BillCalculatorPage,
 });
 
@@ -226,12 +159,12 @@ function BillCalculatorPage() {
             aria-label="Breadcrumb"
             className="mb-4 flex items-center gap-1.5 text-xs text-muted-foreground"
           >
-            <a href="/calculators" className="hover:text-foreground">
+            <Link to="/calculators" className="hover:text-foreground">
               Calculators
-            </a>
-            <span className="text-muted-foreground/60">›</span>
+            </Link>
+            <ChevronRight className="size-3.5 text-muted-foreground/60" />
             <span className="text-muted-foreground/60">Billing & Invoicing</span>
-            <span className="text-muted-foreground/60">›</span>
+            <ChevronRight className="size-3.5 text-muted-foreground/60" />
             <span className="font-semibold text-foreground">Bill Calculator</span>
           </nav>
 
@@ -439,6 +372,50 @@ function BillCalculatorPage() {
                   <h3 className="text-sm font-semibold text-foreground">{faq.q}</h3>
                   <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{faq.a}</p>
                 </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ── Worked Example ── */}
+          <section className="rounded-3xl border border-border bg-card p-5 sm:p-7 shadow-sm">
+            <div className="flex items-center gap-2.5 text-sm font-bold text-foreground">
+              <span className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                <BookOpen className="size-4" />
+              </span>
+              <h2>Worked Example</h2>
+            </div>
+            <div className="mt-4 rounded-xl border border-border/80 bg-surface/40 p-4 sm:p-5 text-sm">
+              <h3 className="font-semibold text-foreground text-base">
+                Retail Check-Out with Camera Barcode Scanning
+              </h3>
+              <p className="mt-2 text-muted-foreground leading-relaxed">
+                Scan three items at counter, apply 18% GST, and download an 80mm thermal receipt.
+              </p>
+              <ul className="mt-3.5 space-y-1.5 text-xs sm:text-sm text-foreground/90 list-disc list-inside">
+                <li>Point camera at items: Barcodes detected and added to cart instantly</li>
+                <li>Adjust quantities and verify line totals in real-time</li>
+                <li>
+                  Click &apos;Generate PDF Bill&apos; to immediately download receipt without
+                  leaving page
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          {/* ── Related Calculators ── */}
+          <section>
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-bold text-foreground">Related Calculators</h2>
+              <Link
+                to="/calculators"
+                className="text-xs font-semibold text-emerald-600 hover:underline"
+              >
+                View all
+              </Link>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {getRelatedCalculators("bill-calculator").map((relCalc) => (
+                <CalcCard key={relCalc.slug} calc={relCalc} />
               ))}
             </div>
           </section>

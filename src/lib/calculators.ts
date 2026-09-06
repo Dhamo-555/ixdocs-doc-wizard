@@ -47,10 +47,17 @@ export interface CalculatorFaq {
   answer: string;
 }
 
+export interface CalculatorExample {
+  title: string;
+  description: string;
+  steps?: string[];
+}
+
 export interface CalculatorMeta {
   id: string;
   slug: string;
   name: string;
+  pageTitle?: string | undefined;
   shortDescription: string;
   metaDescription: string;
   category: CalculatorCategory;
@@ -61,6 +68,8 @@ export interface CalculatorMeta {
   formula?: string;
   explanation: string;
   howItWorks: string[];
+  example?: CalculatorExample | undefined;
+  ogImage?: string | undefined;
   faqs: CalculatorFaq[];
   relatedSlugs: string[];
 }
@@ -1172,9 +1181,469 @@ export const CALCULATORS: CalculatorMeta[] = [
 
 export const POPULAR_CALCULATORS = CALCULATORS.filter((c) => c.popular);
 
+interface CalcExtraData {
+  pageTitle: string;
+  ogImage?: string;
+  example: CalculatorExample;
+  relatedSlugs?: string[];
+}
+
+const CALC_PAGE_EXTRAS: Record<string, CalcExtraData> = {
+  "basic-calculator": {
+    pageTitle: "Basic Calculator — Fast Arithmetic with History | IXDocs Calculator",
+    ogImage: "https://calc.ixdocs.com/og-basic-calculator.png",
+    example: {
+      title: "Calculating a Multi-Step Grocery Subtotal",
+      description: "Add multiple items together with sales tax: (45.50 + 12.75) × 1.08.",
+      steps: [
+        "Enter 45.50 + 12.75 = 58.25",
+        "Multiply by 1.08 to add 8% tax",
+        "Result is 62.91 with full history log saved",
+      ],
+    },
+    relatedSlugs: ["percentage-calculator", "discount-calculator", "tip-calculator"],
+  },
+  "percentage-calculator": {
+    pageTitle: "Percentage Calculator — Calculate Percentages Online | IXDocs Calculator",
+    ogImage: "https://calc.ixdocs.com/og-percentage-calculator.png",
+    example: {
+      title: "Year-Over-Year Revenue Growth",
+      description: "Determine the percent change from $125,000 in 2025 to $160,000 in 2026.",
+      steps: [
+        "Difference: $160,000 - $125,000 = $35,000",
+        "Divide by initial value: 35,000 / 125,000 = 0.28",
+        "Multiply by 100 = 28% increase",
+      ],
+    },
+    relatedSlugs: ["discount-calculator", "sales-tax-calculator", "tip-calculator"],
+  },
+  "discount-calculator": {
+    pageTitle: "Discount Calculator — Calculate Sale Price & Savings | IXDocs Calculator",
+    example: {
+      title: "Seasonal Clearance with Coupon Stack",
+      description:
+        "Calculate final checkout cost for a $120 jacket with 30% store discount plus an extra 10% coupon.",
+      steps: [
+        "Primary 30% off: $120 - $36 = $84",
+        "Stacked 10% coupon on $84: $84 - $8.40 = $75.60",
+        "Total savings: $44.40 (37% effective discount)",
+      ],
+    },
+    relatedSlugs: ["percentage-calculator", "sales-tax-calculator", "tip-calculator"],
+  },
+  "tip-calculator": {
+    pageTitle: "Tip Calculator — Restaurant Bill Splitter & Gratuity | IXDocs Calculator",
+    example: {
+      title: "Dinner Bill Split Between 4 Friends",
+      description:
+        "Calculate 18% gratuity on an $84.50 dinner check and split evenly across 4 guests.",
+      steps: [
+        "Total tip: $84.50 × 0.18 = $15.21",
+        "Grand total: $84.50 + $15.21 = $99.71",
+        "Each guest pays: $24.93",
+      ],
+    },
+    relatedSlugs: ["discount-calculator", "sales-tax-calculator", "basic-calculator"],
+  },
+  "sales-tax-calculator": {
+    pageTitle: "Sales Tax Calculator — Calculate Tax & Reverse Pre-Tax | IXDocs Calculator",
+    example: {
+      title: "Reverse-Calculating Net Price from Receipt",
+      description:
+        "Find the pre-tax price of an electronic item that cost $540 total with 8% sales tax included.",
+      steps: [
+        "Net Price = $540 / (1 + 0.08) = $500.00",
+        "Sales Tax Portion = $540 - $500 = $40.00",
+      ],
+    },
+    relatedSlugs: ["discount-calculator", "percentage-calculator", "bill-calculator"],
+  },
+  "compound-interest-calculator": {
+    pageTitle: "Compound Interest Calculator — Investment Growth & Returns | IXDocs Calculator",
+    example: {
+      title: "Long-Term Index Fund Growth",
+      description:
+        "Calculate returns on a $10,000 initial investment earning 7% annually with $300 monthly contributions for 15 years.",
+      steps: [
+        "Principal: $10,000; Total contributions: $54,000",
+        "Future Value after 15 years: ~$122,870",
+        "Total interest earned: ~$58,870",
+      ],
+    },
+    relatedSlugs: ["interest-calculator", "loan-calculator", "mortgage-calculator"],
+  },
+  "interest-calculator": {
+    pageTitle: "Interest Calculator — Simple & Compound Interest Rates | IXDocs Calculator",
+    ogImage: "https://calc.ixdocs.com/og-interest-calculator.png",
+    example: {
+      title: "Comparing 3-Year Certificate of Deposit (CD)",
+      description:
+        "Compare $5,000 deposited at 4.5% annual rate between simple interest and monthly compound interest.",
+      steps: [
+        "Simple Interest: $5,000 × 0.045 × 3 = $675.00",
+        "Monthly Compounded: $5,000 × (1 + 0.045/12)^(36) - $5,000 = $721.46",
+        "Compounding advantage: $46.46",
+      ],
+    },
+    relatedSlugs: [
+      "compound-interest-calculator",
+      "loan-calculator",
+      "emi-calculator",
+      "mortgage-calculator",
+    ],
+  },
+  "loan-calculator": {
+    pageTitle: "Loan Calculator — Monthly Payment & Interest | IXDocs Calculator",
+    example: {
+      title: "Auto Loan Repayment",
+      description:
+        "Calculate monthly payments on a $24,000 vehicle loan financed at 6.2% APR over 5 years (60 months).",
+      steps: [
+        "Monthly payment: $466.25",
+        "Total amount repaid: $27,975.00",
+        "Total finance charge (interest): $3,975.00",
+      ],
+    },
+    relatedSlugs: ["mortgage-calculator", "emi-calculator", "compound-interest-calculator"],
+  },
+  "mortgage-calculator": {
+    pageTitle: "Mortgage Calculator — Monthly Payments & Amortization | IXDocs Calculator",
+    example: {
+      title: "30-Year Fixed Home Mortgage",
+      description:
+        "Calculate principal & interest for a $380,000 loan at 6.5% interest rate with 20% down payment.",
+      steps: [
+        "Loan balance after down payment: $304,000",
+        "Monthly Principal & Interest: $1,921.49",
+        "Total interest paid over 30 years: $387,736",
+      ],
+    },
+    relatedSlugs: ["loan-calculator", "emi-calculator", "compound-interest-calculator"],
+  },
+  "emi-calculator": {
+    pageTitle: "EMI Calculator — Equated Monthly Installments & Loan Schedule | IXDocs Calculator",
+    example: {
+      title: "Personal Loan Installments",
+      description:
+        "Compute monthly installment on a 500,000 loan at 10.5% interest over a 36-month tenure.",
+      steps: [
+        "Monthly installment (EMI): 16,253",
+        "Total payment across 36 months: 585,108",
+        "Total interest payable: 85,108",
+      ],
+    },
+    relatedSlugs: ["loan-calculator", "mortgage-calculator", "interest-calculator"],
+  },
+  "fraction-calculator": {
+    pageTitle:
+      "Fraction Calculator — Add, Subtract, Multiply & Divide Fractions | IXDocs Calculator",
+    example: {
+      title: "Adding Unequal Recipe Measurements",
+      description: "Combine 3/4 cup flour with 2/3 cup sugar to find the total dry measurement.",
+      steps: [
+        "Common denominator for 4 and 3 is 12",
+        "Convert: (3×3)/12 + (2×4)/12 = 9/12 + 8/12 = 17/12",
+        "Mixed number: 1 5/12 cups (approx 1.4167)",
+      ],
+    },
+    relatedSlugs: ["ratio-calculator", "average-calculator", "percentage-calculator"],
+  },
+  "ratio-calculator": {
+    pageTitle: "Ratio Calculator — Simplify & Solve Proportions | IXDocs Calculator",
+    example: {
+      title: "Scaling Screen Aspect Ratios",
+      description:
+        "Given a 16:9 widescreen video, calculate height required for a width of 1920 pixels.",
+      steps: [
+        "Proportion: 16 / 9 = 1920 / X",
+        "Cross-multiply: 16X = 1920 × 9 = 17,280",
+        "X = 17,280 / 16 = 1080 pixels (Full HD 1080p)",
+      ],
+    },
+    relatedSlugs: ["fraction-calculator", "percentage-calculator", "unit-converter"],
+  },
+  "average-calculator": {
+    pageTitle: "Average Calculator — Mean, Median & Mode Calculator | IXDocs Calculator",
+    example: {
+      title: "Analyzing Weekly Daily Sales Figures",
+      description:
+        "Find the mean, median, and range for a store's week: 120, 140, 150, 140, 180, 210, 110.",
+      steps: [
+        "Sum = 1,050 across 7 days",
+        "Mean (Average) = 1,050 / 7 = 150",
+        "Sorted: 110, 120, 140, 140, 150, 180, 210; Median = 140; Mode = 140",
+      ],
+    },
+    relatedSlugs: ["statistics-calculator", "gpa-calculator", "fraction-calculator"],
+  },
+  "statistics-calculator": {
+    pageTitle: "Statistics Calculator — Standard Deviation, Variance & Mean | IXDocs Calculator",
+    example: {
+      title: "Test Score Distribution",
+      description:
+        "Calculate population and sample variance for student exam marks: 78, 85, 92, 64, 88.",
+      steps: [
+        "Mean: 81.4",
+        "Sum of squared deviations: 461.2",
+        "Sample Std Dev (s): √ (461.2 / 4) = 10.74",
+      ],
+    },
+    relatedSlugs: ["average-calculator", "gpa-calculator", "percentage-calculator"],
+  },
+  "gpa-calculator": {
+    pageTitle: "GPA Calculator — Cumulative & Semester Grade Point Average | IXDocs Calculator",
+    example: {
+      title: "Calculating a Semester 4.0 Scale GPA",
+      description:
+        "Determine GPA for four 3-credit classes: Math (A = 4.0), Physics (B+ = 3.3), English (A- = 3.7), Chemistry (B = 3.0).",
+      steps: [
+        "Grade points: (4.0×3) + (3.3×3) + (3.7×3) + (3.0×3) = 12 + 9.9 + 11.1 + 9 = 42",
+        "Total Credits: 12",
+        "Semester GPA: 42 / 12 = 3.50",
+      ],
+    },
+    relatedSlugs: ["average-calculator", "statistics-calculator", "basic-calculator"],
+  },
+  "bmi-calculator": {
+    pageTitle: "BMI Calculator — Calculate BMI & Healthy Weight | IXDocs Calculator",
+    example: {
+      title: "Adult BMI and Ideal Weight Range",
+      description:
+        "Assess BMI for an individual who is 5 ft 10 in (178 cm) tall weighing 165 lbs (74.8 kg).",
+      steps: [
+        "BMI = 74.8 / (1.78 × 1.78) = 23.6 kg/m²",
+        "Category: Normal Weight (18.5 - 24.9)",
+        "Healthy weight bracket for 5'10\": 129 lbs to 173 lbs",
+      ],
+    },
+    relatedSlugs: ["calorie-calculator"],
+  },
+  "calorie-calculator": {
+    pageTitle: "Calorie Calculator — Daily Calorie Needs & TDEE | IXDocs Calculator",
+    example: {
+      title: "Weight Maintenance & Calorie Deficit",
+      description:
+        "Calculate maintenance and fat-loss calories for a 30-year-old male, 180 cm tall, 80 kg, exercising 3 times/week.",
+      steps: [
+        "Basal Metabolic Rate (BMR, Mifflin-St Jeor): 1,775 kcal",
+        "TDEE with moderate activity factor (1.375): ~2,440 kcal/day",
+        "Mild deficit for fat loss (-500 kcal): ~1,940 kcal/day",
+      ],
+    },
+    relatedSlugs: ["bmi-calculator", "fuel-cost-calculator"],
+  },
+  "time-duration-calculator": {
+    pageTitle: "Time Duration Calculator — Hours & Minutes Between Times | IXDocs Calculator",
+    example: {
+      title: "Timesheet Work Shift Calculation",
+      description:
+        "Find total payable hours between clocking in at 08:45 AM and clocking out at 05:15 PM with a 45-minute lunch break.",
+      steps: [
+        "Gross time elapsed: 8 hours 30 minutes (510 minutes)",
+        "Deduct unpaid lunch: 510 - 45 = 465 minutes",
+        "Billable work time: 7 hours 45 minutes (7.75 hours)",
+      ],
+    },
+    relatedSlugs: ["time-calculator", "date-calculator", "timezone-converter"],
+  },
+  "time-calculator": {
+    pageTitle: "Time Calculator — Add & Subtract Time Online | IXDocs Calculator",
+    example: {
+      title: "Adding Video Clip Durations",
+      description: "Sum the runtimes of three video segments: 01:25:30, 00:48:45, and 02:12:15.",
+      steps: [
+        "Seconds: 30 + 45 + 15 = 90 sec = 1 min 30 sec",
+        "Minutes: 25 + 48 + 12 + 1 = 86 min = 1 hr 26 min",
+        "Hours: 1 + 0 + 2 + 1 = 4 hrs; Total runtime: 4 hours 26 minutes 30 seconds",
+      ],
+    },
+    relatedSlugs: ["time-duration-calculator", "date-calculator", "timezone-converter"],
+  },
+  "data-storage-calculator": {
+    pageTitle: "Data Storage Calculator — Bytes, KB, MB, GB, TB Converter | IXDocs Calculator",
+    example: {
+      title: "Converting Hard Drive Storage Discrepancy",
+      description:
+        "Convert a 1 Terabyte (TB) commercial SSD to binary Gibibytes (GiB) recognized by operating systems.",
+      steps: [
+        "1 TB decimal = 1,000,000,000,000 bytes",
+        "Divide by binary 1024³: 1,000,000,000,000 / 1,073,741,824",
+        "Operating System available space: ~931.32 GiB",
+      ],
+    },
+    relatedSlugs: ["unit-converter", "basic-calculator", "percentage-calculator"],
+  },
+  "fuel-cost-calculator": {
+    pageTitle: "Fuel Cost Calculator — Trip Gas Cost & Mileage Calculator | IXDocs Calculator",
+    example: {
+      title: "Road Trip Fuel Budget",
+      description:
+        "Calculate estimated petrol cost for a 450-mile road trip in a vehicle averaging 28 MPG with gas at $3.60/gallon.",
+      steps: [
+        "Gallons required: 450 / 28 = 16.07 gallons",
+        "Total cost: 16.07 × $3.60 = $57.86",
+        "Cost per passenger (split between 3 friends): $19.29",
+      ],
+    },
+    relatedSlugs: ["unit-converter", "bill-calculator", "tip-calculator"],
+  },
+  "age-calculator": {
+    pageTitle: "Age Calculator — Exact Age, Months, Days & Next Birthday | IXDocs Calculator",
+    example: {
+      title: "Determining Precise Chronological Age",
+      description: "Calculate exact age on September 6, 2026 for someone born on March 15, 1998.",
+      steps: [
+        "Years elapsed: 28 years",
+        "Months elapsed: 5 months",
+        "Days elapsed: 22 days",
+        "Next birthday countdown: 190 days remaining",
+      ],
+    },
+    relatedSlugs: ["date-calculator", "time-calculator", "time-duration-calculator"],
+  },
+  "date-calculator": {
+    pageTitle: "Date Calculator — Days Between Dates & Add/Subtract Days | IXDocs Calculator",
+    example: {
+      title: "Project Milestone Deadline",
+      description: "Add 90 calendar days to a contract signing date of October 1, 2026.",
+      steps: [
+        "Start Date: October 1, 2026",
+        "Add 90 days across October (30 days remaining), November (30 days), and December",
+        "Target Milestone Date: December 30, 2026",
+      ],
+    },
+    relatedSlugs: ["age-calculator", "time-duration-calculator", "time-calculator"],
+  },
+  "unit-converter": {
+    pageTitle: "Unit Converter — Length, Weight, Volume & Temperature | IXDocs Calculator",
+    example: {
+      title: "Baking Temperature & Weight Conversion",
+      description: "Convert 375°F to Celsius and 2.5 pounds of sugar to grams.",
+      steps: [
+        "Temperature: (375°F - 32) × 5/9 = 190.56°C (Gas mark 5)",
+        "Weight: 2.5 lbs × 453.592 = 1,133.98 grams",
+      ],
+    },
+    relatedSlugs: ["data-storage-calculator", "fuel-cost-calculator", "ratio-calculator"],
+  },
+  "password-generator": {
+    pageTitle: "Password Generator — Strong & Secure Password Creator | IXDocs Calculator",
+    example: {
+      title: "Creating a 16-Character Secure Vault Password",
+      description:
+        "Generate a cryptographically secure random password containing uppercase, lowercase, numbers, and symbols.",
+      steps: [
+        "Entropy: Uses window.crypto.getRandomValues() CSPRNG",
+        "Output: 'k9#M2$pL8*vR4!qX'",
+        "Includes high complexity, zero predictable patterns, no server transmission",
+      ],
+    },
+    relatedSlugs: ["random-password-generator", "word-counter", "qr-generator"],
+  },
+  "random-password-generator": {
+    pageTitle:
+      "Random Password Generator — Customizable Passwords & Passphrases | IXDocs Calculator",
+    example: {
+      title: "Memorable Diceware Passphrase",
+      description:
+        "Generate a 4-word passphrase with custom hyphen separator for easy memorization.",
+      steps: [
+        "Random words: 'cobalt-falcon-orbit-timber'",
+        "Estimated cracking resistance: > 60 bits of entropy",
+        "Convenient for master passwords and smartphone lock codes",
+      ],
+    },
+    relatedSlugs: ["password-generator", "word-counter", "qr-generator"],
+  },
+  "word-counter": {
+    pageTitle: "Word Counter — Character Count, Words & Reading Time | IXDocs Calculator",
+    example: {
+      title: "Essay Length & Reading Speech Estimation",
+      description:
+        "Analyze a 1,200-word academic paper for character counts, paragraphs, and estimated spoken duration.",
+      steps: [
+        "Word count: 1,200 words; Character count: ~7,500 characters",
+        "Silent reading time (@ 200 wpm): ~6 minutes",
+        "Speaking presentation time (@ 130 wpm): ~9 minutes 15 seconds",
+      ],
+    },
+    relatedSlugs: ["data-storage-calculator", "password-generator", "basic-calculator"],
+  },
+  "qr-generator": {
+    pageTitle: "QR Generator — Create Custom QR Codes Online | IXDocs Calculator",
+    example: {
+      title: "Wi-Fi Network Quick-Connect Code",
+      description:
+        "Generate a high-contrast QR code encoding guest office Wi-Fi credentials for instant smartphone joining.",
+      steps: [
+        "Payload formatted as: WIFI:S:OfficeGuest;T:WPA;P:SecretKey123;;",
+        "Live SVG preview rendered instantly",
+        "Exported as 1000px high-resolution PNG for printing",
+      ],
+    },
+    relatedSlugs: ["barcode-generator", "bill-calculator", "password-generator"],
+  },
+  "timezone-converter": {
+    pageTitle: "Timezone Converter — World Clock & Meeting Time Planner | IXDocs Calculator",
+    example: {
+      title: "Scheduling an International Remote Meeting",
+      description:
+        "Find corresponding local times for a conference call scheduled at 10:00 AM New York (EDT, UTC-4).",
+      steps: [
+        "London (BST, UTC+1): 03:00 PM",
+        "Berlin (CEST, UTC+2): 04:00 PM",
+        "Tokyo (JST, UTC+9): 11:00 PM",
+        "Sydney (AEST, UTC+10): 12:00 Midnight",
+      ],
+    },
+    relatedSlugs: ["time-calculator", "time-duration-calculator", "date-calculator"],
+  },
+  "bill-calculator": {
+    pageTitle:
+      "Bill Calculator — POS Invoicing, Barcode Scanner & PDF Receipts | IXDocs Calculator",
+    ogImage: "https://calc.ixdocs.com/og-bill-calculator.png",
+    example: {
+      title: "Retail Check-Out with Camera Barcode Scanning",
+      description:
+        "Scan three items at counter, apply 18% GST, and download an 80mm thermal receipt.",
+      steps: [
+        "Point camera at items: Barcodes detected and added to cart instantly",
+        "Adjust quantities and verify line totals in real-time",
+        "Click 'Generate PDF Bill' to immediately download receipt without leaving page",
+      ],
+    },
+    relatedSlugs: ["barcode-generator", "sales-tax-calculator", "discount-calculator"],
+  },
+  "barcode-generator": {
+    pageTitle: "Product Barcode Generator — Code 128, EAN-13, UPC-A Barcodes | IXDocs Calculator",
+    ogImage: "https://calc.ixdocs.com/og-barcode-generator.png",
+    example: {
+      title: "Generating Retail Product Barcode & Label Sheet",
+      description:
+        "Create an EAN-13 barcode for retail inventory and print a sheet of 24 sticker labels.",
+      steps: [
+        "Select EAN-13 and enter 12-digit prefix: '590123412345'",
+        "Engine calculates valid 13th check digit ('7')",
+        "Click 'Print Label Sheet' to produce ready-to-peel warehouse stickers",
+      ],
+    },
+    relatedSlugs: ["qr-generator", "bill-calculator", "data-storage-calculator"],
+  },
+};
+
 export function getCalculatorBySlug(slug: string): CalculatorMeta | undefined {
   if (!Array.isArray(CALCULATORS)) return undefined;
-  return CALCULATORS.find((c) => c.slug === slug);
+  const base = CALCULATORS.find((c) => c.slug === slug);
+  if (!base) return undefined;
+  const extra = CALC_PAGE_EXTRAS[slug];
+  if (!extra) return base;
+  return {
+    ...base,
+    pageTitle: extra.pageTitle,
+    ...(extra.ogImage ? { ogImage: extra.ogImage } : {}),
+    example: extra.example,
+    relatedSlugs: extra.relatedSlugs || base.relatedSlugs,
+  };
 }
 
 export function getRelatedCalculators(currentSlug: string): CalculatorMeta[] {
@@ -1189,19 +1658,34 @@ export function calcRouteHead(slug: string) {
   const calcMeta = getCalculatorBySlug(slug);
   if (!calcMeta) {
     return {
-      meta: [{ title: "IXDocs Calculator" }],
+      meta: [{ title: "IXDocs Calculator — Free Online Tools" }],
     };
   }
   const url = `https://calc.ixdocs.com/${calcMeta.slug}`;
+  const title = calcMeta.pageTitle || `${calcMeta.name} — Free Online Tool | IXDocs Calculator`;
+  const ogImage = calcMeta.ogImage || "https://calc.ixdocs.com/og-calculator.png";
+  const categoryLabel = CATEGORY_LABELS[calcMeta.category] || "Calculators";
+
   return {
     meta: [
-      { title: `${calcMeta.name} — Free Online Tool | IXDocs Calculator` },
+      { title },
       { name: "description", content: calcMeta.metaDescription },
-      { property: "og:title", content: `${calcMeta.name} — IXDocs Calculator` },
+      { name: "keywords", content: calcMeta.keywords.join(", ") },
+      { name: "robots", content: "index, follow" },
+      { property: "og:site_name", content: "IXDocs Calculator" },
+      { property: "og:title", content: title },
       { property: "og:description", content: calcMeta.metaDescription },
       { property: "og:type", content: "website" },
       { property: "og:url", content: url },
+      { property: "og:image", content: ogImage },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:type", content: "image/png" },
+      { property: "og:image:alt", content: `${calcMeta.name} — IXDocs Calculator` },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: calcMeta.metaDescription },
+      { name: "twitter:image", content: ogImage },
     ],
     links: [{ rel: "canonical", href: url }],
     scripts: [
@@ -1214,26 +1698,54 @@ export function calcRouteHead(slug: string) {
           url,
           description: calcMeta.metaDescription,
           applicationCategory: "UtilityApplication",
-          operatingSystem: "Any",
-          offers: {
-            "@type": "Offer",
-            price: "0",
-            priceCurrency: "USD",
-          },
+          operatingSystem: "All",
+          browserRequirements: "Requires JavaScript. Requires HTML5.",
+          featureList: calcMeta.howItWorks.join("; "),
         }),
       },
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: calcMeta.faqs.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Calculators",
+              item: "https://calc.ixdocs.com/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: categoryLabel,
+              item: `https://calc.ixdocs.com/#${calcMeta.category}`,
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: calcMeta.name,
+              item: url,
+            },
+          ],
         }),
       },
+      ...(calcMeta.faqs && calcMeta.faqs.length > 0
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: calcMeta.faqs.map((f) => ({
+                  "@type": "Question",
+                  name: f.question,
+                  acceptedAnswer: { "@type": "Answer", text: f.answer },
+                })),
+              }),
+            },
+          ]
+        : []),
     ],
   };
 }

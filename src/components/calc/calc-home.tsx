@@ -133,6 +133,79 @@ export function CalcHome() {
         </div>
       </section>
 
+      {/* Crawlable SEO & Platform Information Section */}
+      <section className="container-page py-12 sm:py-16">
+        <div className="rounded-3xl border border-border bg-card p-6 sm:p-10">
+          <div className="max-w-3xl">
+            <h2 className="text-xl font-extrabold text-foreground sm:text-2xl">
+              About IXDocs Calculator Platform
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+              IXDocs Calculator provides a comprehensive, browser-based suite of 31 free
+              calculation, conversion, and generation utilities. Every tool runs 100% client-side
+              using modern Web APIs, WebAssembly, and native hardware acceleration. Your numbers,
+              financial figures, camera scans, and personal inputs are processed locally on your
+              device and are never transmitted to or stored on external servers.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-2xl border border-border bg-surface/50 p-5">
+              <h3 className="text-sm font-bold text-foreground">Finance & Loans</h3>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                Compute loan payments, compound interest growth, mortgage amortization, and equated
+                monthly installments (EMI) with visual schedules and browser-generated PDF
+                summaries.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-surface/50 p-5">
+              <h3 className="text-sm font-bold text-foreground">Math & Everyday Math</h3>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                Solve percentage change and differences, sales taxes, tips, fractions, ratios,
+                averages, standard deviations, and cumulative GPAs with instant real-time results.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-surface/50 p-5">
+              <h3 className="text-sm font-bold text-foreground">Health & Fitness</h3>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                Calculate Body Mass Index (BMI) across adult and youth percentiles, ideal healthy
+                weight ranges, and Total Daily Energy Expenditure (TDEE) with goal-based calorie
+                targets.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-surface/50 p-5">
+              <h3 className="text-sm font-bold text-foreground">Time, Date & Converters</h3>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                Measure precise durations between timestamps, add or subtract calendar days, convert
+                across global timezones, and transform units for length, weight, volume, and data
+                storage.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-surface/50 p-5">
+              <h3 className="text-sm font-bold text-foreground">QR & Barcode Utilities</h3>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                Generate standard retail and logistics barcodes (Code 128, EAN-13, UPC-A, Code 39)
+                and high-density QR codes with SVG, PNG downloads and 1-click printable label
+                sheets.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-surface/50 p-5">
+              <h3 className="text-sm font-bold text-foreground">Billing & POS Receipts</h3>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                Create point-of-sale invoices using your device camera as a live barcode scanner,
+                calculate customizable GST slabs, and export professional A4 or 80mm thermal
+                receipts.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* EXACTLY ONE Monetag AdSlot on the Calculator Homepage */}
       <section className="container-page py-6">
         <CalcAdSlot />

@@ -116,6 +116,33 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
               </section>
             ) : null}
 
+            {/* Worked Example (if available) */}
+            {calc.example ? (
+              <section className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+                <div className="flex items-center gap-2.5 text-sm font-bold text-foreground">
+                  <span className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                    <BookOpen className="size-4" />
+                  </span>
+                  <h2>Worked Example</h2>
+                </div>
+                <div className="mt-4 rounded-xl border border-border/80 bg-surface/40 p-4 sm:p-5 text-sm">
+                  <h3 className="font-semibold text-foreground text-base">{calc.example.title}</h3>
+                  <p className="mt-2 text-muted-foreground leading-relaxed">
+                    {calc.example.description}
+                  </p>
+                  {calc.example.steps && calc.example.steps.length > 0 ? (
+                    <ul className="mt-3.5 space-y-1.5 text-xs sm:text-sm text-foreground/90 list-disc list-inside">
+                      {calc.example.steps.map((step, sIdx) => (
+                        <li key={sIdx} className="leading-relaxed">
+                          {step}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </section>
+            ) : null}
+
             {/* FAQs */}
             {calc.faqs && calc.faqs.length > 0 ? (
               <section className="rounded-2xl border border-border bg-card p-6 sm:p-8">
