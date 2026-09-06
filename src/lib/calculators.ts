@@ -87,7 +87,7 @@ export const CATEGORY_LABELS: Record<CalculatorCategory, string> = {
   billing: "Billing & Invoicing",
 };
 
-export const CALCULATORS: CalculatorMeta[] = [
+const RAW_CALCULATORS: CalculatorMeta[] = [
   // ── 1. Everyday ─────────────────────────────────────────────────────────────
   {
     id: "basic-calculator",
@@ -1179,8 +1179,6 @@ export const CALCULATORS: CalculatorMeta[] = [
   },
 ];
 
-export const POPULAR_CALCULATORS = CALCULATORS.filter((c) => c.popular);
-
 interface CalcExtraData {
   pageTitle: string;
   ogImage?: string;
@@ -1631,11 +1629,8 @@ const CALC_PAGE_EXTRAS: Record<string, CalcExtraData> = {
   },
 };
 
-export function getCalculatorBySlug(slug: string): CalculatorMeta | undefined {
-  if (!Array.isArray(CALCULATORS)) return undefined;
-  const base = CALCULATORS.find((c) => c.slug === slug);
-  if (!base) return undefined;
-  const extra = CALC_PAGE_EXTRAS[slug];
+export const CALCULATORS: CalculatorMeta[] = RAW_CALCULATORS.map((base) => {
+  const extra = CALC_PAGE_EXTRAS[base.slug];
   if (!extra) return base;
   return {
     ...base,
@@ -1644,6 +1639,14 @@ export function getCalculatorBySlug(slug: string): CalculatorMeta | undefined {
     example: extra.example,
     relatedSlugs: extra.relatedSlugs || base.relatedSlugs,
   };
+});
+
+export const POPULAR_CALCULATORS = CALCULATORS.filter((c) => c.popular);
+
+const CALCULATORS_BY_SLUG = new Map<string, CalculatorMeta>(CALCULATORS.map((c) => [c.slug, c]));
+
+export function getCalculatorBySlug(slug: string): CalculatorMeta | undefined {
+  return CALCULATORS_BY_SLUG.get(slug);
 }
 
 export function getRelatedCalculators(currentSlug: string): CalculatorMeta[] {
