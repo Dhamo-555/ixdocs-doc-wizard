@@ -13,13 +13,20 @@ export const Route = createFileRoute("/time-calculator")({
 
 function TimeCalculatorPage() {
   const calcMeta = getCalculatorBySlug("time-calculator")!;
-  const [baseH, setBaseH] = useState<number>(8);
-  const [baseM, setBaseM] = useState<number>(30);
-  const [baseS, setBaseS] = useState<number>(0);
+  const [baseHStr, setBaseHStr] = useState("8");
+  const [baseMStr, setBaseMStr] = useState("30");
+  const [baseSStr, setBaseSStr] = useState("0");
   const [op, setOp] = useState<"add" | "subtract">("add");
-  const [deltaH, setDeltaH] = useState<number>(2);
-  const [deltaM, setDeltaM] = useState<number>(45);
-  const [deltaS, setDeltaS] = useState<number>(0);
+  const [deltaHStr, setDeltaHStr] = useState("2");
+  const [deltaMStr, setDeltaMStr] = useState("45");
+  const [deltaSStr, setDeltaSStr] = useState("0");
+
+  const baseH = Math.min(23, Math.max(0, parseInt(baseHStr, 10) || 0));
+  const baseM = Math.min(59, Math.max(0, parseInt(baseMStr, 10) || 0));
+  const baseS = Math.min(59, Math.max(0, parseInt(baseSStr, 10) || 0));
+  const deltaH = Math.max(0, parseInt(deltaHStr, 10) || 0);
+  const deltaM = Math.max(0, parseInt(deltaMStr, 10) || 0);
+  const deltaS = Math.max(0, parseInt(deltaSStr, 10) || 0);
 
   const result = useMemo(() => {
     return addOrSubtractTime(baseH, baseM, baseS, deltaH, deltaM, deltaS, op);
@@ -73,8 +80,8 @@ function TimeCalculatorPage() {
                   type="number"
                   min="0"
                   max="23"
-                  value={baseH}
-                  onChange={(e) => setBaseH(Math.min(23, Math.max(0, Number(e.target.value))))}
+                  value={baseHStr}
+                  onChange={(e) => setBaseHStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
                 <span className="font-bold text-muted-foreground">:</span>
@@ -82,8 +89,8 @@ function TimeCalculatorPage() {
                   type="number"
                   min="0"
                   max="59"
-                  value={baseM}
-                  onChange={(e) => setBaseM(Math.min(59, Math.max(0, Number(e.target.value))))}
+                  value={baseMStr}
+                  onChange={(e) => setBaseMStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
                 <span className="font-bold text-muted-foreground">:</span>
@@ -91,8 +98,8 @@ function TimeCalculatorPage() {
                   type="number"
                   min="0"
                   max="59"
-                  value={baseS}
-                  onChange={(e) => setBaseS(Math.min(59, Math.max(0, Number(e.target.value))))}
+                  value={baseSStr}
+                  onChange={(e) => setBaseSStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -135,8 +142,8 @@ function TimeCalculatorPage() {
                   <input
                     type="number"
                     min="0"
-                    value={deltaH}
-                    onChange={(e) => setDeltaH(Math.max(0, Number(e.target.value)))}
+                    value={deltaHStr}
+                    onChange={(e) => setDeltaHStr(e.target.value)}
                     className="w-full text-center rounded-xl border border-border bg-background py-2 text-sm font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                   />
                 </div>
@@ -145,8 +152,8 @@ function TimeCalculatorPage() {
                   <input
                     type="number"
                     min="0"
-                    value={deltaM}
-                    onChange={(e) => setDeltaM(Math.max(0, Number(e.target.value)))}
+                    value={deltaMStr}
+                    onChange={(e) => setDeltaMStr(e.target.value)}
                     className="w-full text-center rounded-xl border border-border bg-background py-2 text-sm font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                   />
                 </div>
@@ -155,8 +162,8 @@ function TimeCalculatorPage() {
                   <input
                     type="number"
                     min="0"
-                    value={deltaS}
-                    onChange={(e) => setDeltaS(Math.max(0, Number(e.target.value)))}
+                    value={deltaSStr}
+                    onChange={(e) => setDeltaSStr(e.target.value)}
                     className="w-full text-center rounded-xl border border-border bg-background py-2 text-sm font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                   />
                 </div>

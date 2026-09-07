@@ -5,6 +5,8 @@ import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import { buildCalcReportInput, type CalcReportInput } from "@/lib/calc-pdf-report";
 import { calculateLoan } from "@/lib/calc-engines/loan-calculator";
+import { detectDefaultCurrency, type CurrencyOption } from "@/lib/calc-currency";
+import { CurrencySelector } from "@/components/calc/currency-selector";
 
 export const Route = createFileRoute("/loan-calculator")({
   head: () => calcRouteHead("loan-calculator"),
@@ -13,23 +15,30 @@ export const Route = createFileRoute("/loan-calculator")({
 
 function LoanCalculatorPage() {
   const calcMeta = getCalculatorBySlug("loan-calculator")!;
-  const [loanAmount, setLoanAmount] = useState<number>(25000);
-  const [annualRate, setAnnualRate] = useState<number>(6.5);
-  const [termYears, setTermYears] = useState<number>(5);
+  const [currency, setCurrency] = useState<CurrencyOption>(() => detectDefaultCurrency());
+  const [loanAmountStr, setLoanAmountStr] = useState<string>("25000");
+  const [annualRateStr, setAnnualRateStr] = useState<string>("6.5");
+  const [termYearsStr, setTermYearsStr] = useState<string>("5");
+
+  const loanAmount = parseFloat(loanAmountStr) || 0;
+  const annualRate = parseFloat(annualRateStr) || 0;
+  const termYears = parseFloat(termYearsStr) || 0;
 
   const result = useMemo(() => {
     return calculateLoan(loanAmount, annualRate, termYears * 12);
   }, [loanAmount, annualRate, termYears]);
 
+  const numLocale = currency.code === "INR" ? "en-IN" : undefined;
+
   const getReportInput = useCallback((): CalcReportInput => {
-    const formattedPayment = `$${result.monthlyPayment.toFixed(2)}`;
-    const formattedTotal = `$${result.totalPayment.toFixed(2)}`;
-    const formattedInterest = `$${result.totalInterest.toFixed(2)}`;
+    const formattedPayment = `${currency.symbol}${result.monthlyPayment.toFixed(2)}`;
+    const formattedTotal = `${currency.symbol}${result.totalPayment.toFixed(2)}`;
+    const formattedInterest = `${currency.symbol}${result.totalInterest.toFixed(2)}`;
 
     return buildCalcReportInput(
       "Loan Calculator",
       {
-        "Loan Amount": `$${loanAmount.toLocaleString()}`,
+        "Loan Amount": `${currency.symbol}${loanAmount.toLocaleString(numLocale)}`,
         "Annual Interest Rate": `${annualRate}%`,
         "Loan Term": `${termYears} Years (${termYears * 12} Months)`,
       },
@@ -44,27 +53,33 @@ function LoanCalculatorPage() {
           },
         ],
         formula: "PMT = P × [r(1+r)^n] / [(1+r)^n - 1]",
-        explanation: `A loan of $${loanAmount.toLocaleString()} at ${annualRate}% over ${termYears} years requires ${termYears * 12} monthly payments of ${formattedPayment}, incurring a total interest charge of ${formattedInterest}.`,
+        explanation: `A loan of ${currency.symbol}${loanAmount.toLocaleString(numLocale)} at ${annualRate}% over ${termYears} years requires ${termYears * 12} monthly payments of ${formattedPayment}, incurring a total interest charge of ${formattedInterest}.`,
       },
     );
-  }, [loanAmount, annualRate, termYears, result]);
+  }, [currency, numLocale, loanAmount, annualRate, termYears, result]);
 
   return (
     <CalcPageLayout calc={calcMeta}>
       <div className="grid gap-8 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
           <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
-            <h2 className="text-base font-bold text-foreground">Loan Terms</h2>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h2 className="text-base font-bold text-foreground">Loan Terms</h2>
+              <CurrencySelector
+                selectedCurrency={currency}
+                onCurrencyChange={setCurrency}
+              />
+            </div>
 
             <div>
               <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                Loan Amount ($)
+                Loan Amount ({currency.symbol})
               </label>
               <input
                 type="number"
                 min="0"
-                value={loanAmount}
-                onChange={(e) => setLoanAmount(Number(e.target.value))}
+                value={loanAmountStr}
+                onChange={(e) => setLoanAmountStr(e.target.value)}
                 className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
               />
             </div>
@@ -78,8 +93,8 @@ function LoanCalculatorPage() {
                   type="number"
                   min="0"
                   step="0.1"
-                  value={annualRate}
-                  onChange={(e) => setAnnualRate(Number(e.target.value))}
+                  value={annualRateStr}
+                  onChange={(e) => setAnnualRateStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -92,8 +107,8 @@ function LoanCalculatorPage() {
                   type="number"
                   min="1"
                   max="40"
-                  value={termYears}
-                  onChange={(e) => setTermYears(Number(e.target.value))}
+                  value={termYearsStr}
+                  onChange={(e) => setTermYearsStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -105,7 +120,7 @@ function LoanCalculatorPage() {
                 <button
                   key={yr}
                   type="button"
-                  onClick={() => setTermYears(yr)}
+                  onClick={() => setTermYearsStr(String(yr))}
                   className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
                     termYears === yr
                       ? "bg-emerald-600 text-white"
@@ -137,13 +152,16 @@ function LoanCalculatorPage() {
                       <tr key={row.year} className="hover:bg-surface/40">
                         <td className="py-1.5 px-3 font-semibold">Year {row.year}</td>
                         <td className="py-1.5 px-3 text-right">
-                          ${row.principalPaid.toLocaleString()}
+                          {currency.symbol}
+                          {row.principalPaid.toLocaleString(numLocale)}
                         </td>
                         <td className="py-1.5 px-3 text-right text-amber-600 font-medium">
-                          ${row.interestPaid.toLocaleString()}
+                          {currency.symbol}
+                          {row.interestPaid.toLocaleString(numLocale)}
                         </td>
                         <td className="py-1.5 px-3 text-right font-bold">
-                          ${row.remainingBalance.toLocaleString()}
+                          {currency.symbol}
+                          {row.remainingBalance.toLocaleString(numLocale)}
                         </td>
                       </tr>
                     ))}
@@ -164,7 +182,8 @@ function LoanCalculatorPage() {
                 Monthly Payment
               </span>
               <div className="mt-1 text-4xl font-extrabold text-foreground">
-                ${result.monthlyPayment.toFixed(2)}
+                {currency.symbol}
+                {result.monthlyPayment.toFixed(2)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 per month for {termYears * 12} months
@@ -175,13 +194,15 @@ function LoanCalculatorPage() {
               <div className="rounded-xl border border-border p-3.5 bg-surface/30">
                 <span className="text-muted-foreground">Total Interest</span>
                 <p className="mt-1 text-base font-bold text-amber-600">
-                  ${result.totalInterest.toLocaleString()}
+                  {currency.symbol}
+                  {result.totalInterest.toLocaleString(numLocale)}
                 </p>
               </div>
               <div className="rounded-xl border border-border p-3.5 bg-surface/30">
                 <span className="text-muted-foreground">Total Payment</span>
                 <p className="mt-1 text-base font-bold text-foreground">
-                  ${result.totalPayment.toLocaleString()}
+                  {currency.symbol}
+                  {result.totalPayment.toLocaleString(numLocale)}
                 </p>
               </div>
             </div>

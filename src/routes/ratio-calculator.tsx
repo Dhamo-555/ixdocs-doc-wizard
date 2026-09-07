@@ -16,8 +16,11 @@ function RatioCalculatorPage() {
   const [tab, setTab] = useState<"simplify" | "solve">("simplify");
 
   // Tab 1: Simplify
-  const [simpA, setSimpA] = useState<number>(1920);
-  const [simpB, setSimpB] = useState<number>(1080);
+  const [simpAStr, setSimpAStr] = useState("1920");
+  const [simpBStr, setSimpBStr] = useState("1080");
+
+  const simpA = parseFloat(simpAStr) || 0;
+  const simpB = parseFloat(simpBStr) || 0;
 
   // Tab 2: Solve A:B = C:D (one is null)
   const [propA, setPropA] = useState<string>("4");
@@ -122,15 +125,15 @@ function RatioCalculatorPage() {
             <div className="flex items-center justify-center gap-4">
               <input
                 type="number"
-                value={simpA}
-                onChange={(e) => setSimpA(Number(e.target.value))}
+                value={simpAStr}
+                onChange={(e) => setSimpAStr(e.target.value)}
                 className="w-28 text-center rounded-xl border border-border bg-background py-2 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
               />
               <span className="text-2xl font-extrabold text-muted-foreground">:</span>
               <input
                 type="number"
-                value={simpB}
-                onChange={(e) => setSimpB(Number(e.target.value))}
+                value={simpBStr}
+                onChange={(e) => setSimpBStr(e.target.value)}
                 className="w-28 text-center rounded-xl border border-border bg-background py-2 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
               />
             </div>
@@ -138,21 +141,22 @@ function RatioCalculatorPage() {
             {/* Quick aspect ratio presets */}
             <div className="flex flex-wrap justify-center gap-2">
               {[
-                { label: "16:9", a: 1920, b: 1080 },
-                { label: "4:3", a: 1024, b: 768 },
-                { label: "21:9", a: 2560, b: 1080 },
-                { label: "1:1", a: 500, b: 500 },
+                { label: "16:9", a: 16, b: 9 },
+                { label: "4:3", a: 4, b: 3 },
+                { label: "21:9", a: 21, b: 9 },
+                { label: "1:1", a: 1, b: 1 },
+                { label: "3:2", a: 3, b: 2 },
               ].map((p) => (
                 <button
                   key={p.label}
                   type="button"
                   onClick={() => {
-                    setSimpA(p.a);
-                    setSimpB(p.b);
+                    setSimpAStr(String(p.a));
+                    setSimpBStr(String(p.b));
                   }}
-                  className="rounded-lg bg-surface px-2.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                  className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
                 >
-                  {p.label} ({p.a}x{p.b})
+                  {p.label}
                 </button>
               ))}
             </div>

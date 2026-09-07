@@ -71,6 +71,7 @@ import { Route as RatioCalculatorRouteImport } from './routes/ratio-calculator'
 import { Route as ReorderPdfPagesRouteImport } from './routes/reorder-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
 import { Route as SalesTaxCalculatorRouteImport } from './routes/sales-tax-calculator'
+import { Route as ScientificCalculatorRouteImport } from './routes/scientific-calculator'
 import { Route as SignPdfRouteImport } from './routes/sign-pdf'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SmartPdfAnalyzerRouteImport } from './routes/smart-pdf-analyzer'
@@ -399,6 +400,11 @@ const SalesTaxCalculatorRoute = SalesTaxCalculatorRouteImport.update({
   path: '/sales-tax-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScientificCalculatorRoute = ScientificCalculatorRouteImport.update({
+  id: '/scientific-calculator',
+  path: '/scientific-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignPdfRoute = SignPdfRouteImport.update({
   id: '/sign-pdf',
   path: '/sign-pdf',
@@ -543,6 +549,7 @@ export interface FileRoutesByFullPath {
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
+  '/scientific-calculator': typeof ScientificCalculatorRoute
   '/sign-pdf': typeof SignPdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
@@ -623,6 +630,7 @@ export interface FileRoutesByTo {
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
+  '/scientific-calculator': typeof ScientificCalculatorRoute
   '/sign-pdf': typeof SignPdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
@@ -704,6 +712,7 @@ export interface FileRoutesById {
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
+  '/scientific-calculator': typeof ScientificCalculatorRoute
   '/sign-pdf': typeof SignPdfRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
@@ -786,6 +795,7 @@ export interface FileRouteTypes {
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
+    | '/scientific-calculator'
     | '/sign-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
@@ -866,6 +876,7 @@ export interface FileRouteTypes {
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
+    | '/scientific-calculator'
     | '/sign-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
@@ -946,6 +957,7 @@ export interface FileRouteTypes {
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
+    | '/scientific-calculator'
     | '/sign-pdf'
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
@@ -1027,6 +1039,7 @@ export interface RootRouteChildren {
   ReorderPdfPagesRoute: typeof ReorderPdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
   SalesTaxCalculatorRoute: typeof SalesTaxCalculatorRoute
+  ScientificCalculatorRoute: typeof ScientificCalculatorRoute
   SignPdfRoute: typeof SignPdfRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SmartPdfAnalyzerRoute: typeof SmartPdfAnalyzerRoute
@@ -1481,6 +1494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalesTaxCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scientific-calculator': {
+      id: '/scientific-calculator'
+      path: '/scientific-calculator'
+      fullPath: '/scientific-calculator'
+      preLoaderRoute: typeof ScientificCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sign-pdf': {
       id: '/sign-pdf'
       path: '/sign-pdf'
@@ -1659,6 +1679,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReorderPdfPagesRoute: ReorderPdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
   SalesTaxCalculatorRoute: SalesTaxCalculatorRoute,
+  ScientificCalculatorRoute: ScientificCalculatorRoute,
   SignPdfRoute: SignPdfRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SmartPdfAnalyzerRoute: SmartPdfAnalyzerRoute,

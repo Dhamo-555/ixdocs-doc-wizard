@@ -74,7 +74,15 @@ export function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 border-t border-border/60 pt-4 text-xs text-muted-foreground/80 leading-relaxed">
+          <p>
+            IXDocs provides browser-based tools for general-purpose utility. Tools process files and
+            data locally in your browser where applicable. IXDocs does not endorse and is not
+            responsible for unauthorized, unlawful, or harmful use of its tools.
+          </p>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
           <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
             {LEGAL.map((item) => (
               <Link

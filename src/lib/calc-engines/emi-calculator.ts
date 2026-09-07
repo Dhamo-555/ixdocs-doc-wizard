@@ -21,46 +21,51 @@ export function calculateEmi(
   annualRatePct: number,
   tenureMonths: number,
 ): EmiResult {
-  if (principal <= 0 || tenureMonths <= 0) {
+  const p = Math.max(0, principal);
+  const n = Math.max(1, Math.round(tenureMonths));
+  const rate = Math.max(0, annualRatePct);
+
+  if (p === 0) {
     return {
       monthlyEmi: 0,
       totalInterest: 0,
       totalAmount: 0,
       interestPercent: 0,
-      principalPercent: 100,
+      principalPercent: 0,
       amortization: [],
     };
   }
 
-  const r = annualRatePct > 0 ? annualRatePct / (12 * 100) : 0;
+  const r = rate > 0 ? rate / (12 * 100) : 0;
   let emi = 0;
 
   if (r === 0) {
-    emi = principal / tenureMonths;
+    emi = p / n;
   } else {
-    emi = (principal * r * Math.pow(1 + r, tenureMonths)) / (Math.pow(1 + r, tenureMonths) - 1);
+    const factor = Math.pow(1 + r, n);
+    emi = (p * r * factor) / (factor - 1);
   }
 
-  const totalAmount = emi * tenureMonths;
-  const totalInterest = Math.max(0, totalAmount - principal);
+  const totalAmount = emi * n;
+  const totalInterest = Math.max(0, totalAmount - p);
 
   const interestPercent = totalAmount > 0 ? Math.round((totalInterest / totalAmount) * 100) : 0;
-  const principalPercent = 100 - interestPercent;
+  const principalPercent = totalAmount > 0 ? 100 - interestPercent : 0;
 
   // Yearly schedule
   const amortization: EmiResult["amortization"] = [];
-  let balance = principal;
+  let balance = p;
   let yearP = 0;
   let yearI = 0;
 
-  for (let m = 1; m <= tenureMonths; m++) {
+  for (let m = 1; m <= n; m++) {
     const interest = balance * r;
     const princ = emi - interest;
     balance = Math.max(0, balance - princ);
     yearI += interest;
     yearP += princ;
 
-    if (m % 12 === 0 || m === tenureMonths) {
+    if (m % 12 === 0 || m === n) {
       amortization.push({
         year: Math.ceil(m / 12),
         principalPaid: Math.round(yearP),

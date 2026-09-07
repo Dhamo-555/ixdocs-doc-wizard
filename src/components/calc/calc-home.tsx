@@ -35,7 +35,7 @@ export function CalcHome() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50/60 px-3.5 py-1.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-xs">
             <span className="size-2 rounded-full bg-emerald-600 animate-pulse" aria-hidden="true" />
-            <span>Suite of 31 Fast In-Browser Calculators</span>
+            <span>Suite of 32 In-Browser Calculators</span>
           </div>
 
           <h1 className="mx-auto mt-6 max-w-3xl text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance">
@@ -45,7 +45,7 @@ export function CalcHome() {
 
           <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:mt-5 sm:text-lg text-pretty">
             Perform everyday math, financial planning, BMI, health, unit conversions, date
-            arithmetic, barcodes, and billing receipts — all computed 100% in your browser.
+            arithmetic, barcodes, and billing receipts — all computed locally in your browser.
           </p>
 
           {/* Search bar */}
@@ -65,7 +65,7 @@ export function CalcHome() {
             </div>
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
-              <span>100% Client-Side Privacy</span>
+              <span>Local Browser Processing</span>
             </div>
           </div>
         </div>
@@ -141,11 +141,10 @@ export function CalcHome() {
               About IXDocs Calculator Platform
             </h2>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              IXDocs Calculator provides a comprehensive, browser-based suite of 31 free
-              calculation, conversion, and generation utilities. Every tool runs 100% client-side
-              using modern Web APIs, WebAssembly, and native hardware acceleration. Your numbers,
-              financial figures, camera scans, and personal inputs are processed locally on your
-              device and are never transmitted to or stored on external servers.
+              IXDocs Calculator provides a suite of 32 browser-based calculation, conversion, and
+              utility engines. Every tool runs locally in your browser using modern Web APIs. Your
+              numbers, calculations, camera scans, and personal inputs are processed directly on
+              your device.
             </p>
           </div>
 

@@ -2,6 +2,8 @@ import { useState, useMemo, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
 import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
+import { CurrencySelector } from "@/components/calc/currency-selector";
+import { detectDefaultCurrency, type CurrencyOption } from "@/lib/calc-currency";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import { buildCalcReportInput, type CalcReportInput } from "@/lib/calc-pdf-report";
 import { calculateMortgage } from "@/lib/calc-engines/mortgage-calculator";
@@ -13,13 +15,21 @@ export const Route = createFileRoute("/mortgage-calculator")({
 
 function MortgageCalculatorPage() {
   const calcMeta = getCalculatorBySlug("mortgage-calculator")!;
-  const [homePrice, setHomePrice] = useState<number>(350000);
-  const [downPayment, setDownPayment] = useState<number>(70000);
-  const [rate, setRate] = useState<number>(6.5);
+  const [currency, setCurrency] = useState<CurrencyOption>(detectDefaultCurrency);
+  const [homePriceStr, setHomePriceStr] = useState("350000");
+  const [downPaymentStr, setDownPaymentStr] = useState("70000");
+  const [rateStr, setRateStr] = useState("6.5");
   const [termYears, setTermYears] = useState<number>(30);
-  const [propertyTax, setPropertyTax] = useState<number>(4200);
-  const [insurance, setInsurance] = useState<number>(1200);
-  const [hoa, setHoa] = useState<number>(0);
+  const [propertyTaxStr, setPropertyTaxStr] = useState("4200");
+  const [insuranceStr, setInsuranceStr] = useState("1200");
+  const [hoaStr, setHoaStr] = useState("0");
+
+  const homePrice = parseFloat(homePriceStr) || 0;
+  const downPayment = parseFloat(downPaymentStr) || 0;
+  const rate = parseFloat(rateStr) || 0;
+  const propertyTax = parseFloat(propertyTaxStr) || 0;
+  const insurance = parseFloat(insuranceStr) || 0;
+  const hoa = parseFloat(hoaStr) || 0;
 
   const result = useMemo(() => {
     return calculateMortgage({
@@ -39,61 +49,72 @@ function MortgageCalculatorPage() {
     return buildCalcReportInput(
       "Mortgage Calculator",
       {
-        "Home Price": `$${homePrice.toLocaleString()}`,
-        "Down Payment": `$${downPayment.toLocaleString()} (${downPct}%)`,
-        "Loan Amount": `$${result.loanAmount.toLocaleString()}`,
+        "Home Price": `${currency.symbol}${homePrice.toLocaleString()}`,
+        "Down Payment": `${currency.symbol}${downPayment.toLocaleString()} (${downPct}%)`,
+        "Loan Amount": `${currency.symbol}${result.loanAmount.toLocaleString()}`,
         "Interest Rate": `${rate}%`,
         "Loan Term": `${termYears} Years`,
       },
-      `$${result.totalMonthlyPayment.toFixed(2)} / month`,
+      `${currency.symbol}${result.totalMonthlyPayment.toFixed(2)} / month`,
       {
         metrics: [
           {
             label: "Principal & Interest",
-            value: `$${result.monthlyPrincipalInterest.toFixed(2)}`,
+            value: `${currency.symbol}${result.monthlyPrincipalInterest.toFixed(2)}`,
           },
-          { label: "Property Tax", value: `$${result.monthlyTax.toFixed(2)}` },
-          { label: "Homeowners Insurance", value: `$${result.monthlyInsurance.toFixed(2)}` },
-          ...(hoa > 0 ? [{ label: "HOA Fees", value: `$${result.monthlyHoa.toFixed(2)}` }] : []),
-          { label: "Total Loan Interest", value: `$${result.totalInterest.toLocaleString()}` },
+          { label: "Property Tax", value: `${currency.symbol}${result.monthlyTax.toFixed(2)}` },
+          {
+            label: "Homeowners Insurance",
+            value: `${currency.symbol}${result.monthlyInsurance.toFixed(2)}`,
+          },
+          ...(hoa > 0
+            ? [{ label: "HOA Fees", value: `${currency.symbol}${result.monthlyHoa.toFixed(2)}` }]
+            : []),
+          {
+            label: "Total Loan Interest",
+            value: `${currency.symbol}${result.totalInterest.toLocaleString()}`,
+          },
         ],
         formula: "Total Monthly = P&I + (Taxes / 12) + (Insurance / 12) + HOA",
-        explanation: `For a $${homePrice.toLocaleString()} home with a $${downPayment.toLocaleString()} (${downPct}%) down payment, the monthly payment is estimated at $${result.totalMonthlyPayment.toFixed(2)}.`,
+        explanation: `For a ${currency.symbol}${homePrice.toLocaleString()} home with a ${currency.symbol}${downPayment.toLocaleString()} (${downPct}%) down payment, the monthly payment is estimated at ${currency.symbol}${result.totalMonthlyPayment.toFixed(2)}.`,
       },
     );
-  }, [homePrice, downPayment, downPct, rate, termYears, hoa, result]);
+  }, [currency.symbol, homePrice, downPayment, downPct, rate, termYears, hoa, result]);
 
   return (
     <CalcPageLayout calc={calcMeta}>
       <div className="grid gap-8 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
           <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
-            <h2 className="text-base font-bold text-foreground">Property & Loan Details</h2>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+              <h2 className="text-base font-bold text-foreground">Property & Loan Details</h2>
+              <CurrencySelector value={currency} onChange={setCurrency} />
+            </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                  Home Purchase Price ($)
+                  Home Purchase Price ({currency.symbol})
                 </label>
                 <input
                   type="number"
                   min="0"
-                  value={homePrice}
-                  onChange={(e) => setHomePrice(Number(e.target.value))}
+                  value={homePriceStr}
+                  onChange={(e) => setHomePriceStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                  Down Payment ($){" "}
+                  Down Payment ({currency.symbol}){" "}
                   <span className="font-normal text-muted-foreground">({downPct}%)</span>
                 </label>
                 <input
                   type="number"
                   min="0"
-                  value={downPayment}
-                  onChange={(e) => setDownPayment(Number(e.target.value))}
+                  value={downPaymentStr}
+                  onChange={(e) => setDownPaymentStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -108,8 +129,8 @@ function MortgageCalculatorPage() {
                   type="number"
                   min="0"
                   step="0.1"
-                  value={rate}
-                  onChange={(e) => setRate(Number(e.target.value))}
+                  value={rateStr}
+                  onChange={(e) => setRateStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -141,39 +162,39 @@ function MortgageCalculatorPage() {
             <div className="grid gap-4 sm:grid-cols-3 pt-2 border-t border-border">
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                  Property Tax ($/yr)
+                  Property Tax ({currency.symbol}/yr)
                 </label>
                 <input
                   type="number"
                   min="0"
-                  value={propertyTax}
-                  onChange={(e) => setPropertyTax(Number(e.target.value))}
+                  value={propertyTaxStr}
+                  onChange={(e) => setPropertyTaxStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                  Home Insurance ($/yr)
+                  Home Insurance ({currency.symbol}/yr)
                 </label>
                 <input
                   type="number"
                   min="0"
-                  value={insurance}
-                  onChange={(e) => setInsurance(Number(e.target.value))}
+                  value={insuranceStr}
+                  onChange={(e) => setInsuranceStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                  HOA Fees ($/mo)
+                  HOA Fees ({currency.symbol}/mo)
                 </label>
                 <input
                   type="number"
                   min="0"
-                  value={hoa}
-                  onChange={(e) => setHoa(Number(e.target.value))}
+                  value={hoaStr}
+                  onChange={(e) => setHoaStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -190,8 +211,9 @@ function MortgageCalculatorPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
                 Total Monthly PITI
               </span>
-              <div className="mt-1 text-4xl font-extrabold text-foreground">
-                ${result.totalMonthlyPayment.toFixed(2)}
+              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-foreground break-all">
+                {currency.symbol}
+                {result.totalMonthlyPayment.toFixed(2)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 Principal, Interest, Taxes & Insurance
@@ -203,33 +225,38 @@ function MortgageCalculatorPage() {
               <div className="flex justify-between py-1.5 border-b border-border/60">
                 <span className="text-muted-foreground">Principal & Interest</span>
                 <span className="font-bold text-foreground">
-                  ${result.monthlyPrincipalInterest.toFixed(2)}
+                  {currency.symbol}
+                  {result.monthlyPrincipalInterest.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-border/60">
                 <span className="text-muted-foreground">Property Taxes</span>
                 <span className="font-semibold text-foreground">
-                  ${result.monthlyTax.toFixed(2)}
+                  {currency.symbol}
+                  {result.monthlyTax.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-border/60">
                 <span className="text-muted-foreground">Home Insurance</span>
                 <span className="font-semibold text-foreground">
-                  ${result.monthlyInsurance.toFixed(2)}
+                  {currency.symbol}
+                  {result.monthlyInsurance.toFixed(2)}
                 </span>
               </div>
               {hoa > 0 && (
                 <div className="flex justify-between py-1.5 border-b border-border/60">
                   <span className="text-muted-foreground">HOA Dues</span>
                   <span className="font-semibold text-foreground">
-                    ${result.monthlyHoa.toFixed(2)}
+                    {currency.symbol}
+                    {result.monthlyHoa.toFixed(2)}
                   </span>
                 </div>
               )}
               <div className="flex justify-between py-1.5">
                 <span className="text-muted-foreground">Total Lifetime Interest</span>
                 <span className="font-semibold text-amber-600">
-                  ${result.totalInterest.toLocaleString()}
+                  {currency.symbol}
+                  {result.totalInterest.toLocaleString()}
                 </span>
               </div>
             </div>

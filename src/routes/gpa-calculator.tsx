@@ -96,44 +96,53 @@ function GpaCalculatorPage() {
               </button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {courses.map((course) => (
-                <div key={course.id} className="flex items-center gap-2">
+                <div
+                  key={course.id}
+                  className="flex flex-wrap sm:flex-nowrap items-center gap-2 rounded-2xl border border-border/70 bg-surface/30 p-2.5 sm:border-0 sm:bg-transparent sm:p-0"
+                >
                   <input
                     type="text"
                     value={course.name}
                     onChange={(e) => updateCourse(course.id, "name", e.target.value)}
                     placeholder="Course name"
-                    className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-xs font-medium text-foreground focus:border-emerald-600 focus:outline-none"
+                    className="w-full sm:flex-1 rounded-xl border border-border bg-background px-3 py-2 text-xs font-medium text-foreground focus:border-emerald-600 focus:outline-none"
                   />
-                  <select
-                    value={course.grade}
-                    onChange={(e) => updateCourse(course.id, "grade", e.target.value)}
-                    className="w-24 rounded-xl border border-border bg-background px-2.5 py-2 text-xs font-bold text-foreground focus:border-emerald-600 focus:outline-none"
-                  >
-                    {Object.keys(GRADE_POINTS).map((g) => (
-                      <option key={g} value={g}>
-                        {g} ({GRADE_POINTS[g]?.toFixed(1)})
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    min="0"
-                    max="12"
-                    value={course.credits}
-                    onChange={(e) => updateCourse(course.id, "credits", Number(e.target.value))}
-                    placeholder="Credits"
-                    className="w-16 text-center rounded-xl border border-border bg-background py-2 text-xs font-bold text-foreground focus:border-emerald-600 focus:outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeCourse(course.id)}
-                    disabled={courses.length <= 1}
-                    className="p-2 text-muted-foreground hover:text-destructive disabled:opacity-30"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
+                  <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
+                    <select
+                      value={course.grade}
+                      onChange={(e) => updateCourse(course.id, "grade", e.target.value)}
+                      className="flex-1 sm:w-24 rounded-xl border border-border bg-background px-2.5 py-2 text-xs font-bold text-foreground focus:border-emerald-600 focus:outline-none"
+                    >
+                      {Object.keys(GRADE_POINTS).map((g) => (
+                        <option key={g} value={g}>
+                          {g} ({GRADE_POINTS[g]?.toFixed(1)})
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      min="0"
+                      max="12"
+                      value={course.credits === 0 ? "" : course.credits}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateCourse(course.id, "credits", val === "" ? 0 : Number(val));
+                      }}
+                      placeholder="Credits"
+                      className="w-20 sm:w-16 text-center rounded-xl border border-border bg-background py-2 text-xs font-bold text-foreground focus:border-emerald-600 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeCourse(course.id)}
+                      disabled={courses.length <= 1}
+                      className="p-2 text-muted-foreground hover:text-destructive disabled:opacity-30 shrink-0"
+                      title="Remove course"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

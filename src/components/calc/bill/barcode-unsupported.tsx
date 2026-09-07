@@ -1,28 +1,43 @@
-import { Keyboard } from "lucide-react";
+import { ScanLine, CameraOff } from "lucide-react";
 
 interface BarcodeUnsupportedProps {
+  /** Reason why scanning is unavailable */
+  reason?: "unsupported-browser" | "no-camera";
   /** Called when user clicks "Switch to Basic Bill" */
   onSwitchToBasic: () => void;
 }
 
 /**
- * Shown when camera access / getUserMedia is unavailable on the device or protocol.
- * Provides a clear, friendly message and guides the user to Basic Bill mode.
+ * Shown when native BarcodeDetector is unavailable or camera access cannot be acquired.
+ * Informs the user accurately without falsely blaming camera hardware when the browser lacks support.
  */
-export function BarcodeUnsupported({ onSwitchToBasic }: BarcodeUnsupportedProps) {
+export function BarcodeUnsupported({
+  reason = "unsupported-browser",
+  onSwitchToBasic,
+}: BarcodeUnsupportedProps) {
+  const isBrowserUnsupported = reason === "unsupported-browser";
+
   return (
     <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-border bg-surface/40 px-6 py-12 text-center">
       <span className="grid size-14 place-items-center rounded-2xl bg-amber-50 text-amber-600 dark:bg-amber-950/30">
-        <Keyboard className="size-7" />
+        {isBrowserUnsupported ? <ScanLine className="size-7" /> : <CameraOff className="size-7" />}
       </span>
 
-      <div className="max-w-xs">
-        <h3 className="text-base font-bold text-foreground">Camera not detected or supported</h3>
+      <div className="max-w-md">
+        <h3 className="text-base font-bold text-foreground">
+          {isBrowserUnsupported
+            ? "Barcode scanning is not supported by this browser"
+            : "Camera not detected or supported"}
+        </h3>
         <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-          Camera scanning requires a connected camera and a secure HTTPS connection.
+          {isBrowserUnsupported
+            ? "This browser does not support the native BarcodeDetector API required for in-browser barcode scanning."
+            : "Camera scanning requires a connected camera and a secure HTTPS connection."}
         </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          You can create bills anytime by entering products manually using Basic Bill mode.
+        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+          {isBrowserUnsupported
+            ? "You can use a supported browser (such as Google Chrome, Microsoft Edge, or Chrome on Android) or enter items manually below."
+            : "You can create bills anytime by entering products manually using Basic Bill mode."}
         </p>
       </div>
 
@@ -35,7 +50,7 @@ export function BarcodeUnsupported({ onSwitchToBasic }: BarcodeUnsupportedProps)
       </button>
 
       <p className="text-xs text-muted-foreground">
-        Works on Chrome, Edge, Safari, Firefox, and mobile browsers.
+        Manual bill entry is 100% functional on all modern desktop and mobile browsers.
       </p>
     </div>
   );

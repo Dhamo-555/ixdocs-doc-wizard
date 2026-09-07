@@ -21,13 +21,14 @@ async function getServerEntry(): Promise<ServerEntry> {
 }
 
 function generateCalcSitemapXml(): string {
-  const LASTMOD = "2026-09-06";
+  const LASTMOD = "2026-09-07";
   const urls = [
     `  <url>\n    <loc>https://calc.ixdocs.com/</loc>\n    <lastmod>${LASTMOD}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>`,
     `  <url>\n    <loc>https://calc.ixdocs.com/calculators</loc>\n    <lastmod>${LASTMOD}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>`,
     ...CALCULATOR_SLUGS.map((slug) => {
       const isPopular = [
         "basic-calculator",
+        "scientific-calculator",
         "percentage-calculator",
         "interest-calculator",
         "discount-calculator",

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { DollarSign, TrendingUp, Percent, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
 import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
@@ -10,6 +10,8 @@ import {
   type InterestType,
   type CompoundingFrequency,
 } from "@/lib/calc-engines/interest-calculator";
+import { detectDefaultCurrency, type CurrencyOption } from "@/lib/calc-currency";
+import { CurrencySelector } from "@/components/calc/currency-selector";
 
 export const Route = createFileRoute("/interest-calculator")({
   head: () => calcRouteHead("interest-calculator"),
@@ -18,11 +20,16 @@ export const Route = createFileRoute("/interest-calculator")({
 
 function InterestCalculatorPage() {
   const calcMeta = getCalculatorBySlug("interest-calculator")!;
-  const [principal, setPrincipal] = useState<number>(10000);
-  const [rate, setRate] = useState<number>(6.5);
-  const [years, setYears] = useState<number>(5);
+  const [currency, setCurrency] = useState<CurrencyOption>(() => detectDefaultCurrency());
+  const [principalStr, setPrincipalStr] = useState<string>("10000");
+  const [rateStr, setRateStr] = useState<string>("6.5");
+  const [yearsStr, setYearsStr] = useState<string>("5");
   const [type, setType] = useState<InterestType>("compound");
   const [frequency, setFrequency] = useState<CompoundingFrequency>("monthly");
+
+  const principal = parseFloat(principalStr) || 0;
+  const rate = parseFloat(rateStr) || 0;
+  const years = Math.max(1, parseInt(yearsStr, 10) || 1);
 
   const result = useMemo(() => {
     return calculateInterest({
@@ -34,12 +41,14 @@ function InterestCalculatorPage() {
     });
   }, [principal, rate, years, type, frequency]);
 
+  const numLocale = currency.code === "INR" ? "en-IN" : undefined;
+
   const getReportInput = useCallback((): CalcReportInput => {
-    const formattedBalance = `$${result.finalBalance.toLocaleString(undefined, {
+    const formattedBalance = `${currency.symbol}${result.finalBalance.toLocaleString(numLocale, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
-    const formattedInterest = `$${result.totalInterest.toLocaleString(undefined, {
+    const formattedInterest = `${currency.symbol}${result.totalInterest.toLocaleString(numLocale, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
@@ -48,23 +57,10 @@ function InterestCalculatorPage() {
       result.principal > 0 ? (result.totalInterest / result.principal) * 100 : 0
     ).toFixed(1);
 
-    const insight =
-      type === "compound"
-        ? `Over a ${years}-year period at ${rate}% annual interest compounded ${frequency}, the initial principal of $${principal.toLocaleString()} accumulates $${formattedInterest.replace(
-            "$",
-            "",
-          )} in interest, achieving a total return of ${returnPct}%. The effective annual yield (APY) is ${result.effectiveRate.toFixed(
-            2,
-          )}%.`
-        : `Using simple interest at ${rate}% per year over ${years} years, the investment generates $${formattedInterest.replace(
-            "$",
-            "",
-          )} in total returns (${returnPct}% overall return).`;
-
     return buildCalcReportInput(
       "Interest Calculator",
       {
-        "Principal Amount": `$${principal.toLocaleString()}`,
+        "Principal Amount": `${currency.symbol}${principal.toLocaleString(numLocale)}`,
         "Annual Interest Rate": `${rate}%`,
         "Investment Duration": `${years} Year${years > 1 ? "s" : ""}`,
         "Calculation Model": type === "compound" ? "Compound Interest" : "Simple Interest",
@@ -78,27 +74,33 @@ function InterestCalculatorPage() {
           { label: "Effective APY", value: `${result.effectiveRate.toFixed(2)}%` },
         ],
         formula: type === "compound" ? "A = P * (1 + r / n)^(n * t)" : "A = P * (1 + r * t)",
-        explanation:
-          "Calculates accrued savings growth by compounding returns periodically or evaluating fixed linear yield over time.",
-        aiAnalysis: insight,
+        explanation: `Calculated ${type === "compound" ? "compound" : "simple"} interest on ${currency.symbol}${principal.toLocaleString(numLocale)} at ${rate}% over ${years} years.`,
       },
     );
-  }, [principal, rate, years, type, frequency, result]);
+  }, [currency, numLocale, principal, rate, years, type, frequency, result]);
 
   return (
     <CalcPageLayout calc={calcMeta}>
       <div className="space-y-8">
+        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-border pb-3">
+          <span className="text-xs font-semibold text-muted-foreground">Options</span>
+          <CurrencySelector
+            selectedCurrency={currency}
+            onCurrencyChange={setCurrency}
+          />
+        </div>
+
         {/* Input parameters */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className="block text-xs font-semibold text-foreground mb-1.5">
-              Initial Principal ($)
+              Initial Principal ({currency.symbol})
             </label>
             <input
               type="number"
               min="0"
-              value={principal}
-              onChange={(e) => setPrincipal(parseFloat(e.target.value) || 0)}
+              value={principalStr}
+              onChange={(e) => setPrincipalStr(e.target.value)}
               className="h-11 w-full rounded-xl border border-border bg-background px-3 font-mono text-sm font-medium text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
             />
           </div>
@@ -111,8 +113,8 @@ function InterestCalculatorPage() {
               type="number"
               step="0.1"
               min="0"
-              value={rate}
-              onChange={(e) => setRate(parseFloat(e.target.value) || 0)}
+              value={rateStr}
+              onChange={(e) => setRateStr(e.target.value)}
               className="h-11 w-full rounded-xl border border-border bg-background px-3 font-mono text-sm font-medium text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
             />
           </div>
@@ -125,8 +127,8 @@ function InterestCalculatorPage() {
               type="number"
               min="1"
               max="50"
-              value={years}
-              onChange={(e) => setYears(Math.max(1, parseInt(e.target.value, 10) || 1))}
+              value={yearsStr}
+              onChange={(e) => setYearsStr(e.target.value)}
               className="h-11 w-full rounded-xl border border-border bg-background px-3 font-mono text-sm font-medium text-foreground outline-hidden focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
             />
           </div>
@@ -184,8 +186,8 @@ function InterestCalculatorPage() {
               Total Accrued Balance
             </div>
             <div className="mt-1 font-mono text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-              $
-              {result.finalBalance.toLocaleString(undefined, {
+              {currency.symbol}
+              {result.finalBalance.toLocaleString(numLocale, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
@@ -200,8 +202,8 @@ function InterestCalculatorPage() {
               Total Interest Earned
             </div>
             <div className="mt-1 font-mono text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight">
-              +$
-              {result.totalInterest.toLocaleString(undefined, {
+              +{currency.symbol}
+              {result.totalInterest.toLocaleString(numLocale, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
@@ -230,9 +232,9 @@ function InterestCalculatorPage() {
         {/* Action Bar: Download PDF Report */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
           <div>
-            <div className="text-xs font-bold text-foreground">Official PDF Calculation Report</div>
+            <div className="text-xs font-bold text-foreground">PDF Calculation Report</div>
             <div className="text-xs text-muted-foreground mt-0.5">
-              Download complete calculation breakdown and growth metrics as an A4 document.
+              Download complete calculation breakdown and growth metrics as a PDF document.
             </div>
           </div>
           <CalcPdfReportButton
@@ -265,16 +267,18 @@ function InterestCalculatorPage() {
                     <tr key={item.year} className="hover:bg-surface/50 transition-colors">
                       <td className="px-4 py-2.5 font-bold text-foreground">Year {item.year}</td>
                       <td className="px-4 py-2.5 text-muted-foreground">
-                        ${item.startBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        {currency.symbol}
+                        {item.startBalance.toLocaleString(numLocale, { minimumFractionDigits: 2 })}
                       </td>
                       <td className="px-4 py-2.5 text-emerald-600 font-semibold">
-                        +$
-                        {item.interestEarned.toLocaleString(undefined, {
+                        +{currency.symbol}
+                        {item.interestEarned.toLocaleString(numLocale, {
                           minimumFractionDigits: 2,
                         })}
                       </td>
                       <td className="px-4 py-2.5 font-bold text-foreground">
-                        ${item.endBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        {currency.symbol}
+                        {item.endBalance.toLocaleString(numLocale, { minimumFractionDigits: 2 })}
                       </td>
                     </tr>
                   ))}

@@ -320,42 +320,42 @@ function BarcodeGeneratorPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5">
               <button
                 type="button"
                 onClick={handleDownloadPng}
                 disabled={Boolean(renderError)}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-700 disabled:opacity-40"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-700 disabled:opacity-40"
               >
                 <Download className="size-3.5" />
-                Download PNG
+                <span>Download PNG</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleDownloadSvg}
                 disabled={Boolean(renderError)}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40"
               >
                 <FileCode className="size-3.5" />
-                Download SVG
+                <span>Download SVG</span>
               </button>
 
               <button
                 type="button"
                 onClick={handlePrint}
                 disabled={Boolean(renderError)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40"
                 title="Print Barcode Label"
               >
                 <Printer className="size-3.5" />
-                Print
+                <span>Print</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleCopyValue}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface"
                 title="Copy Barcode Content"
               >
                 {copied ? (
@@ -363,7 +363,7 @@ function BarcodeGeneratorPage() {
                 ) : (
                   <Copy className="size-3.5" />
                 )}
-                {copied ? "Copied" : "Copy"}
+                <span>{copied ? "Copied" : "Copy"}</span>
               </button>
             </div>
 

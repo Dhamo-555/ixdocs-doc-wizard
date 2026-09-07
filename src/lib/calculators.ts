@@ -611,6 +611,47 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
     ],
     relatedSlugs: ["average-calculator", "percentage-calculator", "statistics-calculator"],
   },
+  {
+    id: "scientific-calculator",
+    slug: "scientific-calculator",
+    name: "Scientific Calculator",
+    shortDescription:
+      "Advanced scientific calculator with trigonometry, logarithms, powers, roots, factorials, and degree/radian modes.",
+    metaDescription:
+      "Free online scientific calculator. Compute trigonometric functions, logs, powers, roots, factorials, and expressions directly in your browser.",
+    category: "math",
+    icon: Calculator,
+    popular: true,
+    keywords: [
+      "scientific calculator",
+      "online scientific calculator",
+      "trig calculator",
+      "sin cos tan",
+      "log calculator",
+      "math calculator",
+    ],
+    formula: "Standard infix notation with operator precedence (PEMDAS/BODMAS)",
+    explanation:
+      "Evaluates complex mathematical expressions including trigonometric, exponential, logarithmic, and power functions with client-side accuracy.",
+    howItWorks: [
+      "Type or click numbers, scientific functions (sin, cos, log, etc.), and operators.",
+      "Toggle between DEG (degrees) and RAD (radians) for trigonometry.",
+      "Use parentheses to group operations and '=' or Enter to evaluate.",
+    ],
+    faqs: [
+      {
+        question: "Does this scientific calculator run in degrees or radians?",
+        answer:
+          "You can toggle between Degree (DEG) and Radian (RAD) modes at any time using the mode button in the top left of the display.",
+      },
+      {
+        question: "Does it support order of operations?",
+        answer:
+          "Yes, all expressions follow standard mathematical operator precedence (PEMDAS/BODMAS) with full parenthesis support.",
+      },
+    ],
+    relatedSlugs: ["basic-calculator", "fraction-calculator", "percentage-calculator"],
+  },
 
   // ── 4. Health ───────────────────────────────────────────────────────────────
   {
@@ -1167,7 +1208,7 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       {
         question: "Does the camera barcode scanner upload my footage?",
         answer:
-          "No. All camera detection runs 100% locally on your device via hardware acceleration and WebAssembly. No video or item data ever leaves your browser.",
+          "No. All camera detection runs 100% locally on your device via the browser's native BarcodeDetector API. No video or item data ever leaves your browser.",
       },
       {
         question: "Can I print or save the bill as a PDF?",
@@ -1202,7 +1243,7 @@ const CALC_PAGE_EXTRAS: Record<string, CalcExtraData> = {
     relatedSlugs: ["percentage-calculator", "discount-calculator", "tip-calculator"],
   },
   "percentage-calculator": {
-    pageTitle: "Percentage Calculator — Calculate Percentages Online | IXDocs Calculator",
+    pageTitle: "Percentage Calculator — Calculate Percentages Online | IXDocs",
     ogImage: "https://calc.ixdocs.com/og-percentage-calculator.png",
     example: {
       title: "Year-Over-Year Revenue Growth",
@@ -1319,7 +1360,7 @@ const CALC_PAGE_EXTRAS: Record<string, CalcExtraData> = {
     relatedSlugs: ["loan-calculator", "emi-calculator", "compound-interest-calculator"],
   },
   "emi-calculator": {
-    pageTitle: "EMI Calculator — Equated Monthly Installments & Loan Schedule | IXDocs Calculator",
+    pageTitle: "EMI Calculator — Calculate Monthly EMI Online | IXDocs",
     example: {
       title: "Personal Loan Installments",
       description:
@@ -1389,7 +1430,7 @@ const CALC_PAGE_EXTRAS: Record<string, CalcExtraData> = {
     relatedSlugs: ["average-calculator", "gpa-calculator", "percentage-calculator"],
   },
   "gpa-calculator": {
-    pageTitle: "GPA Calculator — Cumulative & Semester Grade Point Average | IXDocs Calculator",
+    pageTitle: "GPA Calculator — Calculate Grade Point Average | IXDocs",
     example: {
       title: "Calculating a Semester 4.0 Scale GPA",
       description:
@@ -1400,7 +1441,16 @@ const CALC_PAGE_EXTRAS: Record<string, CalcExtraData> = {
         "Semester GPA: 42 / 12 = 3.50",
       ],
     },
-    relatedSlugs: ["average-calculator", "statistics-calculator", "basic-calculator"],
+    relatedSlugs: ["average-calculator", "statistics-calculator", "scientific-calculator"],
+  },
+  "scientific-calculator": {
+    pageTitle: "Scientific Calculator — Advanced Online Calculator | IXDocs",
+    example: {
+      title: "Trigonometric and Logarithmic Evaluation",
+      description: "Evaluate sin(30°) + log(100) with standard operator precedence.",
+      steps: ["Angle Mode: DEG", "sin(30°) = 0.5", "log(100) = 2", "Result: 0.5 + 2 = 2.5"],
+    },
+    relatedSlugs: ["basic-calculator", "fraction-calculator", "percentage-calculator"],
   },
   "bmi-calculator": {
     pageTitle: "BMI Calculator — Calculate BMI & Healthy Weight | IXDocs Calculator",

@@ -32,22 +32,22 @@ export function CalcFooter() {
               </span>
             </div>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground leading-relaxed">
-              Super calculator platform — 31 fast, accurate, and private browser-based calculation
-              engines. No sign-up, zero server lag.
+              Browser-based calculation platform featuring 32 focused utility tools. Designed to
+              process data locally in your browser where applicable.
             </p>
 
             <div className="mt-5 flex flex-col gap-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
-                <span>100% Client-Side Privacy — Zero Data Uploads</span>
+                <span>Client-Side Processing — Operates Locally in Browser</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="size-4 text-emerald-600 shrink-0" />
-                <span>Instant Calculations — No Server Lag</span>
+                <span>Instant Results — Fast and Lightweight</span>
               </div>
               <div className="flex items-center gap-2">
                 <Lock className="size-4 text-emerald-600 shrink-0" />
-                <span>Cryptographically Secure Random Generation</span>
+                <span>No User Registration Required</span>
               </div>
             </div>
           </div>
@@ -127,18 +127,23 @@ export function CalcFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-xs text-muted-foreground sm:flex-row">
+        <div className="mt-10 border-t border-border pt-6 text-xs text-muted-foreground/80 leading-relaxed">
           <p>
-            © {new Date().getFullYear()} IXDocs. All calculations are executed locally in your
-            browser.
+            IXDocs provides browser-based tools for general-purpose utility. Tools process data
+            locally in your browser where applicable. IXDocs does not endorse and is not responsible
+            for unauthorized, unlawful, or harmful use of its tools or outputs.
           </p>
+        </div>
+
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row">
+          <p>© {new Date().getFullYear()} IXDocs. All tools operate in-browser.</p>
           <div className="flex items-center gap-4">
             <a href="https://ixdocs.com" className="font-medium text-emerald-600 hover:underline">
               IXDocs PDF Tools
             </a>
             <span>·</span>
             <Link to="/calculators" className="hover:text-foreground">
-              All 31 Calculators
+              All 32 Calculators
             </Link>
           </div>
         </div>

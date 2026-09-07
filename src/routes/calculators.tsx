@@ -4,7 +4,7 @@ import { CalcHome } from "@/components/calc/calc-home";
 export const Route = createFileRoute("/calculators")({
   head: () => ({
     meta: [
-      { title: "IXDocs Calculator — 31+ Free Online Calculators, Converters & Generators" },
+      { title: "IXDocs Calculator — 32+ Free Online Calculators, Converters & Generators" },
       {
         name: "description",
         content:
@@ -13,13 +13,13 @@ export const Route = createFileRoute("/calculators")({
       {
         name: "keywords",
         content:
-          "calculators, online calculator, free calculators, percentage calculator, loan calculator, bmi calculator, bill calculator, barcode generator, math tools",
+          "calculators, online calculator, free calculators, percentage calculator, loan calculator, bmi calculator, bill calculator, barcode generator, scientific calculator, math tools",
       },
       { name: "robots", content: "index, follow" },
       { property: "og:site_name", content: "IXDocs Calculator" },
       {
         property: "og:title",
-        content: "IXDocs Calculator — 31+ Free Online Calculators, Converters & Generators",
+        content: "IXDocs Calculator — 32+ Free Online Calculators, Converters & Generators",
       },
       {
         property: "og:description",
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/calculators")({
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:title",
-        content: "IXDocs Calculator — 31+ Free Online Calculators, Converters & Generators",
+        content: "IXDocs Calculator — 32+ Free Online Calculators, Converters & Generators",
       },
       {
         name: "twitter:description",
@@ -55,7 +55,7 @@ export const Route = createFileRoute("/calculators")({
           name: "IXDocs Calculator",
           url: "https://calc.ixdocs.com/",
           description:
-            "Free, browser-based super calculator platform featuring 31 mathematical, financial, health, and productivity tools.",
+            "Free, browser-based super calculator platform featuring 32 mathematical, financial, health, and productivity tools.",
           applicationCategory: "UtilityApplication",
           operatingSystem: "All",
           browserRequirements: "Requires JavaScript. Requires HTML5.",

@@ -15,11 +15,16 @@ type FractionOp = "+" | "-" | "×" | "÷";
 
 function FractionCalculatorPage() {
   const calcMeta = getCalculatorBySlug("fraction-calculator")!;
-  const [n1, setN1] = useState<number>(3);
-  const [d1, setD1] = useState<number>(4);
+  const [n1Str, setN1Str] = useState("3");
+  const [d1Str, setD1Str] = useState("4");
   const [op, setOp] = useState<FractionOp>("+");
-  const [n2, setN2] = useState<number>(2);
-  const [d2, setD2] = useState<number>(5);
+  const [n2Str, setN2Str] = useState("2");
+  const [d2Str, setD2Str] = useState("5");
+
+  const n1 = parseInt(n1Str, 10) || 0;
+  const d1 = parseInt(d1Str, 10) || 1;
+  const n2 = parseInt(n2Str, 10) || 0;
+  const d2 = parseInt(d2Str, 10) || 1;
 
   const result = useMemo(() => {
     try {
@@ -69,16 +74,16 @@ function FractionCalculatorPage() {
             <div className="flex flex-col items-center gap-1.5 w-24 sm:w-28">
               <input
                 type="number"
-                value={n1}
-                onChange={(e) => setN1(Number(e.target.value))}
+                value={n1Str}
+                onChange={(e) => setN1Str(e.target.value)}
                 aria-label="Numerator 1"
                 className="w-full text-center rounded-xl border border-border bg-background py-2 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
               />
               <div className="h-0.5 w-full bg-foreground/40 rounded-full" />
               <input
                 type="number"
-                value={d1}
-                onChange={(e) => setD1(Number(e.target.value))}
+                value={d1Str}
+                onChange={(e) => setD1Str(e.target.value)}
                 aria-label="Denominator 1"
                 className="w-full text-center rounded-xl border border-border bg-background py-2 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
               />
@@ -106,16 +111,16 @@ function FractionCalculatorPage() {
             <div className="flex flex-col items-center gap-1.5 w-24 sm:w-28">
               <input
                 type="number"
-                value={n2}
-                onChange={(e) => setN2(Number(e.target.value))}
+                value={n2Str}
+                onChange={(e) => setN2Str(e.target.value)}
                 aria-label="Numerator 2"
                 className="w-full text-center rounded-xl border border-border bg-background py-2 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
               />
               <div className="h-0.5 w-full bg-foreground/40 rounded-full" />
               <input
                 type="number"
-                value={d2}
-                onChange={(e) => setD2(Number(e.target.value))}
+                value={d2Str}
+                onChange={(e) => setD2Str(e.target.value)}
                 aria-label="Denominator 2"
                 className="w-full text-center rounded-xl border border-border bg-background py-2 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
               />

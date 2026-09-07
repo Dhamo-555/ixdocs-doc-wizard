@@ -17,10 +17,13 @@ export const Route = createFileRoute("/data-storage-calculator")({
 
 function DataStorageCalculatorPage() {
   const calcMeta = getCalculatorBySlug("data-storage-calculator")!;
-  const [value, setValue] = useState<number>(50);
+  const [valueStr, setValueStr] = useState("50");
   const [unit, setUnit] = useState<StorageUnit>("GB");
   const [base, setBase] = useState<1000 | 1024>(1024);
-  const [speedMbps, setSpeedMbps] = useState<number>(100);
+  const [speedMbpsStr, setSpeedMbpsStr] = useState("100");
+
+  const value = parseFloat(valueStr) || 0;
+  const speedMbps = parseFloat(speedMbpsStr) || 1;
 
   const conversions = useMemo(() => convertStorage(value, unit, base), [value, unit, base]);
   const downloadEstimate = useMemo(
@@ -66,8 +69,8 @@ function DataStorageCalculatorPage() {
                 <input
                   type="number"
                   min="0"
-                  value={value}
-                  onChange={(e) => setValue(Number(e.target.value))}
+                  value={valueStr}
+                  onChange={(e) => setValueStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -125,8 +128,8 @@ function DataStorageCalculatorPage() {
               <input
                 type="number"
                 min="1"
-                value={speedMbps}
-                onChange={(e) => setSpeedMbps(Number(e.target.value))}
+                value={speedMbpsStr}
+                onChange={(e) => setSpeedMbpsStr(e.target.value)}
                 className="w-full rounded-xl border border-border bg-background px-3.5 py-2 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
               />
               <div className="flex flex-wrap gap-2 pt-1">
@@ -134,14 +137,14 @@ function DataStorageCalculatorPage() {
                   <button
                     key={s}
                     type="button"
-                    onClick={() => setSpeedMbps(s)}
+                    onClick={() => setSpeedMbpsStr(String(s))}
                     className={`rounded-lg px-2.5 py-0.5 text-xs font-semibold transition ${
                       speedMbps === s
                         ? "bg-emerald-600 text-white"
                         : "bg-surface text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {s >= 1000 ? `${s / 1000} Gbps` : `${s} Mbps`}
+                    {s} Mbps
                   </button>
                 ))}
               </div>

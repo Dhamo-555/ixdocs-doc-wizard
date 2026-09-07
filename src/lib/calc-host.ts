@@ -33,6 +33,8 @@ export const CALCULATOR_SLUGS = [
   "fuel-cost-calculator",
   "bmi-calculator",
   "calorie-calculator",
+  // Scientific Calculator
+  "scientific-calculator",
 ] as const;
 
 export const CALCULATOR_PATHS: readonly string[] = [

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Camera, CameraOff, ZapOff, ScanLine } from "lucide-react";
-import { BrowserMultiFormatReader, type IScannerControls } from "@zxing/browser";
 import { BarcodeUnsupported } from "./barcode-unsupported";
 
 // ─── Native BarcodeDetector type declaration ──────────────────────────────────
@@ -47,18 +46,24 @@ interface BarcodeScannerProps {
 }
 
 type ScannerState =
-  "checking" | "unsupported" | "idle" | "requesting" | "scanning" | "denied" | "error";
+  | "checking"
+  | "unsupported-browser"
+  | "unsupported-camera"
+  | "idle"
+  | "requesting"
+  | "scanning"
+  | "denied"
+  | "error";
 
 /**
- * Camera-based barcode scanner with dual-engine support:
- * 1. Native BarcodeDetector API (fast hardware acceleration in Chrome/Edge/Android)
- * 2. ZXing BrowserMultiFormatReader fallback (cross-browser support in Safari/Firefox/Desktop)
+ * Camera-based barcode scanner using the browser's native BarcodeDetector API.
  *
  * Privacy guarantees:
- * - Camera stream never uploaded to any server
- * - No images captured or stored remotely
- * - Only the decoded barcode string value is passed to the parent
- * - Camera stream and decode loop are stopped immediately on component unmount
+ * - Camera stream is processed 100% locally in your browser
+ * - No camera frames or images are ever captured, stored, or uploaded
+ * - No external product lookup or barcode resolution API is used
+ * - Only the decoded barcode string value is passed to the bill
+ * - Camera stream and detection loop are stopped immediately on component unmount
  */
 export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeScannerProps) {
   const [state, setState] = useState<ScannerState>("checking");
@@ -68,23 +73,27 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const nativeDetectorRef = useRef<BarcodeDetectorInstance | null>(null);
-  const zxingControlsRef = useRef<IScannerControls | null>(null);
-  const zxingReaderRef = useRef<BrowserMultiFormatReader | null>(null);
   const rafRef = useRef<number | null>(null);
   const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cooldownRef = useRef(false);
 
-  // ── Check camera & mediaDevices support ───────────────────────────────────
+  // ── Check native BarcodeDetector & camera support ─────────────────────────
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    if (typeof window.BarcodeDetector === "undefined") {
+      setState("unsupported-browser");
+      return;
+    }
+
     const hasMediaDevices =
       typeof navigator !== "undefined" &&
       Boolean(navigator.mediaDevices) &&
       typeof navigator.mediaDevices.getUserMedia === "function";
 
     if (!hasMediaDevices) {
-      setState("unsupported");
+      setState("unsupported-camera");
       return;
     }
 
@@ -98,14 +107,7 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
-    if (zxingControlsRef.current) {
-      try {
-        zxingControlsRef.current.stop();
-      } catch {
-        // ignore errors during stop
-      }
-      zxingControlsRef.current = null;
-    }
+    nativeDetectorRef.current = null;
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
@@ -172,9 +174,14 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
     rafRef.current = requestAnimationFrame(detect);
   }, [handleDetected]);
 
-  // ── Start camera and select best available engine ─────────────────────────
+  // ── Start camera and native detection ─────────────────────────────────────
 
   const startCamera = useCallback(async () => {
+    if (typeof window.BarcodeDetector === "undefined") {
+      setState("unsupported-browser");
+      return;
+    }
+
     setState("requesting");
 
     try {
@@ -195,42 +202,12 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
         await videoRef.current.play();
       }
 
-      // Check if native BarcodeDetector is available
-      if (typeof window.BarcodeDetector !== "undefined") {
-        try {
-          nativeDetectorRef.current = new window.BarcodeDetector({
-            formats: NATIVE_BARCODE_FORMATS,
-          });
-          setState("scanning");
-          startNativeDetectionLoop();
-          return;
-        } catch {
-          // Fall back to ZXing if native constructor fails
-          nativeDetectorRef.current = null;
-        }
-      }
+      nativeDetectorRef.current = new window.BarcodeDetector({
+        formats: NATIVE_BARCODE_FORMATS,
+      });
 
-      // Fallback: ZXing BrowserMultiFormatReader (works on Safari, Firefox, Desktop)
-      if (!zxingReaderRef.current) {
-        zxingReaderRef.current = new BrowserMultiFormatReader();
-      }
-
-      if (videoRef.current) {
-        setState("scanning");
-        const controls = await zxingReaderRef.current.decodeFromVideoElement(
-          videoRef.current,
-          (result, error) => {
-            if (result && !cooldownRef.current) {
-              const text = result.getText();
-              if (text) handleDetected(text);
-            }
-            if (error) {
-              // Standard ZXing frame-level decode misses are expected while moving
-            }
-          },
-        );
-        zxingControlsRef.current = controls;
-      }
+      setState("scanning");
+      startNativeDetectionLoop();
     } catch (err) {
       stopCamera();
       const name = err instanceof Error ? err.name : "";
@@ -240,7 +217,7 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
         setState("error");
       }
     }
-  }, [stopCamera, startNativeDetectionLoop, handleDetected]);
+  }, [stopCamera, startNativeDetectionLoop]);
 
   const handleStop = useCallback(() => {
     stopCamera();
@@ -255,13 +232,17 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
   if (state === "checking") {
     return (
       <div className="flex items-center justify-center py-16 text-muted-foreground text-sm">
-        Checking camera support…
+        Checking camera and barcode scanner support…
       </div>
     );
   }
 
-  if (state === "unsupported") {
-    return <BarcodeUnsupported onSwitchToBasic={onSwitchToBasic} />;
+  if (state === "unsupported-browser") {
+    return <BarcodeUnsupported reason="unsupported-browser" onSwitchToBasic={onSwitchToBasic} />;
+  }
+
+  if (state === "unsupported-camera") {
+    return <BarcodeUnsupported reason="no-camera" onSwitchToBasic={onSwitchToBasic} />;
   }
 
   return (
@@ -362,8 +343,8 @@ export function BarcodeScanner({ onBarcodeDetected, onSwitchToBasic }: BarcodeSc
       <div className="space-y-1 text-xs text-muted-foreground">
         <p className="flex items-center gap-1.5">
           <span className="inline-block size-2 rounded-full bg-emerald-600 shrink-0" />
-          Camera scanning requires HTTPS, camera permission, and a compatible device. Manual barcode
-          and item entry are always available.
+          Camera scanning uses the browser&apos;s native BarcodeDetector API and requires HTTPS and
+          camera permission.
         </p>
         <p className="text-[11px] text-muted-foreground/80 pl-3.5">
           Camera footage is never uploaded. Barcodes are decoded 100% locally in your browser.

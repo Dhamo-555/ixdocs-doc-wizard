@@ -18,11 +18,13 @@ export interface CurrencyOption {
   label: string;
 }
 
+import { detectDefaultCurrency } from "@/lib/calc-currency";
+
 export const CURRENCY_OPTIONS: CurrencyOption[] = [
-  { code: "INR", symbol: "₹", label: "Indian Rupee (₹)" },
   { code: "USD", symbol: "$", label: "US Dollar ($)" },
   { code: "EUR", symbol: "€", label: "Euro (€)" },
   { code: "GBP", symbol: "£", label: "British Pound (£)" },
+  { code: "INR", symbol: "₹", label: "Indian Rupee (₹)" },
   { code: "AED", symbol: "د.إ", label: "UAE Dirham (د.إ)" },
   { code: "SGD", symbol: "S$", label: "Singapore Dollar (S$)" },
   { code: "AUD", symbol: "A$", label: "Australian Dollar (A$)" },
@@ -95,11 +97,13 @@ export function createBillItem(
   };
 }
 
-/** Create a fresh, empty bill. */
-export function createEmptyBill(): Bill {
+/** Create a fresh, empty bill with locale-detected currency. */
+export function createEmptyBill(initialCurrency?: CurrencyOption): Bill {
+  const detected = initialCurrency || detectDefaultCurrency();
+  const matched = CURRENCY_OPTIONS.find((c) => c.code === detected.code) || DEFAULT_CURRENCY;
   return {
     companyName: "",
-    currency: DEFAULT_CURRENCY,
+    currency: matched,
     items: [],
     gstEnabled: false,
     gstPercent: 18,
@@ -147,14 +151,16 @@ export function addItem(
 
 /**
  * Scan a barcode: if it already exists in the bill, increment quantity.
- * Otherwise, add a new item with the barcode pre-filled (name/price still blank).
- * Returns the updated bill AND the id of the affected item.
+ * Otherwise, add a new item with the barcode pre-filled and a sensible name.
+ * Accepts an optional local catalog lookup to restore previously entered product names/prices.
  */
 export function scanBarcode(
   bill: Bill,
   barcode: string,
+  catalogLookup?: (barcode: string) => { productName?: string; unitPrice?: number } | undefined,
 ): { bill: Bill; itemId: string; isNew: boolean } {
-  const existing = bill.items.find((i) => i.barcode === barcode);
+  const trimmed = barcode.trim();
+  const existing = bill.items.find((i) => i.barcode === trimmed);
 
   if (existing) {
     const updatedItems = bill.items.map((i) =>
@@ -173,7 +179,20 @@ export function scanBarcode(
     };
   }
 
-  const item = createBillItem({ barcode });
+  // Check local session catalog if user previously typed name/price for this barcode
+  const cached = catalogLookup?.(trimmed);
+  const defaultName =
+    cached?.productName ||
+    `Item #${bill.items.length + 1} (${trimmed.length > 8 ? trimmed.slice(-6) : trimmed})`;
+  const unitPrice = cached?.unitPrice ?? 0;
+
+  const item = createBillItem({
+    barcode: trimmed,
+    productName: defaultName,
+    unitPrice,
+    quantity: 1,
+  });
+
   const items = [...bill.items, item];
   return {
     bill: applyTotals({ ...bill, items }),
@@ -216,12 +235,9 @@ export function applyTotals(bill: Bill): Bill {
   return { ...bill, ...totals };
 }
 
-// ─── Formatting ───────────────────────────────────────────────────────────────
+import { formatCurrencyAmount } from "@/lib/calc-currency";
 
 /** Format a number as a currency string using the bill's currency. */
 export function formatCurrency(amount: number, currency: CurrencyOption): string {
-  return `${currency.symbol}${amount.toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
+  return formatCurrencyAmount(amount, currency.code);
 }

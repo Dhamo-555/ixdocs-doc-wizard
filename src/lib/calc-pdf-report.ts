@@ -1,16 +1,16 @@
 /**
  * IXDocs Calculator PDF Report Generator
  *
- * Generates clean, professional A4 calculation & analysis PDF reports
- * entirely in the browser using pdf-lib. Zero data is transmitted to any server.
+ * Generates clean, compact calculation output PDFs directly in the browser
+ * using pdf-lib. Zero data is transmitted to any server.
  *
- * FLOW:
- * 1. User clicks optional "Download PDF Report" button.
- * 2. PDF is compiled in memory and sent to the browser's download manager.
- * 3. Feedback is shown to user ("Report downloaded! Redirecting to Calculator Home...").
- * 4. After approximately 1500ms, the user is redirected to https://calc.ixdocs.com/
- *    for product discovery (when redirectAfterDownload is true).
- * 5. Bill Calculator is explicitly excluded from this redirect.
+ * Structure:
+ * - Small header: "IXDocs Online Calculator"
+ * - Subtitle: "PDF generated based on your entered values."
+ * - [Calculation result]
+ * - [Input values]
+ * - [Formula / calculation details if useful]
+ * - Small footer: "Calculated in your browser · No data uploaded"
  */
 import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib";
 import { triggerPdfDownload, sanitizeDownloadFilename } from "@/lib/download";
@@ -32,10 +32,7 @@ export interface CalcReportInput {
   formula?: string;
   /** Plain-language explanation of how the result was derived */
   explanation?: string;
-  /**
-   * Deterministic client-side analytical insights of the calculation result.
-   * Labeled appropriately so they are not falsely represented as remote AI output.
-   */
+  /** Client-side analysis notes if useful */
   aiAnalysis?: string;
   /** ISO 8601 timestamp of when the calculation was performed */
   timestamp: string;
@@ -71,16 +68,45 @@ const COLOR_CARD_BG = rgb(0.97, 0.98, 0.98);
 const COLOR_BORDER = rgb(0.85, 0.88, 0.9);
 const COLOR_WHITE = rgb(1, 1, 1);
 
-// ─── Helper Functions ─────────────────────────────────────────────────────────
+// ─── Text Sanitization for pdf-lib WinAnsi Font Compatibility ─────────────────
 
-function generateReportId(): string {
-  const t = Date.now().toString(36).toUpperCase();
-  const r = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `IXC-${t}-${r}`;
+/**
+ * StandardFonts in pdf-lib (Helvetica, Times, Courier) only support the
+ * WinAnsi / Latin-1 encoding (character codes 0-255).
+ * Characters like '₹', '∎', '•', curly quotes, or em-dashes cause pdf-lib to crash.
+ * This sanitizer converts special characters to safe ASCII equivalents.
+ */
+export function sanitizePdfText(str: string): string {
+  if (!str) return "";
+  const mapped = str
+    .replace(/₹/g, "INR ")
+    .replace(/€/g, "EUR ")
+    .replace(/£/g, "GBP ")
+    .replace(/¥/g, "JPY ")
+    .replace(/∎/g, "")
+    .replace(/[•·]/g, "- ")
+    .replace(/[—–]/g, "-")
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/…/g, "...")
+    .replace(/×/g, "*")
+    .replace(/÷/g, "/")
+    .replace(/−/g, "-")
+    .replace(/√/g, "sqrt ")
+    .replace(/π/g, "pi");
+
+  // Keep printable ASCII and Latin-1 supplement characters (WinAnsi compatible)
+  return mapped
+    .split("")
+    .filter((ch) => {
+      const code = ch.charCodeAt(0);
+      return code >= 32 && code <= 255;
+    })
+    .join("");
 }
 
 function wrapText(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
-  const words = text.split(" ");
+  const words = sanitizePdfText(text).split(" ");
   const lines: string[] = [];
   let currentLine = "";
 
@@ -112,43 +138,23 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
   // 1. Top Decorative Brand Bar
   page.drawRectangle({
     x: MARGIN,
-    y: y - 4,
+    y: y - 3,
     width: CONTENT_WIDTH,
-    height: 4,
+    height: 3,
     color: COLOR_EMERALD_DARK,
   });
-  y -= 22;
+  y -= 20;
 
-  // 2. HEADER
-  page.drawText("IXDocs Calculator Official Report", {
+  // 2. Simple Header (Non-institutional, utility focused)
+  page.drawText("IXDocs Online Calculator", {
     x: MARGIN,
     y,
-    size: 15,
+    size: 13,
     font: fontBold,
     color: COLOR_EMERALD_DARK,
   });
 
-  const reportId = data.reportId || generateReportId();
-  const reportIdStr = `Report ID: ${reportId}`;
-  const reportIdWidth = fontMono.widthOfTextAtSize(reportIdStr, 8);
-  page.drawText(reportIdStr, {
-    x: PAGE_WIDTH - MARGIN - reportIdWidth,
-    y: y + 2,
-    size: 8,
-    font: fontMono,
-    color: COLOR_TEXT_MUTED,
-  });
-  y -= 14;
-
-  page.drawText(data.calculatorName, {
-    x: MARGIN,
-    y,
-    size: 18,
-    font: fontBold,
-    color: COLOR_TEXT_DARK,
-  });
-
-  const formattedDate = `Generated: ${new Date(data.timestamp).toLocaleString("en-US", {
+  const formattedDate = `Date: ${new Date(data.timestamp).toLocaleString("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   })}`;
@@ -160,19 +166,30 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
     font: fontRegular,
     color: COLOR_TEXT_MUTED,
   });
-  y -= 22;
+  y -= 13;
 
-  // 3. SECTION 1: KEY CALCULATION RESULT
-  page.drawText("SECTION 1 · KEY CALCULATION RESULT", {
+  page.drawText("PDF generated based on your entered values.", {
     x: MARGIN,
     y,
     size: 9,
-    font: fontBold,
-    color: COLOR_EMERALD_DARK,
+    font: fontRegular,
+    color: COLOR_TEXT_MUTED,
   });
-  y -= 10;
+  y -= 18;
 
-  const resultBoxHeight = 56;
+  // Tool Title
+  const calcNameSanitized = sanitizePdfText(data.calculatorName);
+  page.drawText(calcNameSanitized, {
+    x: MARGIN,
+    y,
+    size: 16,
+    font: fontBold,
+    color: COLOR_TEXT_DARK,
+  });
+  y -= 20;
+
+  // 3. Calculation Result Block
+  const resultBoxHeight = 52;
   page.drawRectangle({
     x: MARGIN,
     y: y - resultBoxHeight,
@@ -180,33 +197,34 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
     height: resultBoxHeight,
     color: COLOR_EMERALD_LIGHT,
     borderColor: COLOR_EMERALD_DARK,
-    borderWidth: 1,
+    borderWidth: 0.75,
   });
 
-  page.drawText("PRIMARY RESULT", {
-    x: MARGIN + 16,
-    y: y - 18,
+  page.drawText("CALCULATION RESULT", {
+    x: MARGIN + 14,
+    y: y - 16,
     size: 7.5,
     font: fontBold,
     color: COLOR_EMERALD_DARK,
   });
 
-  page.drawText(data.result, {
-    x: MARGIN + 16,
-    y: y - 42,
-    size: 18,
+  const resultSanitized = sanitizePdfText(data.result);
+  page.drawText(resultSanitized, {
+    x: MARGIN + 14,
+    y: y - 38,
+    size: 17,
     font: fontBold,
     color: COLOR_TEXT_DARK,
   });
-  y -= resultBoxHeight + 16;
+  y -= resultBoxHeight + 14;
 
-  // Secondary breakdown metrics (if provided)
+  // Secondary metrics (if provided)
   if (data.metrics && data.metrics.length > 0) {
-    const colWidth = (CONTENT_WIDTH - (data.metrics.length - 1) * 10) / data.metrics.length;
-    const cardHeight = 38;
+    const colWidth = (CONTENT_WIDTH - (data.metrics.length - 1) * 8) / data.metrics.length;
+    const cardHeight = 36;
 
     data.metrics.forEach((metric, idx) => {
-      const cardX = MARGIN + idx * (colWidth + 10);
+      const cardX = MARGIN + idx * (colWidth + 8);
       page.drawRectangle({
         x: cardX,
         y: y - cardHeight,
@@ -214,40 +232,40 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
         height: cardHeight,
         color: COLOR_CARD_BG,
         borderColor: COLOR_BORDER,
-        borderWidth: 0.75,
+        borderWidth: 0.5,
       });
 
-      page.drawText(metric.label.toUpperCase(), {
-        x: cardX + 10,
-        y: y - 14,
+      page.drawText(sanitizePdfText(metric.label.toUpperCase()), {
+        x: cardX + 8,
+        y: y - 13,
         size: 7,
         font: fontBold,
         color: COLOR_TEXT_MUTED,
       });
 
-      page.drawText(metric.value, {
-        x: cardX + 10,
-        y: y - 29,
-        size: 10,
+      page.drawText(sanitizePdfText(metric.value), {
+        x: cardX + 8,
+        y: y - 27,
+        size: 9.5,
         font: fontBold,
         color: COLOR_TEXT_DARK,
       });
     });
 
-    y -= cardHeight + 18;
+    y -= cardHeight + 16;
   }
 
-  // 4. SECTION 2: INPUT PARAMETERS
+  // 4. Input Values
   const inputKeys = Object.keys(data.inputs);
   if (inputKeys.length > 0) {
-    page.drawText("SECTION 2 · INPUT PARAMETERS", {
+    page.drawText("Input Values", {
       x: MARGIN,
       y,
-      size: 9,
+      size: 9.5,
       font: fontBold,
-      color: COLOR_EMERALD_DARK,
+      color: COLOR_TEXT_DARK,
     });
-    y -= 10;
+    y -= 8;
 
     const rowHeight = 20;
     const tableHeight = inputKeys.length * rowHeight;
@@ -259,7 +277,7 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
       height: tableHeight,
       color: COLOR_WHITE,
       borderColor: COLOR_BORDER,
-      borderWidth: 0.75,
+      borderWidth: 0.5,
     });
 
     inputKeys.forEach((key, idx) => {
@@ -276,16 +294,16 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
         });
       }
 
-      page.drawText(key, {
-        x: MARGIN + 12,
+      page.drawText(sanitizePdfText(key), {
+        x: MARGIN + 10,
         y: rowY + 6,
         size: 8,
         font: fontRegular,
         color: COLOR_TEXT_MUTED,
       });
 
-      const val = data.inputs[key] ?? "";
-      page.drawText(val, {
+      const rawVal = data.inputs[key] ?? "";
+      page.drawText(sanitizePdfText(rawVal), {
         x: MARGIN + CONTENT_WIDTH * 0.45,
         y: rowY + 6,
         size: 8,
@@ -294,22 +312,22 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
       });
     });
 
-    y -= tableHeight + 18;
+    y -= tableHeight + 16;
   }
 
-  // 5. SECTION 3: FORMULA & METHODOLOGY
+  // 5. Formula & Details (if useful)
   if (data.formula || data.explanation) {
-    page.drawText("SECTION 3 · FORMULA & METHODOLOGY", {
+    page.drawText("Calculation Details", {
       x: MARGIN,
       y,
-      size: 9,
+      size: 9.5,
       font: fontBold,
-      color: COLOR_EMERALD_DARK,
+      color: COLOR_TEXT_DARK,
     });
-    y -= 10;
+    y -= 8;
 
     if (data.formula) {
-      const formulaBoxHeight = 26;
+      const formulaBoxHeight = 24;
       page.drawRectangle({
         x: MARGIN,
         y: y - formulaBoxHeight,
@@ -317,18 +335,18 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
         height: formulaBoxHeight,
         color: COLOR_CARD_BG,
         borderColor: COLOR_BORDER,
-        borderWidth: 0.75,
+        borderWidth: 0.5,
       });
 
-      page.drawText(data.formula, {
-        x: MARGIN + 12,
-        y: y - 17,
+      page.drawText(sanitizePdfText(data.formula), {
+        x: MARGIN + 10,
+        y: y - 15,
         size: 8,
         font: fontMono,
         color: COLOR_TEXT_DARK,
       });
 
-      y -= formulaBoxHeight + 10;
+      y -= formulaBoxHeight + 8;
     }
 
     if (data.explanation) {
@@ -347,58 +365,49 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
           y -= 11;
         }
       }
-      y -= 8;
+      y -= 6;
     }
   }
 
-  // 6. SECTION 4: ANALYSIS & INSIGHTS
+  // 6. Simple Summary note (if provided via aiAnalysis)
   if (data.aiAnalysis) {
-    page.drawText("SECTION 4 · ANALYSIS & INSIGHTS (Client-Side)", {
-      x: MARGIN,
-      y,
-      size: 9,
-      font: fontBold,
-      color: COLOR_EMERALD_DARK,
-    });
-    y -= 10;
-
-    const wrappedLines = wrapText(data.aiAnalysis, fontRegular, 8, CONTENT_WIDTH - 24);
-    const analysisHeight = Math.max(40, wrappedLines.length * 12 + 16);
+    const wrappedLines = wrapText(data.aiAnalysis, fontRegular, 8, CONTENT_WIDTH - 20);
+    const noteHeight = Math.max(32, wrappedLines.length * 11 + 12);
 
     page.drawRectangle({
       x: MARGIN,
-      y: y - analysisHeight,
+      y: y - noteHeight,
       width: CONTENT_WIDTH,
-      height: analysisHeight,
+      height: noteHeight,
       color: COLOR_WHITE,
       borderColor: COLOR_BORDER,
-      borderWidth: 0.75,
+      borderWidth: 0.5,
     });
 
     wrappedLines.forEach((line, idx) => {
       page.drawText(line, {
-        x: MARGIN + 12,
-        y: y - 15 - idx * 12,
+        x: MARGIN + 10,
+        y: y - 13 - idx * 11,
         size: 8,
         font: fontRegular,
         color: COLOR_TEXT_DARK,
       });
     });
 
-    y -= analysisHeight + 16;
+    y -= noteHeight + 14;
   }
 
-  // 7. FOOTER
+  // 7. Small Clean Footer
   page.drawLine({
-    start: { x: MARGIN, y: 44 },
-    end: { x: PAGE_WIDTH - MARGIN, y: 44 },
+    start: { x: MARGIN, y: 40 },
+    end: { x: PAGE_WIDTH - MARGIN, y: 40 },
     thickness: 0.5,
     color: COLOR_BORDER,
   });
 
-  page.drawText("100% In-Browser · No Data Uploaded", {
+  page.drawText("Calculated in your browser - No data uploaded", {
     x: MARGIN,
-    y: 30,
+    y: 28,
     size: 7.5,
     font: fontRegular,
     color: COLOR_TEXT_MUTED,
@@ -406,7 +415,7 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
 
   page.drawText("calc.ixdocs.com", {
     x: MARGIN + CONTENT_WIDTH * 0.45,
-    y: 30,
+    y: 28,
     size: 7.5,
     font: fontBold,
     color: COLOR_EMERALD_DARK,
@@ -414,7 +423,7 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
 
   page.drawText("Page 1 of 1", {
     x: PAGE_WIDTH - MARGIN - 45,
-    y: 30,
+    y: 28,
     size: 7.5,
     font: fontRegular,
     color: COLOR_TEXT_MUTED,
@@ -427,13 +436,6 @@ async function buildCalcReportPdf(data: CalcReportInput): Promise<Uint8Array> {
 
 /**
  * Generate and download a PDF report for a calculator result.
- *
- * Sequence:
- * A. Generate PDF in browser via pdf-lib.
- * B. Trigger browser download.
- * C. Call onRedirectStarting callback to show feedback.
- * D. Wait ~1500 ms.
- * E. Redirect to https://calc.ixdocs.com/ (when redirectAfterDownload is true).
  */
 export async function generateCalcPdfReport(
   input: CalcReportInput,

@@ -14,10 +14,14 @@ export const Route = createFileRoute("/calorie-calculator")({
 function CalorieCalculatorPage() {
   const calcMeta = getCalculatorBySlug("calorie-calculator")!;
   const [gender, setGender] = useState<"male" | "female">("male");
-  const [age, setAge] = useState<number>(28);
-  const [weightKg, setWeightKg] = useState<number>(75);
-  const [heightCm, setHeightCm] = useState<number>(178);
+  const [ageStr, setAgeStr] = useState("28");
+  const [weightKgStr, setWeightKgStr] = useState("75");
+  const [heightCmStr, setHeightCmStr] = useState("178");
   const [activity, setActivity] = useState<ActivityLevel>("moderate");
+
+  const age = parseFloat(ageStr) || 0;
+  const weightKg = parseFloat(weightKgStr) || 0;
+  const heightCm = parseFloat(heightCmStr) || 0;
 
   const result = useMemo(() => {
     return calculateCalories(gender, age, weightKg, heightCm, activity);
@@ -90,8 +94,8 @@ function CalorieCalculatorPage() {
                   type="number"
                   min="12"
                   max="100"
-                  value={age}
-                  onChange={(e) => setAge(Number(e.target.value))}
+                  value={ageStr}
+                  onChange={(e) => setAgeStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -104,8 +108,8 @@ function CalorieCalculatorPage() {
                   type="number"
                   min="20"
                   max="250"
-                  value={weightKg}
-                  onChange={(e) => setWeightKg(Number(e.target.value))}
+                  value={weightKgStr}
+                  onChange={(e) => setWeightKgStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -118,8 +122,8 @@ function CalorieCalculatorPage() {
                   type="number"
                   min="100"
                   max="250"
-                  value={heightCm}
-                  onChange={(e) => setHeightCm(Number(e.target.value))}
+                  value={heightCmStr}
+                  onChange={(e) => setHeightCmStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>

@@ -11,6 +11,7 @@ import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf
 import type { Bill, BillItem } from "@/lib/calc-engines/bill-calculator";
 import { formatCurrency } from "@/lib/calc-engines/bill-calculator";
 import { triggerPdfDownload, sanitizeDownloadFilename } from "@/lib/download";
+import { sanitizePdfText } from "@/lib/calc-pdf-report";
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
 
@@ -341,7 +342,8 @@ function drawText(
   size: number,
   color: ReturnType<typeof rgb>,
 ): void {
-  page.drawText(text, { x, y, size, font, color });
+  const safeText = sanitizePdfText(text);
+  page.drawText(safeText, { x, y, size, font, color });
 }
 
 function drawTextRight(
@@ -353,6 +355,7 @@ function drawTextRight(
   size: number,
   color: ReturnType<typeof rgb>,
 ): void {
-  const width = font.widthOfTextAtSize(text, size);
-  page.drawText(text, { x: rightEdge - width, y, size, font, color });
+  const safeText = sanitizePdfText(text);
+  const width = font.widthOfTextAtSize(safeText, size);
+  page.drawText(safeText, { x: rightEdge - width, y, size, font, color });
 }

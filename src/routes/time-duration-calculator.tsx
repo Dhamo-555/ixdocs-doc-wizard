@@ -13,13 +13,20 @@ export const Route = createFileRoute("/time-duration-calculator")({
 
 function TimeDurationCalculatorPage() {
   const calcMeta = getCalculatorBySlug("time-duration-calculator")!;
-  const [startH, setStartH] = useState<number>(9);
-  const [startM, setStartM] = useState<number>(0);
-  const [startS, setStartS] = useState<number>(0);
+  const [startHStr, setStartHStr] = useState("9");
+  const [startMStr, setStartMStr] = useState("0");
+  const [startSStr, setStartSStr] = useState("0");
 
-  const [endH, setEndH] = useState<number>(17);
-  const [endM, setEndM] = useState<number>(30);
-  const [endS, setEndS] = useState<number>(0);
+  const [endHStr, setEndHStr] = useState("17");
+  const [endMStr, setEndMStr] = useState("30");
+  const [endSStr, setEndSStr] = useState("0");
+
+  const startH = Math.min(23, Math.max(0, parseInt(startHStr, 10) || 0));
+  const startM = Math.min(59, Math.max(0, parseInt(startMStr, 10) || 0));
+  const startS = Math.min(59, Math.max(0, parseInt(startSStr, 10) || 0));
+  const endH = Math.min(23, Math.max(0, parseInt(endHStr, 10) || 0));
+  const endM = Math.min(59, Math.max(0, parseInt(endMStr, 10) || 0));
+  const endS = Math.min(59, Math.max(0, parseInt(endSStr, 10) || 0));
 
   const result = useMemo(() => {
     return calculateTimeDuration(startH, startM, startS, endH, endM, endS);
@@ -64,8 +71,8 @@ function TimeDurationCalculatorPage() {
                   type="number"
                   min="0"
                   max="23"
-                  value={startH}
-                  onChange={(e) => setStartH(Math.min(23, Math.max(0, Number(e.target.value))))}
+                  value={startHStr}
+                  onChange={(e) => setStartHStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
                 <span className="font-bold text-muted-foreground">:</span>
@@ -73,8 +80,8 @@ function TimeDurationCalculatorPage() {
                   type="number"
                   min="0"
                   max="59"
-                  value={startM}
-                  onChange={(e) => setStartM(Math.min(59, Math.max(0, Number(e.target.value))))}
+                  value={startMStr}
+                  onChange={(e) => setStartMStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
                 <span className="font-bold text-muted-foreground">:</span>
@@ -82,8 +89,8 @@ function TimeDurationCalculatorPage() {
                   type="number"
                   min="0"
                   max="59"
-                  value={startS}
-                  onChange={(e) => setStartS(Math.min(59, Math.max(0, Number(e.target.value))))}
+                  value={startSStr}
+                  onChange={(e) => setStartSStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -99,8 +106,8 @@ function TimeDurationCalculatorPage() {
                   type="number"
                   min="0"
                   max="23"
-                  value={endH}
-                  onChange={(e) => setEndH(Math.min(23, Math.max(0, Number(e.target.value))))}
+                  value={endHStr}
+                  onChange={(e) => setEndHStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
                 <span className="font-bold text-muted-foreground">:</span>
@@ -108,8 +115,8 @@ function TimeDurationCalculatorPage() {
                   type="number"
                   min="0"
                   max="59"
-                  value={endM}
-                  onChange={(e) => setEndM(Math.min(59, Math.max(0, Number(e.target.value))))}
+                  value={endMStr}
+                  onChange={(e) => setEndMStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
                 <span className="font-bold text-muted-foreground">:</span>
@@ -117,8 +124,8 @@ function TimeDurationCalculatorPage() {
                   type="number"
                   min="0"
                   max="59"
-                  value={endS}
-                  onChange={(e) => setEndS(Math.min(59, Math.max(0, Number(e.target.value))))}
+                  value={endSStr}
+                  onChange={(e) => setEndSStr(e.target.value)}
                   className="w-20 text-center rounded-xl border border-border bg-background py-2 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -136,14 +143,14 @@ function TimeDurationCalculatorPage() {
                   key={p.label}
                   type="button"
                   onClick={() => {
-                    setStartH(p.sh);
-                    setStartM(p.sm);
-                    setStartS(0);
-                    setEndH(p.eh);
-                    setEndM(p.em);
-                    setEndS(0);
+                    setStartHStr(String(p.sh));
+                    setStartMStr(String(p.sm));
+                    setStartSStr("0");
+                    setEndHStr(String(p.eh));
+                    setEndMStr(String(p.em));
+                    setEndSStr("0");
                   }}
-                  className="rounded-lg bg-surface px-2.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                  className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground"
                 >
                   {p.label}
                 </button>

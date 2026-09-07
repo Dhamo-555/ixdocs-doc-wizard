@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Users } from "lucide-react";
 import { CalcPageLayout } from "@/components/calc/calc-page-layout";
 import { CalcPdfReportButton } from "@/components/calc/calc-pdf-report-button";
+import { CurrencySelector } from "@/components/calc/currency-selector";
+import { detectDefaultCurrency, type CurrencyOption } from "@/lib/calc-currency";
 import { getCalculatorBySlug, calcRouteHead } from "@/lib/calculators";
 import { buildCalcReportInput, type CalcReportInput } from "@/lib/calc-pdf-report";
 import { calculateFuelCost } from "@/lib/calc-engines/fuel-cost-calculator";
@@ -14,13 +16,18 @@ export const Route = createFileRoute("/fuel-cost-calculator")({
 
 function FuelCostCalculatorPage() {
   const calcMeta = getCalculatorBySlug("fuel-cost-calculator")!;
-  const [distance, setDistance] = useState<number>(350);
-  const [efficiency, setEfficiency] = useState<number>(7.5);
+  const [currency, setCurrency] = useState<CurrencyOption>(detectDefaultCurrency);
+  const [distanceStr, setDistanceStr] = useState("350");
+  const [efficiencyStr, setEfficiencyStr] = useState("7.5");
   const [efficiencyUnit, setEfficiencyUnit] = useState<"L_per_100km" | "km_per_L" | "mpg_us">(
     "L_per_100km",
   );
-  const [pricePerUnit, setPricePerUnit] = useState<number>(1.65);
+  const [pricePerUnitStr, setPricePerUnitStr] = useState("1.65");
   const [passengers, setPassengers] = useState<number>(2);
+
+  const distance = parseFloat(distanceStr) || 0;
+  const efficiency = parseFloat(efficiencyStr) || 0;
+  const pricePerUnit = parseFloat(pricePerUnitStr) || 0;
 
   const result = useMemo(() => {
     return calculateFuelCost(distance, efficiency, efficiencyUnit, pricePerUnit, passengers);
@@ -32,29 +39,38 @@ function FuelCostCalculatorPage() {
       {
         Distance: `${distance} ${efficiencyUnit === "mpg_us" ? "miles" : "km"}`,
         Efficiency: `${efficiency} ${efficiencyUnit.replace(/_/g, " ")}`,
-        "Fuel Price": `$${pricePerUnit.toFixed(2)} per unit`,
+        "Fuel Price": `${currency.symbol}${pricePerUnit.toFixed(2)} per unit`,
         Passengers: `${passengers}`,
       },
-      `$${result.totalCost.toFixed(2)} total ($${result.costPerPassenger.toFixed(2)} each)`,
+      `${currency.symbol}${result.totalCost.toFixed(2)} total (${currency.symbol}${result.costPerPassenger.toFixed(2)} each)`,
       {
         metrics: [
           { label: "Total Fuel Required", value: `${result.fuelNeeded} units` },
-          { label: "Total Fuel Cost", value: `$${result.totalCost.toFixed(2)}` },
-          { label: "Cost per Passenger", value: `$${result.costPerPassenger.toFixed(2)}` },
-          { label: "Cost per Distance Unit", value: `$${result.costPerDistanceUnit.toFixed(2)}` },
+          { label: "Total Fuel Cost", value: `${currency.symbol}${result.totalCost.toFixed(2)}` },
+          {
+            label: "Cost per Passenger",
+            value: `${currency.symbol}${result.costPerPassenger.toFixed(2)}`,
+          },
+          {
+            label: "Cost per Distance Unit",
+            value: `${currency.symbol}${result.costPerDistanceUnit.toFixed(2)}`,
+          },
         ],
         formula: "Fuel = Distance × Consumption; Cost = Fuel × Price / Passengers",
-        explanation: `Driving ${distance} units at an efficiency of ${efficiency} consumes ${result.fuelNeeded} units of fuel. At $${pricePerUnit.toFixed(2)}/unit, total trip cost is $${result.totalCost.toFixed(2)}, or $${result.costPerPassenger.toFixed(2)} split across ${passengers} passengers.`,
+        explanation: `Driving ${distance} units at an efficiency of ${efficiency} consumes ${result.fuelNeeded} units of fuel. At ${currency.symbol}${pricePerUnit.toFixed(2)}/unit, total trip cost is ${currency.symbol}${result.totalCost.toFixed(2)}, or ${currency.symbol}${result.costPerPassenger.toFixed(2)} split across ${passengers} passengers.`,
       },
     );
-  }, [distance, efficiency, efficiencyUnit, pricePerUnit, passengers, result]);
+  }, [currency.symbol, distance, efficiency, efficiencyUnit, pricePerUnit, passengers, result]);
 
   return (
     <CalcPageLayout calc={calcMeta}>
       <div className="grid gap-8 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
           <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
-            <h2 className="text-base font-bold text-foreground">Trip Details</h2>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+              <h2 className="text-base font-bold text-foreground">Trip Details</h2>
+              <CurrencySelector value={currency} onChange={setCurrency} />
+            </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -64,22 +80,22 @@ function FuelCostCalculatorPage() {
                 <input
                   type="number"
                   min="0"
-                  value={distance}
-                  onChange={(e) => setDistance(Number(e.target.value))}
+                  value={distanceStr}
+                  onChange={(e) => setDistanceStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                  Fuel Price ($/L or $/gal)
+                  Fuel Price ({currency.symbol}/L or {currency.symbol}/gal)
                 </label>
                 <input
                   type="number"
                   min="0"
                   step="0.01"
-                  value={pricePerUnit}
-                  onChange={(e) => setPricePerUnit(Number(e.target.value))}
+                  value={pricePerUnitStr}
+                  onChange={(e) => setPricePerUnitStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -95,8 +111,8 @@ function FuelCostCalculatorPage() {
                   type="number"
                   min="0.1"
                   step="0.1"
-                  value={efficiency}
-                  onChange={(e) => setEfficiency(Number(e.target.value))}
+                  value={efficiencyStr}
+                  onChange={(e) => setEfficiencyStr(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-semibold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
@@ -160,11 +176,13 @@ function FuelCostCalculatorPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
                 Cost per Passenger
               </span>
-              <div className="mt-1 text-4xl font-extrabold text-foreground">
-                ${result.costPerPassenger.toFixed(2)}
+              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-foreground break-all">
+                {currency.symbol}
+                {result.costPerPassenger.toFixed(2)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Total trip gas cost: ${result.totalCost.toFixed(2)}
+                Total trip gas cost: {currency.symbol}
+                {result.totalCost.toFixed(2)}
               </p>
             </div>
 
@@ -180,7 +198,8 @@ function FuelCostCalculatorPage() {
                   Cost per {efficiencyUnit === "mpg_us" ? "Mile" : "Km"}
                 </span>
                 <p className="mt-1 text-base font-bold text-foreground">
-                  ${result.costPerDistanceUnit.toFixed(2)}
+                  {currency.symbol}
+                  {result.costPerDistanceUnit.toFixed(2)}
                 </p>
               </div>
             </div>

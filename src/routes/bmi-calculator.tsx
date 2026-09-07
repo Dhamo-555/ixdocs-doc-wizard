@@ -16,13 +16,19 @@ function BmiCalculatorPage() {
   const [unitMode, setUnitMode] = useState<"metric" | "imperial">("metric");
 
   // Metric
-  const [weightKg, setWeightKg] = useState<number>(70);
-  const [heightCm, setHeightCm] = useState<number>(175);
+  const [weightKgStr, setWeightKgStr] = useState("70");
+  const [heightCmStr, setHeightCmStr] = useState("175");
 
   // Imperial
-  const [weightLbs, setWeightLbs] = useState<number>(155);
-  const [heightFeet, setHeightFeet] = useState<number>(5);
-  const [heightInches, setHeightInches] = useState<number>(9);
+  const [weightLbsStr, setWeightLbsStr] = useState("155");
+  const [heightFeetStr, setHeightFeetStr] = useState("5");
+  const [heightInchesStr, setHeightInchesStr] = useState("9");
+
+  const weightKg = parseFloat(weightKgStr) || 0;
+  const heightCm = parseFloat(heightCmStr) || 0;
+  const weightLbs = parseFloat(weightLbsStr) || 0;
+  const heightFeet = parseFloat(heightFeetStr) || 0;
+  const heightInches = parseFloat(heightInchesStr) || 0;
 
   const result = useMemo(() => {
     if (unitMode === "metric") {
@@ -109,8 +115,8 @@ function BmiCalculatorPage() {
                     type="number"
                     min="1"
                     max="300"
-                    value={weightKg}
-                    onChange={(e) => setWeightKg(Number(e.target.value))}
+                    value={weightKgStr}
+                    onChange={(e) => setWeightKgStr(e.target.value)}
                     className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                   />
                 </div>
@@ -122,8 +128,8 @@ function BmiCalculatorPage() {
                     type="number"
                     min="50"
                     max="260"
-                    value={heightCm}
-                    onChange={(e) => setHeightCm(Number(e.target.value))}
+                    value={heightCmStr}
+                    onChange={(e) => setHeightCmStr(e.target.value)}
                     className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                   />
                 </div>
@@ -137,8 +143,8 @@ function BmiCalculatorPage() {
                   <input
                     type="number"
                     min="1"
-                    value={weightLbs}
-                    onChange={(e) => setWeightLbs(Number(e.target.value))}
+                    value={weightLbsStr}
+                    onChange={(e) => setWeightLbsStr(e.target.value)}
                     className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                   />
                 </div>
@@ -151,8 +157,8 @@ function BmiCalculatorPage() {
                       type="number"
                       min="1"
                       max="8"
-                      value={heightFeet}
-                      onChange={(e) => setHeightFeet(Number(e.target.value))}
+                      value={heightFeetStr}
+                      onChange={(e) => setHeightFeetStr(e.target.value)}
                       placeholder="ft"
                       className="w-1/2 rounded-xl border border-border bg-background px-3 py-2.5 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                     />
@@ -160,8 +166,8 @@ function BmiCalculatorPage() {
                       type="number"
                       min="0"
                       max="11"
-                      value={heightInches}
-                      onChange={(e) => setHeightInches(Number(e.target.value))}
+                      value={heightInchesStr}
+                      onChange={(e) => setHeightInchesStr(e.target.value)}
                       placeholder="in"
                       className="w-1/2 rounded-xl border border-border bg-background px-3 py-2.5 text-base font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                     />

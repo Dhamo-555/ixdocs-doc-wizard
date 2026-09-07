@@ -79,11 +79,14 @@ function Page() {
           </li>
         </ul>
 
-        <h2 className="mt-10 text-xl font-bold">Current Availability</h2>
+        <h2 className="mt-10 text-xl font-bold">Security & Responsible Use</h2>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          IXDocs is currently available without requiring payment for its available tools. We
-          reserve the right to introduce optional premium features, subscription tiers, or paid
-          tools in the future as the platform grows.
+          IXDocs provides browser-based utilities for general-purpose calculation, conversion, and
+          document management. All tools are designed to process files and data locally on your
+          device where technically applicable. IXDocs does not endorse and is not responsible for
+          any unauthorized, unlawful, or harmful use of its tools or generated outputs. Users are
+          expected to verify calculation results independently and comply with all applicable local
+          laws and regulations.
         </p>
 
         <h2 className="mt-10 text-xl font-bold">Ready to Start?</h2>

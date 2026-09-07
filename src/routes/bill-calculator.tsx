@@ -53,6 +53,10 @@ function BillCalculatorPage() {
   const [lastAddedItemId, setLastAddedItemId] = useState<string | null>(null);
   const [generateError, setGenerateError] = useState<string | null>(null);
 
+  const [catalog, setCatalog] = useState<
+    Record<string, { productName?: string; unitPrice?: number }>
+  >({});
+
   // ── Bill mutations ──────────────────────────────────────────────────────
 
   const handleAddItem = useCallback(() => {
@@ -71,7 +75,20 @@ function BillCalculatorPage() {
       changes: Partial<Pick<BillItem, "productName" | "quantity" | "unitPrice">>,
     ) => {
       setGenerateSuccess(false);
-      setBill((prev) => updateItem(prev, itemId, changes));
+      setBill((prev) => {
+        const target = prev.items.find((i) => i.id === itemId);
+        if (target?.barcode) {
+          setCatalog((c) => ({
+            ...c,
+            [target.barcode!]: {
+              productName:
+                changes.productName !== undefined ? changes.productName : target.productName,
+              unitPrice: changes.unitPrice !== undefined ? changes.unitPrice : target.unitPrice,
+            },
+          }));
+        }
+        return updateItem(prev, itemId, changes);
+      });
     },
     [],
   );
@@ -105,14 +122,17 @@ function BillCalculatorPage() {
 
   // ── Barcode scan handler ────────────────────────────────────────────────
 
-  const handleBarcodeDetected = useCallback((barcodeValue: string) => {
-    setGenerateSuccess(false);
-    setBill((prev) => {
-      const { bill: updated, itemId } = scanBarcode(prev, barcodeValue);
-      setLastAddedItemId(itemId);
-      return updated;
-    });
-  }, []);
+  const handleBarcodeDetected = useCallback(
+    (barcodeValue: string) => {
+      setGenerateSuccess(false);
+      setBill((prev) => {
+        const { bill: updated, itemId } = scanBarcode(prev, barcodeValue, (code) => catalog[code]);
+        setLastAddedItemId(itemId);
+        return updated;
+      });
+    },
+    [catalog],
+  );
 
   // ── PDF generation ──────────────────────────────────────────────────────
 
