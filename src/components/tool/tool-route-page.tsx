@@ -97,6 +97,9 @@ export function toolRouteHead(slug: string) {
       { property: "og:url", content: url },
       { property: "og:image", content: ogImage },
       { property: "og:image:type", content: ogImage.endsWith(".jpg") ? "image/jpeg" : "image/png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: `${tool.name} — Free PDF Tool | IXDocs` },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: tool.metaTitle },
       { name: "twitter:description", content: tool.metaDescription },
@@ -162,7 +165,9 @@ export function ToolRoutePage({ slug }: { slug: string }) {
         <li className="flex items-start gap-2 rounded-lg border border-border bg-surface px-3 py-2">
           <Gauge className="mt-px size-4 shrink-0 text-primary" aria-hidden="true" />
           <span className="min-w-0">
-            {tool.slug === "qr-code-generator" ? "Instant client-side generation" : "Files up to 100 MB"}
+            {tool.slug === "qr-code-generator"
+              ? "Instant client-side generation"
+              : "Files up to 100 MB"}
           </span>
         </li>
         <li className="flex items-start gap-2 rounded-lg border border-border bg-surface px-3 py-2">
