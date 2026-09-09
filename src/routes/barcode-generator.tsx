@@ -183,7 +183,7 @@ function BarcodeGeneratorPage() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* Left Column: Form Controls */}
         <div className="space-y-6 lg:col-span-6">
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
+          <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-5">
             <h2 className="text-base font-bold text-foreground flex items-center gap-2">
               <Sliders className="size-4 text-emerald-600" />
               Barcode Settings
@@ -236,7 +236,7 @@ function BarcodeGeneratorPage() {
             </div>
 
             {/* Customization Sliders */}
-            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border">
               <div className="space-y-1">
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Bar Width</span>
@@ -275,7 +275,7 @@ function BarcodeGeneratorPage() {
             </div>
 
             {/* Checkbox and Font Options */}
-            <div className="flex items-center justify-between pt-2 border-t border-border">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border">
               <label className="flex items-center gap-2 text-xs font-medium text-foreground cursor-pointer">
                 <input
                   type="checkbox"
@@ -302,30 +302,30 @@ function BarcodeGeneratorPage() {
 
         {/* Right Column: Live Barcode Preview & Export */}
         <div className="space-y-6 lg:col-span-6">
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
+          <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-5">
             <h2 className="text-base font-bold text-foreground">Barcode Preview</h2>
 
             {/* SVG Render Canvas Container */}
-            <div className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-white p-6 shadow-inner">
+            <div className="flex min-h-[180px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-white p-4 sm:p-6 shadow-inner overflow-hidden">
               {renderError ? (
                 <div className="flex flex-col items-center justify-center text-center text-destructive space-y-2 p-4">
                   <AlertCircle className="size-8" />
                   <p className="text-xs font-semibold">{renderError}</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto max-w-full">
-                  <svg ref={svgRef} className="mx-auto" />
+                <div className="overflow-x-auto max-w-full w-full flex justify-center py-2">
+                  <svg ref={svgRef} className="max-w-full h-auto mx-auto" />
                 </div>
               )}
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={handleDownloadPng}
                 disabled={Boolean(renderError)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-700 disabled:opacity-40"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-700 disabled:opacity-40 min-w-[120px]"
               >
                 <Download className="size-3.5" />
                 <span>Download PNG</span>
@@ -335,7 +335,7 @@ function BarcodeGeneratorPage() {
                 type="button"
                 onClick={handleDownloadSvg}
                 disabled={Boolean(renderError)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40 min-w-[120px]"
               >
                 <FileCode className="size-3.5" />
                 <span>Download SVG</span>
@@ -345,7 +345,7 @@ function BarcodeGeneratorPage() {
                 type="button"
                 onClick={handlePrint}
                 disabled={Boolean(renderError)}
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface disabled:opacity-40 min-w-[80px]"
                 title="Print Barcode Label"
               >
                 <Printer className="size-3.5" />
@@ -355,7 +355,7 @@ function BarcodeGeneratorPage() {
               <button
                 type="button"
                 onClick={handleCopyValue}
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs font-semibold text-foreground shadow-xs transition hover:bg-surface min-w-[80px]"
                 title="Copy Barcode Content"
               >
                 {copied ? (
@@ -384,7 +384,7 @@ function BarcodeGeneratorPage() {
 
       {/* Educational Guide & FAQs */}
       <div className="mt-12 space-y-6">
-        <section className="rounded-3xl border border-border bg-card p-6 sm:p-8">
+        <section className="rounded-3xl border border-border bg-card p-4 sm:p-6 lg:p-8">
           <h2 className="text-lg font-bold text-foreground mb-4">Barcode Formats Comparison</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-xs">
             <div className="rounded-2xl border border-border p-4 space-y-2 bg-surface/30">

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { RUNNERS } from "@/lib/tool-runners";
 import { TOOL_MAP } from "@/lib/tools";
-import { getPdfjs, type RunContext } from "@/lib/pdf-engine";
+import { getPdfjs, type RunContext, type OutputFile } from "@/lib/pdf-engine";
 
 interface TestResult {
   name: string;
@@ -35,6 +35,12 @@ function TestRunnerPage() {
       setResults([...list]);
     };
 
+    const getOutput = (outputs: OutputFile[], index = 0): OutputFile => {
+      const out = outputs[index];
+      if (!out) throw new Error(`Expected output at index ${index}, but got none`);
+      return out;
+    };
+
     try {
       const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
 
@@ -53,7 +59,9 @@ function TestRunnerPage() {
           });
         }
         const bytes = await doc.save();
-        return new File([bytes], `mock_${pagesCount}p.pdf`, { type: "application/pdf" });
+        return new File([bytes as unknown as BlobPart], `mock_${pagesCount}p.pdf`, {
+          type: "application/pdf",
+        });
       };
 
       // Helper to generate a mock image
@@ -87,14 +95,15 @@ function TestRunnerPage() {
           totalPages: 3,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const count = outPdf.getPageCount();
         addResult({
           name: "Merge PDF",
           expected: "Merged PDF with 3 pages",
           actual: `Merged PDF with ${count} pages`,
           status: count === 3 ? "PASS" : "FAIL",
-          details: `Output size: ${result.outputs[0].size} bytes`,
+          details: `Output size: ${out0.size} bytes`,
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -148,7 +157,8 @@ function TestRunnerPage() {
           totalPages: 5,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const count = outPdf.getPageCount();
         addResult({
           name: "Extract PDF Pages",
@@ -178,7 +188,8 @@ function TestRunnerPage() {
           totalPages: 5,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const count = outPdf.getPageCount();
         addResult({
           name: "Delete PDF Pages",
@@ -208,7 +219,8 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const page = outPdf.getPage(0);
         const rotation = page.getRotation().angle;
         addResult({
@@ -245,11 +257,12 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
+        const out0 = getOutput(result.outputs, 0);
         addResult({
           name: "Watermark PDF",
           expected: "Watermark applied successfully",
-          actual: `Output size: ${result.outputs[0].size} bytes`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          actual: `Output size: ${out0.size} bytes`,
+          status: out0.size > 0 ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -278,11 +291,12 @@ function TestRunnerPage() {
           totalPages: 2,
           onProgress: () => {},
         });
+        const out0 = getOutput(result.outputs, 0);
         addResult({
           name: "PDF Page Numbering",
           expected: "Page numbers applied successfully",
-          actual: `Output size: ${result.outputs[0].size} bytes`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          actual: `Output size: ${out0.size} bytes`,
+          status: out0.size > 0 ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -306,7 +320,8 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const author = outPdf.getAuthor();
         const title = outPdf.getTitle();
         addResult({
@@ -337,7 +352,8 @@ function TestRunnerPage() {
           totalPages: 3,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const count = outPdf.getPageCount();
         addResult({
           name: "Reorder PDF Pages",
@@ -368,13 +384,11 @@ function TestRunnerPage() {
           onProgress: () => {},
         });
         const hasOut = result.outputs.length > 0 || result.partial;
+        const out0 = result.outputs[0];
         addResult({
           name: "Compress PDF",
           expected: "Compressed output or optimization notice generated",
-          actual:
-            result.outputs.length > 0
-              ? `Output size: ${result.outputs[0].size} bytes`
-              : "Original was already optimal",
+          actual: out0 ? `Output size: ${out0.size} bytes` : "Original was already optimal",
           status: hasOut ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
@@ -459,7 +473,8 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const size = outPdf.getPage(0).getSize();
         // Letter size in points is approx 612 x 792
         const isLetter = Math.abs(size.width - 612) < 2 && Math.abs(size.height - 792) < 2;
@@ -491,11 +506,12 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
+        const out0 = getOutput(result.outputs, 0);
         addResult({
           name: "Print-Ready PDF",
           expected: "Print-ready output generated",
-          actual: `Output size: ${result.outputs[0].size} bytes`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          actual: `Output size: ${out0.size} bytes`,
+          status: out0.size > 0 ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -519,11 +535,12 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
+        const out0 = getOutput(result.outputs, 0);
         addResult({
           name: "Application PDF Optimizer",
           expected: "Optimized application document generated",
-          actual: `Output size: ${result.outputs[0].size} bytes`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          actual: `Output size: ${out0.size} bytes`,
+          status: out0.size > 0 ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -577,7 +594,8 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
-        const outPdf = await PDFDocument.load(await result.outputs[0].blob.arrayBuffer());
+        const out0 = getOutput(result.outputs, 0);
+        const outPdf = await PDFDocument.load(await out0.blob.arrayBuffer());
         const count = outPdf.getPageCount();
         addResult({
           name: "Image to PDF Converter",
@@ -608,11 +626,12 @@ function TestRunnerPage() {
           onProgress: () => {},
         });
         const count = result.outputs.length;
+        const out0 = result.outputs[0];
         addResult({
           name: "PDF to JPG",
           expected: "Rendered 1 JPG page image",
           actual: `Rendered ${count} images`,
-          status: count === 1 && result.outputs[0].kind === "image" ? "PASS" : "FAIL",
+          status: count === 1 && out0?.kind === "image" ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -637,11 +656,12 @@ function TestRunnerPage() {
           onProgress: () => {},
         });
         const count = result.outputs.length;
+        const out0 = result.outputs[0];
         addResult({
           name: "PDF to PNG",
           expected: "Rendered 2 PNG page images",
           actual: `Rendered ${count} images`,
-          status: count === 2 && result.outputs[0].kind === "image" ? "PASS" : "FAIL",
+          status: count === 2 && out0?.kind === "image" ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -665,11 +685,12 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
+        const out0 = getOutput(result.outputs, 0);
         addResult({
           name: "Passport Photo Sheet",
           expected: "Passport photo grid generated",
-          actual: `Output type: ${result.outputs[0].kind}, size: ${result.outputs[0].size} bytes`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          actual: `Output type: ${out0.kind}, size: ${out0.size} bytes`,
+          status: out0.size > 0 ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -693,11 +714,12 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
+        const out0 = getOutput(result.outputs, 0);
         addResult({
           name: "Document Scanner",
           expected: "Scanned document output generated",
-          actual: `Output size: ${result.outputs[0].size} bytes`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          actual: `Output size: ${out0.size} bytes`,
+          status: out0.size > 0 ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -723,11 +745,12 @@ function TestRunnerPage() {
           totalPages: 1,
           onProgress: () => {},
         });
+        const out0 = getOutput(result.outputs, 0);
         addResult({
           name: "PDF OCR",
           expected: "OCR text output file generated",
-          actual: `Output size: ${result.outputs[0].size} bytes`,
-          status: result.outputs[0].size > 0 ? "PASS" : "FAIL",
+          actual: `Output size: ${out0.size} bytes`,
+          status: out0.size > 0 ? "PASS" : "FAIL",
         });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Unknown error";
@@ -760,7 +783,7 @@ function TestRunnerPage() {
           const buffer = await blob.arrayBuffer();
           const bytes = new Uint8Array(buffer);
           // Check PNG magic bytes: 0x89 0x50 0x4E 0x47 (89 80 78 71)
-          if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) {
+          if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
             validPng = true;
           }
         }

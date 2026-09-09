@@ -94,13 +94,10 @@ function EmiCalculatorPage() {
     <CalcPageLayout calc={calcMeta}>
       <div className="grid gap-8 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-7">
-          <div className="rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-xs space-y-5">
+          <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-5">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <h2 className="text-base font-bold text-foreground">Loan Details</h2>
-              <CurrencySelector
-                selectedCurrency={currency}
-                onCurrencyChange={setCurrency}
-              />
+              <CurrencySelector selectedCurrency={currency} onCurrencyChange={setCurrency} />
             </div>
 
             {/* Principal Amount */}
@@ -208,7 +205,7 @@ function EmiCalculatorPage() {
 
           {/* Yearly Amortization */}
           {result.amortization.length > 0 && (
-            <div className="rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-4">
               <h3 className="text-sm font-bold text-foreground">Repayment Schedule (Annual)</h3>
               <div className="max-h-60 overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-xs min-w-[320px]">
@@ -247,7 +244,7 @@ function EmiCalculatorPage() {
 
         {/* Results Card */}
         <div className="space-y-6 lg:col-span-5">
-          <div className="rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-xs space-y-5">
+          <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-5">
             <h2 className="text-base font-bold text-foreground">Monthly EMI</h2>
 
             <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-5">

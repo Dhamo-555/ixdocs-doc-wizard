@@ -340,9 +340,9 @@ function BasicCalculatorPage() {
         {/* Action Bar: Download PDF Report */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
           <div>
-            <div className="text-xs font-bold text-foreground">Official Calculation Report</div>
+            <div className="text-xs font-bold text-foreground">Calculation PDF Summary</div>
             <div className="text-xs text-muted-foreground mt-0.5">
-              Export current expression and history entries as a printable A4 calculation summary.
+              Save your current calculation and recent entries as a clean PDF summary.
             </div>
           </div>
           <CalcPdfReportButton

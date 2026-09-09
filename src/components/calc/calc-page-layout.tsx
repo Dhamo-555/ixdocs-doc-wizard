@@ -78,7 +78,7 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
           <div className="mt-12 space-y-10">
             {/* Formula (if available) */}
             {calc.formula ? (
-              <section className="rounded-2xl border border-border bg-surface/50 p-6 sm:p-8">
+              <section className="rounded-2xl border border-border bg-surface/50 p-4 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-2.5 text-sm font-bold text-foreground">
                   <span className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                     <CalcIcon className="size-4" />
@@ -93,7 +93,7 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
 
             {/* How It Works */}
             {calc.howItWorks && calc.howItWorks.length > 0 ? (
-              <section className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+              <section className="rounded-2xl border border-border bg-card p-4 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-2.5 text-sm font-bold text-foreground">
                   <span className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                     <Zap className="size-4" />
@@ -118,7 +118,7 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
 
             {/* Worked Example (if available) */}
             {calc.example ? (
-              <section className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+              <section className="rounded-2xl border border-border bg-card p-4 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-2.5 text-sm font-bold text-foreground">
                   <span className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                     <BookOpen className="size-4" />
@@ -145,7 +145,7 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
 
             {/* FAQs */}
             {calc.faqs && calc.faqs.length > 0 ? (
-              <section className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+              <section className="rounded-2xl border border-border bg-card p-4 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-2.5 text-sm font-bold text-foreground">
                   <span className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                     <HelpCircle className="size-4" />

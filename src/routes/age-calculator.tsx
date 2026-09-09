@@ -173,12 +173,9 @@ function AgeCalculatorPage() {
             {/* Action Bar: Download PDF Report */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
               <div>
-                <div className="text-xs font-bold text-foreground">
-                  Official PDF Age & Milestone Report
-                </div>
+                <div className="text-xs font-bold text-foreground">PDF Age Summary</div>
                 <div className="text-xs text-muted-foreground mt-0.5">
-                  Download a printable summary of your exact chronological age and milestone
-                  metrics.
+                  Download a clean summary of your exact chronological age and milestone metrics.
                 </div>
               </div>
               <CalcPdfReportButton

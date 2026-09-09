@@ -50,12 +50,7 @@ import { loadMonetagInPagePush } from "@/lib/monetag";
 
 /* ------------------------------------------------------------ shared cards & ad slots */
 
-export function AdSlot({
-  className,
-}: {
-  label?: string;
-  className?: string;
-}) {
+export function AdSlot({ className }: { label?: string; className?: string }) {
   useEffect(() => {
     loadMonetagInPagePush();
   }, []);
@@ -65,7 +60,7 @@ export function AdSlot({
       aria-hidden="true"
       className={cn(
         "ixdocs-ad-container w-full max-w-full overflow-hidden transition-all duration-200 empty:hidden empty:m-0 empty:p-0",
-        className
+        className,
       )}
     />
   );
@@ -383,7 +378,8 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     if (ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = sigColor;
-      ctx.font = "italic 48px 'Brush Script MT', 'Great Vibes', 'Dancing Script', cursive, sans-serif";
+      ctx.font =
+        "italic 48px 'Brush Script MT', 'Great Vibes', 'Dancing Script', cursive, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(typedName || "Signature", canvas.width / 2, canvas.height / 2);
@@ -419,15 +415,20 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     }
   }, [editorPage, annotationsMap, tool.slug]);
 
-  const startSigDraw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const startSigDraw = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     const canvas = sigCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     isDrawingSig.current = true;
     const rect = canvas.getBoundingClientRect();
-    const x = ("touches" in e) ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const y = ("touches" in e) ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    const touch = "touches" in e ? e.touches[0] : null;
+    const clientX = touch ? touch.clientX : "clientX" in e ? e.clientX : 0;
+    const clientY = touch ? touch.clientY : "clientY" in e ? e.clientY : 0;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.strokeStyle = sigColor;
@@ -436,15 +437,20 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     ctx.lineJoin = "round";
   };
 
-  const drawSig = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const drawSig = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     if (!isDrawingSig.current) return;
     const canvas = sigCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
-    const x = ("touches" in e) ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const y = ("touches" in e) ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    const touch = "touches" in e ? e.touches[0] : null;
+    const clientX = touch ? touch.clientX : "clientX" in e ? e.clientX : 0;
+    const clientY = touch ? touch.clientY : "clientY" in e ? e.clientY : 0;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
     ctx.lineTo(x, y);
     ctx.stroke();
   };
@@ -469,15 +475,27 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     }
   };
 
-  const startAnnotDraw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const startAnnotDraw = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     const canvas = annotCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     isDrawingAnnot.current = true;
     const rect = canvas.getBoundingClientRect();
-    const x = (("touches" in e) && e.touches[0]) ? e.touches[0].clientX - rect.left : ("clientX" in e) ? e.clientX - rect.left : 0;
-    const y = (("touches" in e) && e.touches[0]) ? e.touches[0].clientY - rect.top : ("clientY" in e) ? e.clientY - rect.top : 0;
+    const x =
+      "touches" in e && e.touches[0]
+        ? e.touches[0].clientX - rect.left
+        : "clientX" in e
+          ? e.clientX - rect.left
+          : 0;
+    const y =
+      "touches" in e && e.touches[0]
+        ? e.touches[0].clientY - rect.top
+        : "clientY" in e
+          ? e.clientY - rect.top
+          : 0;
 
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -487,15 +505,27 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     ctx.lineJoin = "round";
   };
 
-  const drawAnnot = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const drawAnnot = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     if (!isDrawingAnnot.current) return;
     const canvas = annotCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
-    const x = (("touches" in e) && e.touches[0]) ? e.touches[0].clientX - rect.left : ("clientX" in e) ? e.clientX - rect.left : 0;
-    const y = (("touches" in e) && e.touches[0]) ? e.touches[0].clientY - rect.top : ("clientY" in e) ? e.clientY - rect.top : 0;
+    const x =
+      "touches" in e && e.touches[0]
+        ? e.touches[0].clientX - rect.left
+        : "clientX" in e
+          ? e.clientX - rect.left
+          : 0;
+    const y =
+      "touches" in e && e.touches[0]
+        ? e.touches[0].clientY - rect.top
+        : "clientY" in e
+          ? e.clientY - rect.top
+          : 0;
 
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -554,7 +584,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     if (tool.slug !== "sign-pdf") return;
     const rect = e.currentTarget.getBoundingClientRect();
     const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPercent = (1 - ((e.clientY - rect.top) / rect.height)) * 100;
+    const yPercent = (1 - (e.clientY - rect.top) / rect.height) * 100;
     setSigX(Math.round(xPercent));
     setSigY(Math.round(yPercent));
   };
@@ -624,7 +654,8 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   useEffect(() => {
     let cancelled = false;
     const file = files[0];
-    const isEditorTool = tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf";
+    const isEditorTool =
+      tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf";
     const wantsThumbs = (tool.pageMode && tool.pageMode !== "none") || isEditorTool;
     if (!file || !wantsThumbs || !file.type.includes("pdf")) {
       setThumbs([]);
@@ -652,7 +683,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     return () => {
       cancelled = true;
     };
-  }, [files, tool.pageMode]);
+  }, [files, tool.pageMode, tool.slug]);
 
   const process = async () => {
     const runner = RUNNERS[tool.slug];
@@ -870,12 +901,18 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                     >
                       <div className="flex flex-col gap-3 w-full min-w-0">
                         <div className="min-w-0">
-                          <p className="truncate text-xs text-muted-foreground mb-1" title={output.name}>
+                          <p
+                            className="truncate text-xs text-muted-foreground mb-1"
+                            title={output.name}
+                          >
                             Original: {output.name} ({formatBytes(output.size)})
                           </p>
                         </div>
                         <div className="flex flex-col gap-1.5 max-w-md w-full">
-                          <Label htmlFor={`filename-${output.name}`} className="text-xs font-semibold text-foreground">
+                          <Label
+                            htmlFor={`filename-${output.name}`}
+                            className="text-xs font-semibold text-foreground"
+                          >
                             Download Filename
                           </Label>
                           <div className="relative flex items-center">
@@ -1114,7 +1151,8 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
           ) : null}
 
           {/* Interactive Document Editor Viewport */}
-          {thumbs.length && (tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf") ? (
+          {thumbs.length &&
+          (tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf") ? (
             <div className="rounded-2xl border border-border bg-surface/50 p-4 sm:p-6 mb-6">
               <h3 className="text-base font-semibold mb-4">Interactive Page Editor</h3>
 
@@ -1128,7 +1166,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                       size="icon"
                       className="size-10"
                       disabled={editorPage <= 1}
-                      onClick={() => setEditorPage(prev => Math.max(1, prev - 1))}
+                      onClick={() => setEditorPage((prev) => Math.max(1, prev - 1))}
                     >
                       <ChevronLeft className="size-5" />
                     </Button>
@@ -1140,7 +1178,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                       size="icon"
                       className="size-10"
                       disabled={editorPage >= thumbs.length}
-                      onClick={() => setEditorPage(prev => Math.min(thumbs.length, prev + 1))}
+                      onClick={() => setEditorPage((prev) => Math.min(thumbs.length, prev + 1))}
                     >
                       <ChevronRight className="size-5" />
                     </Button>
@@ -1151,7 +1189,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                     onClick={handlePageClick}
                     className={cn(
                       "relative border border-border shadow-md rounded-lg overflow-hidden bg-white max-w-full select-none",
-                      tool.slug === "sign-pdf" && "cursor-crosshair"
+                      tool.slug === "sign-pdf" && "cursor-crosshair",
                     )}
                     style={{ width: "420px", height: "560px" }}
                   >
@@ -1175,7 +1213,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                           backgroundSize: "contain",
                           backgroundPosition: "center",
                           backgroundRepeat: "no-repeat",
-                          transition: "width 0.1s, height 0.1s"
+                          transition: "width 0.1s, height 0.1s",
                         }}
                       />
                     ) : null}
@@ -1196,7 +1234,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                         onClick={handleCanvasClick}
                         className={cn(
                           "absolute inset-0 w-full h-full",
-                          annotTool === "text" ? "cursor-text" : "cursor-crosshair"
+                          annotTool === "text" ? "cursor-text" : "cursor-crosshair",
                         )}
                       />
                     ) : null}
@@ -1257,7 +1295,12 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                         <div className="space-y-2">
                           <div className="flex justify-between items-center">
                             <Label className="text-xs font-semibold">Draw signature</Label>
-                            <Button variant="ghost" size="sm" className="h-8 text-xs text-destructive" onClick={clearSigDraw}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 text-xs text-destructive"
+                              onClick={clearSigDraw}
+                            >
                               Clear
                             </Button>
                           </div>
@@ -1365,18 +1408,22 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                       <div className="space-y-3">
                         <Label className="text-xs font-semibold">Color</Label>
                         <div className="flex flex-wrap gap-2">
-                          {["#ff0000", "#4caf50", "#2196f3", "#ffeb3b", "#ff9800", "#9c27b0"].map((c) => (
-                            <button
-                              key={c}
-                              type="button"
-                              onClick={() => setAnnotColor(c)}
-                              className={cn(
-                                "size-8 rounded-full border border-border shadow-sm transition-transform",
-                                annotColor === c ? "scale-115 ring-2 ring-primary" : "opacity-80 hover:opacity-100"
-                              )}
-                              style={{ backgroundColor: c }}
-                            />
-                          ))}
+                          {["#ff0000", "#4caf50", "#2196f3", "#ffeb3b", "#ff9800", "#9c27b0"].map(
+                            (c) => (
+                              <button
+                                key={c}
+                                type="button"
+                                onClick={() => setAnnotColor(c)}
+                                className={cn(
+                                  "size-8 rounded-full border border-border shadow-sm transition-transform",
+                                  annotColor === c
+                                    ? "scale-115 ring-2 ring-primary"
+                                    : "opacity-80 hover:opacity-100",
+                                )}
+                                style={{ backgroundColor: c }}
+                              />
+                            ),
+                          )}
                         </div>
                       </div>
 
@@ -1475,14 +1522,28 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                       </div>
 
                       <div className="flex gap-2 mt-4">
-                        <Button variant="outline" className="flex-1" onClick={() => {
-                          setCropTop(36); setCropBottom(36); setCropLeft(36); setCropRight(36);
-                        }}>
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => {
+                            setCropTop(36);
+                            setCropBottom(36);
+                            setCropLeft(36);
+                            setCropRight(36);
+                          }}
+                        >
                           0.5 inch (36pt)
                         </Button>
-                        <Button variant="outline" className="flex-1" onClick={() => {
-                          setCropTop(0); setCropBottom(0); setCropLeft(0); setCropRight(0);
-                        }}>
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => {
+                            setCropTop(0);
+                            setCropBottom(0);
+                            setCropLeft(0);
+                            setCropRight(0);
+                          }}
+                        >
                           Reset
                         </Button>
                       </div>

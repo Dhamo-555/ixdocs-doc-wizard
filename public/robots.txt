@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://ixdocs.com/sitemap.xml
+Sitemap: https://calc.ixdocs.com/sitemap.xml

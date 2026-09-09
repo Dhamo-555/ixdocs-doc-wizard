@@ -582,31 +582,39 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
     slug: "gpa-calculator",
     name: "GPA Calculator",
     shortDescription:
-      "Calculate semester and cumulative Grade Point Average (GPA) on the standard 4.0 college scale.",
+      "Calculate semester SGPA and cumulative CGPA on the standard 10-point Indian university grading scale.",
     metaDescription:
-      "Free 4.0 GPA calculator. Calculate semester and cumulative college or high school GPA with credit hours and letter grades.",
+      "Free 10-point GPA & CGPA calculator. Calculate semester SGPA and cumulative CGPA with credit hours, letter grades (O, A+, A, B+, B, C, F), and percentage equivalent.",
     category: "math",
     icon: GraduationCap,
     popular: true,
     keywords: [
       "gpa calculator",
+      "sgpa calculator",
+      "cgpa calculator",
+      "10 point scale gpa",
+      "indian gpa calculator",
+      "cgpa to percentage",
       "college gpa",
-      "grade point average",
-      "cumulative gpa",
-      "4.0 scale",
     ],
-    formula: "GPA = Total Quality Points / Total Credit Hours",
+    formula: "SGPA = Σ(Credit × Grade Point) / Σ(Credits) [10-Point Scale]",
     explanation:
-      "Calculate your weighted Grade Point Average based on credit hours and letter grades (A=4.0, B=3.0, etc.), with cumulative GPA forecasting.",
+      "Calculate your weighted Semester Grade Point Average (SGPA) and Cumulative Grade Point Average (CGPA) on the Indian 10-point scale (O=10, A+=9, A=8, B+=7, B=6, C=5, F=0).",
     howItWorks: [
-      "Add your courses, letter grades (A, B+, etc.), and credit hours.",
-      "Optionally enter prior cumulative GPA and credits to update your overall standing.",
+      "Enter subject names, select letter grades (O, A+, A, B+, B, C, F), and assign credit hours.",
+      "Switch to Cumulative CGPA mode to calculate across semesters with credit weightage.",
+      "View instant SGPA/CGPA, total credits, grade points, and percentage conversion.",
     ],
     faqs: [
       {
-        question: "What is an A on a 4.0 scale?",
+        question: "What are the grade points on a 10-point scale?",
         answer:
-          "An 'A' or 'A+' is 4.0 points, an 'A-' is 3.7 points, a 'B+' is 3.3 points, and a 'B' is 3.0 points.",
+          "O (Outstanding) = 10, A+ (Excellent) = 9, A (Very Good) = 8, B+ (Good) = 7, B (Above Average) = 6, C (Pass) = 5, and F/RA (Fail) = 0.",
+      },
+      {
+        question: "How do I convert CGPA to percentage?",
+        answer:
+          "Under standard Indian university guidelines (e.g. AICTE/UGC), percentage is approximately equal to CGPA × 9.5.",
       },
     ],
     relatedSlugs: ["average-calculator", "percentage-calculator", "statistics-calculator"],
@@ -1430,15 +1438,16 @@ const CALC_PAGE_EXTRAS: Record<string, CalcExtraData> = {
     relatedSlugs: ["average-calculator", "gpa-calculator", "percentage-calculator"],
   },
   "gpa-calculator": {
-    pageTitle: "GPA Calculator — Calculate Grade Point Average | IXDocs",
+    pageTitle: "GPA & CGPA Calculator — 10-Point Grading Scale | IXDocs",
     example: {
-      title: "Calculating a Semester 4.0 Scale GPA",
+      title: "Semester SGPA Calculation (10-Point Scale)",
       description:
-        "Determine GPA for four 3-credit classes: Math (A = 4.0), Physics (B+ = 3.3), English (A- = 3.7), Chemistry (B = 3.0).",
+        "Calculate SGPA for 5 engineering courses: Math (4 cr, O=10), DSA (4 cr, A+=9), OS (3 cr, A=8), OOP (3 cr, A+=9), and Lab (2 cr, O=10).",
       steps: [
-        "Grade points: (4.0×3) + (3.3×3) + (3.7×3) + (3.0×3) = 12 + 9.9 + 11.1 + 9 = 42",
-        "Total Credits: 12",
-        "Semester GPA: 42 / 12 = 3.50",
+        "Grade points: (10×4) + (9×4) + (8×3) + (9×3) + (10×2) = 40 + 36 + 24 + 27 + 20 = 147",
+        "Total Credits: 4 + 4 + 3 + 3 + 2 = 16",
+        "Semester SGPA: 147 / 16 = 9.19 / 10.0",
+        "Approximate Marks: 9.19 × 9.5 ≈ 87.3%",
       ],
     },
     relatedSlugs: ["average-calculator", "statistics-calculator", "scientific-calculator"],

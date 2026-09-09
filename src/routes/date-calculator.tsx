@@ -291,11 +291,9 @@ function DateCalculatorPage() {
         {/* Action Bar: Download PDF Report */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-surface/60 p-4">
           <div>
-            <div className="text-xs font-bold text-foreground">
-              Official PDF Date & Timeline Report
-            </div>
+            <div className="text-xs font-bold text-foreground">PDF Date Summary</div>
             <div className="text-xs text-muted-foreground mt-0.5">
-              Download a complete summary of date spans, business days, or shifted target dates.
+              Download a clean summary of date spans, business days, or calculated milestone dates.
             </div>
           </div>
           <CalcPdfReportButton

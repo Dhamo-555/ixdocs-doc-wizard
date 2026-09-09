@@ -39,14 +39,7 @@ import { RUNNERS } from "@/lib/tool-runners";
 import { triggerPdfDownload } from "@/lib/download";
 
 export type EditorTool =
-  | "select"
-  | "addText"
-  | "removeText"
-  | "image"
-  | "pen"
-  | "highlighter"
-  | "rectangle"
-  | "line";
+  "select" | "addText" | "removeText" | "image" | "pen" | "highlighter" | "rectangle" | "line";
 
 export interface EditorElement {
   id: string;
@@ -70,7 +63,7 @@ export interface EditorElement {
 
 export interface PageState {
   elements: EditorElement[];
-  drawingsDataUrl?: string;
+  drawingsDataUrl?: string | undefined;
 }
 
 export interface PdfEditorWorkspaceProps {
@@ -95,7 +88,7 @@ const COLOR_PALETTE = [
 ];
 
 export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
-  const [pdfDoc, setPdfDoc] = useState<any>(null);
+  const [pdfDoc, setPdfDoc] = useState<Awaited<ReturnType<typeof openRenderDoc>> | null>(null);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [zoom, setZoom] = useState<number>(100);
@@ -105,7 +98,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
   // Formatting state
   const [currentColor, setCurrentColor] = useState<string>("#000000");
   const [currentFontSize, setCurrentFontSize] = useState<number>(14);
-  const [currentFontFamily, setCurrentFontFamily] = useState<"helvetica" | "times" | "courier">("helvetica");
+  const [currentFontFamily, setCurrentFontFamily] = useState<"helvetica" | "times" | "courier">(
+    "helvetica",
+  );
   const [currentBold, setCurrentBold] = useState<boolean>(false);
   const [currentItalic, setCurrentItalic] = useState<boolean>(false);
   const [currentLineWidth, setCurrentLineWidth] = useState<number>(3);
@@ -135,12 +130,18 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
 
   // Highlight drag-to-create state
   const [highlightDrag, setHighlightDrag] = useState<{
-    startX: number; startY: number; curX: number; curY: number;
+    startX: number;
+    startY: number;
+    curX: number;
+    curY: number;
   } | null>(null);
 
   // Remove Text drag-to-cover state
   const [removeTextDrag, setRemoveTextDrag] = useState<{
-    startX: number; startY: number; curX: number; curY: number;
+    startX: number;
+    startY: number;
+    curX: number;
+    curY: number;
   } | null>(null);
 
   // Canvas Drawing refs
@@ -188,7 +189,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
         setPagesState(initMap);
         setHistory([initMap]);
         setHistoryIndex(0);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("PDF load error:", err);
       } finally {
         if (!cancelled) setPageRendering(false);
@@ -216,7 +217,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
           const ctx = target.getContext("2d");
           ctx?.drawImage(pageCanvas, 0, 0);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Page render error:", err);
       } finally {
         if (!cancelled) setPageRendering(false);
@@ -228,6 +229,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
   }, [pdfDoc, currentPage, zoom]);
 
   // 3. Restore Freehand Drawings for Current Page
+  const currentSavedDrawing = pagesState[currentPage]?.drawingsDataUrl;
   useEffect(() => {
     const canvas = drawCanvasRef.current;
     if (!canvas) return;
@@ -235,15 +237,14 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const savedDrawing = pagesState[currentPage]?.drawingsDataUrl;
-    if (savedDrawing) {
+    if (currentSavedDrawing) {
       const img = new Image();
       img.onload = () => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       };
-      img.src = savedDrawing;
+      img.src = currentSavedDrawing;
     }
-  }, [currentPage, pagesState[currentPage]?.drawingsDataUrl]);
+  }, [currentSavedDrawing]);
 
   // History State Commit helper
   const commitState = useCallback(
@@ -303,18 +304,21 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
     setSelectedElementId(newId);
   };
 
-  const updateElement = (id: string, updates: Partial<EditorElement>) => {
-    const currentList = pagesState[currentPage]?.elements || [];
-    const newElements = currentList.map((el) => (el.id === id ? { ...el, ...updates } : el));
-    const newPagesState = {
-      ...pagesState,
-      [currentPage]: {
-        ...pagesState[currentPage],
-        elements: newElements,
-      },
-    };
-    setPagesState(newPagesState);
-  };
+  const updateElement = useCallback(
+    (id: string, updates: Partial<EditorElement>) => {
+      const currentList = pagesState[currentPage]?.elements || [];
+      const newElements = currentList.map((el) => (el.id === id ? { ...el, ...updates } : el));
+      const newPagesState = {
+        ...pagesState,
+        [currentPage]: {
+          ...pagesState[currentPage],
+          elements: newElements,
+        },
+      };
+      setPagesState(newPagesState);
+    },
+    [currentPage, pagesState],
+  );
 
   const deleteElement = (id: string) => {
     const currentList = pagesState[currentPage]?.elements || [];
@@ -357,7 +361,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
     clientX: number,
     clientY: number,
     el: EditorElement,
-    isResizing: boolean
+    isResizing: boolean,
   ) => {
     if (activeTool !== "select") return;
     setSelectedElementId(el.id);
@@ -428,16 +432,28 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
 
       if (draggingState.isResizing) {
         // Resize
-        const newWidth = Math.max(2, Math.min(100 - draggingState.startElX, draggingState.startWidth + deltaXPct));
-        const newHeight = Math.max(1, Math.min(100 - draggingState.startElY, draggingState.startHeight + deltaYPct));
+        const newWidth = Math.max(
+          2,
+          Math.min(100 - draggingState.startElX, draggingState.startWidth + deltaXPct),
+        );
+        const newHeight = Math.max(
+          1,
+          Math.min(100 - draggingState.startElY, draggingState.startHeight + deltaYPct),
+        );
         updateElement(draggingState.elementId, {
           width: Math.round(newWidth * 100) / 100,
           height: Math.round(newHeight * 100) / 100,
         });
       } else {
         // Move
-        const newX = Math.max(0, Math.min(100 - draggingState.startWidth, draggingState.startElX + deltaXPct));
-        const newY = Math.max(0, Math.min(100 - draggingState.startHeight, draggingState.startElY + deltaYPct));
+        const newX = Math.max(
+          0,
+          Math.min(100 - draggingState.startWidth, draggingState.startElX + deltaXPct),
+        );
+        const newY = Math.max(
+          0,
+          Math.min(100 - draggingState.startHeight, draggingState.startElY + deltaYPct),
+        );
         updateElement(draggingState.elementId, {
           x: Math.round(newX * 100) / 100,
           y: Math.round(newY * 100) / 100,
@@ -473,7 +489,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleEnd);
     };
-  }, [draggingState, pagesState, commitState]);
+  }, [draggingState, pagesState, commitState, updateElement]);
 
   // Click on Viewport Canvas to Place Elements (Add Text, Shapes)
   const handleViewportClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -520,7 +536,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
       });
       setActiveTool("select");
     } else if (activeTool === "select") {
-      if ((e.target as HTMLElement).dataset.elementId === undefined) {
+      if ((e.target as HTMLElement).dataset["elementId"] === undefined) {
         setSelectedElementId(null);
       }
     }
@@ -550,7 +566,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
   };
 
   // Freehand Pen Drawing (pen tool only)
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const startDrawing = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     if (activeTool !== "pen") return;
     const canvas = drawCanvasRef.current;
     if (!canvas) return;
@@ -559,8 +577,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
 
     setIsDrawing(true);
     const rect = canvas.getBoundingClientRect();
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    const touch = "touches" in e ? e.touches[0] : null;
+    const clientX = touch ? touch.clientX : "clientX" in e ? e.clientX : 0;
+    const clientY = touch ? touch.clientY : "clientY" in e ? e.clientY : 0;
     const x = ((clientX - rect.left) / rect.width) * canvas.width;
     const y = ((clientY - rect.top) / rect.height) * canvas.height;
 
@@ -581,8 +600,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
     if (!ctx) return;
 
     const rect = canvas.getBoundingClientRect();
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    const touch = "touches" in e ? e.touches[0] : null;
+    const clientX = touch ? touch.clientX : "clientX" in e ? e.clientX : 0;
+    const clientY = touch ? touch.clientY : "clientY" in e ? e.clientY : 0;
     const x = ((clientX - rect.left) / rect.width) * canvas.width;
     const y = ((clientY - rect.top) / rect.height) * canvas.height;
 
@@ -597,10 +617,11 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
     if (!canvas) return;
 
     const dataUrl = canvas.toDataURL("image/png");
-    const newPagesState = {
+    const currentPageState = pagesState[currentPage];
+    const newPagesState: Record<number, PageState> = {
       ...pagesState,
       [currentPage]: {
-        ...pagesState[currentPage],
+        elements: currentPageState?.elements ?? [],
         drawingsDataUrl: dataUrl,
       },
     };
@@ -628,9 +649,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
     const yPct = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
 
     if (activeTool === "highlighter" && highlightDrag) {
-      setHighlightDrag((prev) => prev ? { ...prev, curX: xPct, curY: yPct } : null);
+      setHighlightDrag((prev) => (prev ? { ...prev, curX: xPct, curY: yPct } : null));
     } else if (activeTool === "removeText" && removeTextDrag) {
-      setRemoveTextDrag((prev) => prev ? { ...prev, curX: xPct, curY: yPct } : null);
+      setRemoveTextDrag((prev) => (prev ? { ...prev, curX: xPct, curY: yPct } : null));
     }
   };
 
@@ -684,10 +705,11 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
       const ctx = canvas.getContext("2d");
       ctx?.clearRect(0, 0, canvas.width, canvas.height);
     }
-    const newPagesState = {
+    const currentPageState = pagesState[currentPage];
+    const newPagesState: Record<number, PageState> = {
       ...pagesState,
       [currentPage]: {
-        ...pagesState[currentPage],
+        elements: currentPageState?.elements ?? [],
         drawingsDataUrl: undefined,
       },
     };
@@ -725,9 +747,11 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
           triggerPdfDownload(out.blob, customFilename);
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Export error:", err);
-      setExportError(err?.message || "Failed to generate edited PDF. Please try again.");
+      const msg =
+        err instanceof Error ? err.message : "Failed to generate edited PDF. Please try again.";
+      setExportError(msg);
     } finally {
       setIsExporting(false);
     }
@@ -832,12 +856,13 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
         {/* File & Export */}
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex flex-col items-end">
-            <span className="text-xs font-semibold text-foreground truncate max-w-[140px]" title={file.name}>
+            <span
+              className="text-xs font-semibold text-foreground truncate max-w-[140px]"
+              title={file.name}
+            >
               {file.name}
             </span>
-            <span className="text-[10px] text-muted-foreground">
-              {formatBytes(file.size)}
-            </span>
+            <span className="text-[10px] text-muted-foreground">{formatBytes(file.size)}</span>
           </div>
 
           <Button
@@ -893,7 +918,7 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
             size="sm"
             className={cn(
               "h-9 gap-1.5 text-xs font-medium transition-all",
-              activeTool === "removeText" ? "bg-primary text-primary-foreground font-semibold" : ""
+              activeTool === "removeText" ? "bg-primary text-primary-foreground font-semibold" : "",
             )}
             onClick={() => {
               setActiveTool("removeText");
@@ -972,14 +997,17 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
               onClick={() => {
                 setCurrentColor(col);
                 if (selectedElement) {
-                  if (selectedElement.type === "text") updateElement(selectedElement.id, { color: col });
+                  if (selectedElement.type === "text")
+                    updateElement(selectedElement.id, { color: col });
                   else if (selectedElement.type === "rectangle" || selectedElement.type === "line")
                     updateElement(selectedElement.id, { color: col });
                 }
               }}
               className={cn(
                 "size-5.5 rounded-full border transition-all cursor-pointer",
-                currentColor === col ? "ring-2 ring-primary ring-offset-1 scale-110" : "border-border/60 hover:scale-105",
+                currentColor === col
+                  ? "ring-2 ring-primary ring-offset-1 scale-110"
+                  : "border-border/60 hover:scale-105",
               )}
               style={{ backgroundColor: col }}
               title={col}
@@ -989,17 +1017,22 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
       </div>
 
       {/* CONTEXTUAL TOOL CONTROLS (Typography / Width / Selection) */}
-      {(selectedElement || activeTool === "addText" || activeTool === "pen" || activeTool === "highlighter" || activeTool === "rectangle" || activeTool === "line") ? (
+      {selectedElement ||
+      activeTool === "addText" ||
+      activeTool === "pen" ||
+      activeTool === "highlighter" ||
+      activeTool === "rectangle" ||
+      activeTool === "line" ? (
         <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-border/80 bg-muted/40 p-2 px-3 text-xs animate-fade-in">
           {/* Typography Controls for Text Tool or Selected Text */}
-          {(activeTool === "addText" || selectedElement?.type === "text") ? (
+          {activeTool === "addText" || selectedElement?.type === "text" ? (
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-1">
                 <Label className="text-xs font-semibold text-muted-foreground">Font:</Label>
                 <select
                   value={selectedElement?.fontFamily || currentFontFamily}
                   onChange={(e) => {
-                    const f = e.target.value as any;
+                    const f = e.target.value as "helvetica" | "times" | "courier";
                     setCurrentFontFamily(f);
                     if (selectedElement) updateElement(selectedElement.id, { fontFamily: f });
                   }}
@@ -1056,7 +1089,12 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
             </div>
           ) : null}
 
-          {(activeTool === "pen" || activeTool === "highlighter" || activeTool === "rectangle" || activeTool === "line" || selectedElement?.type === "rectangle" || selectedElement?.type === "line") ? (
+          {activeTool === "pen" ||
+          activeTool === "highlighter" ||
+          activeTool === "rectangle" ||
+          activeTool === "line" ||
+          selectedElement?.type === "rectangle" ||
+          selectedElement?.type === "line" ? (
             <div className="flex items-center gap-2">
               <Label className="text-xs font-semibold text-muted-foreground">Width:</Label>
               <Slider
@@ -1071,7 +1109,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
                   if (selectedElement) updateElement(selectedElement.id, { lineWidth: w });
                 }}
               />
-              <span className="text-xs font-semibold">{selectedElement?.lineWidth || currentLineWidth}px</span>
+              <span className="text-xs font-semibold">
+                {selectedElement?.lineWidth || currentLineWidth}px
+              </span>
             </div>
           ) : null}
 
@@ -1118,7 +1158,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
                   }}
                   className={cn(
                     "group relative overflow-hidden rounded-xl border-2 bg-background p-1 text-left transition-all",
-                    isActive ? "border-primary shadow-xs ring-2 ring-primary/20" : "border-border/70 hover:border-border",
+                    isActive
+                      ? "border-primary shadow-xs ring-2 ring-primary/20"
+                      : "border-border/70 hover:border-border",
                   )}
                 >
                   <img
@@ -1141,13 +1183,17 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
         {/* EDITOR AREA */}
         <div className="flex flex-col items-center justify-start rounded-2xl border border-border bg-muted/30 p-2 sm:p-6 overflow-auto max-h-[820px] w-full min-w-0">
           <p className="mb-3 text-center text-xs text-muted-foreground max-w-xl">
-            Edit PDF with basic tools directly in your browser. Add text, remove content, add images, draw, highlight, and add shapes. Existing PDF text is not directly rewritten or automatically reflowed.
+            Edit PDF with basic tools directly in your browser. Add text, remove content, add
+            images, draw, highlight, and add shapes. Existing PDF text is not directly rewritten or
+            automatically reflowed.
           </p>
 
           {activeTool === "removeText" ? (
             <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-3.5 py-1.5 text-xs font-medium text-primary animate-fade-in">
               <Eraser className="size-3.5" />
-              <span>Click and drag over any text to remove it. Remove Text covers the selected area.</span>
+              <span>
+                Click and drag over any text to remove it. Remove Text covers the selected area.
+              </span>
             </div>
           ) : activeTool === "addText" ? (
             <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-3.5 py-1.5 text-xs font-medium text-primary">
@@ -1165,7 +1211,8 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
             onMouseUp={handleContainerPointerUp}
             onMouseLeave={handleContainerPointerUp}
             onTouchStart={(e) => {
-              if (e.touches[0]) handleContainerPointerDown(e.touches[0].clientX, e.touches[0].clientY);
+              if (e.touches[0])
+                handleContainerPointerDown(e.touches[0].clientX, e.touches[0].clientY);
             }}
             onTouchMove={(e) => {
               if (e.touches[0]) {
@@ -1193,48 +1240,52 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
             <canvas ref={bgCanvasRef} className="w-full h-auto block pointer-events-none" />
 
             {/* Layer 2: Live Drag Selection preview in Remove Text mode */}
-            {activeTool === "removeText" && removeTextDrag && (() => {
-              const { startX, startY, curX, curY } = removeTextDrag;
-              const x = Math.min(startX, curX);
-              const y = Math.min(startY, curY);
-              const w = Math.abs(curX - startX);
-              const h = Math.abs(curY - startY);
-              return (
-                <div
-                  className="absolute pointer-events-none rounded-2xs border-2 border-dashed border-destructive/80 bg-destructive/15 shadow-xs"
-                  style={{
-                    left: `${x}%`,
-                    top: `${y}%`,
-                    width: `${w}%`,
-                    height: `${h}%`,
-                    zIndex: 30,
-                  }}
-                />
-              );
-            })()}
+            {activeTool === "removeText" &&
+              removeTextDrag &&
+              (() => {
+                const { startX, startY, curX, curY } = removeTextDrag;
+                const x = Math.min(startX, curX);
+                const y = Math.min(startY, curY);
+                const w = Math.abs(curX - startX);
+                const h = Math.abs(curY - startY);
+                return (
+                  <div
+                    className="absolute pointer-events-none rounded-2xs border-2 border-dashed border-destructive/80 bg-destructive/15 shadow-xs"
+                    style={{
+                      left: `${x}%`,
+                      top: `${y}%`,
+                      width: `${w}%`,
+                      height: `${h}%`,
+                      zIndex: 30,
+                    }}
+                  />
+                );
+              })()}
 
             {/* Live Highlight Drag-to-Create preview */}
-            {activeTool === "highlighter" && highlightDrag && (() => {
-              const { startX, startY, curX, curY } = highlightDrag;
-              const x = Math.min(startX, curX);
-              const y = Math.min(startY, curY);
-              const w = Math.abs(curX - startX);
-              const h = Math.abs(curY - startY);
-              return (
-                <div
-                  className="absolute pointer-events-none rounded-xs border border-amber-400/80"
-                  style={{
-                    left: `${x}%`,
-                    top: `${y}%`,
-                    width: `${w}%`,
-                    height: `${h}%`,
-                    backgroundColor: currentColor,
-                    opacity: 0.35,
-                    zIndex: 15,
-                  }}
-                />
-              );
-            })()}
+            {activeTool === "highlighter" &&
+              highlightDrag &&
+              (() => {
+                const { startX, startY, curX, curY } = highlightDrag;
+                const x = Math.min(startX, curX);
+                const y = Math.min(startY, curY);
+                const w = Math.abs(curX - startX);
+                const h = Math.abs(curY - startY);
+                return (
+                  <div
+                    className="absolute pointer-events-none rounded-xs border border-amber-400/80"
+                    style={{
+                      left: `${x}%`,
+                      top: `${y}%`,
+                      width: `${w}%`,
+                      height: `${h}%`,
+                      backgroundColor: currentColor,
+                      opacity: 0.35,
+                      zIndex: 15,
+                    }}
+                  />
+                );
+              })()}
 
             {/* Layer 3: Interactive overlay elements */}
             <div className="absolute inset-0 pointer-events-none z-10">
@@ -1249,8 +1300,11 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
                     onClick={(e) => e.stopPropagation()}
                     className={cn(
                       "absolute group",
-                      activeTool === "select" ? "cursor-move pointer-events-auto" : "pointer-events-none",
-                      isSelected && "ring-2 ring-primary ring-offset-0.5 rounded-xs pointer-events-auto",
+                      activeTool === "select"
+                        ? "cursor-move pointer-events-auto"
+                        : "pointer-events-none",
+                      isSelected &&
+                        "ring-2 ring-primary ring-offset-0.5 rounded-xs pointer-events-auto",
                     )}
                     style={{
                       left: `${el.x}%`,
@@ -1300,7 +1354,10 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
                       <div
                         className="w-full h-full rounded-2xs"
                         style={{
-                          border: el.color && el.color !== "transparent" ? `${el.lineWidth || 2}px solid ${el.color}` : "none",
+                          border:
+                            el.color && el.color !== "transparent"
+                              ? `${el.lineWidth || 2}px solid ${el.color}`
+                              : "none",
                           backgroundColor: el.bgColor || "transparent",
                           opacity: el.opacity ?? 1,
                         }}
@@ -1355,7 +1412,9 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
               onTouchEnd={stopDrawing}
               className={cn(
                 "absolute inset-0 w-full h-full",
-                activeTool === "pen" ? "pointer-events-auto cursor-crosshair z-25" : "pointer-events-none z-15",
+                activeTool === "pen"
+                  ? "pointer-events-auto cursor-crosshair z-25"
+                  : "pointer-events-none z-15",
               )}
             />
           </div>
@@ -1372,7 +1431,10 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 rounded-2xl border border-border bg-surface p-3 sm:p-4 shadow-xs w-full min-w-0">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0 w-full sm:w-auto">
           <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
-            <Label htmlFor="filename" className="text-xs font-semibold text-muted-foreground shrink-0">
+            <Label
+              htmlFor="filename"
+              className="text-xs font-semibold text-muted-foreground shrink-0"
+            >
               Filename:
             </Label>
             <Input
@@ -1383,14 +1445,24 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
             />
           </div>
           {pagesState[currentPage]?.drawingsDataUrl ? (
-            <Button variant="outline" size="sm" onClick={clearDrawings} className="h-8 text-xs shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearDrawings}
+              className="h-8 text-xs shrink-0"
+            >
               Clear Drawings
             </Button>
           ) : null}
         </div>
 
         <div className="flex flex-col xs:flex-row sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-          <Button variant="outline" size="sm" onClick={onReset} className="w-full sm:w-auto justify-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onReset}
+            className="w-full sm:w-auto justify-center"
+          >
             Choose Another File
           </Button>
           <Button
