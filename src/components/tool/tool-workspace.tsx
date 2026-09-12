@@ -46,7 +46,7 @@ import {
 import { triggerBrowserDownload, sanitizeDownloadFilename } from "@/lib/download";
 import { PdfEditorWorkspace } from "@/components/tool/pdf-editor-workspace";
 import { QrCodeWorkspace } from "@/components/tool/qr-code-workspace";
-import { loadMonetagInPagePush } from "@/lib/monetag";
+import { loadMonetagInPagePush, MONETAG_CONFIG } from "@/lib/monetag";
 
 /* ------------------------------------------------------------ shared cards & ad slots */
 
@@ -54,6 +54,10 @@ export function AdSlot({ className }: { label?: string; className?: string }) {
   useEffect(() => {
     loadMonetagInPagePush();
   }, []);
+
+  if (!MONETAG_CONFIG.enabled) {
+    return null;
+  }
 
   return (
     <div

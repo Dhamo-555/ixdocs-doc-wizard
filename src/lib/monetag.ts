@@ -5,6 +5,7 @@
  */
 
 export const MONETAG_CONFIG = {
+  enabled: false, // Temporarily disabled due to inappropriate/18+ ads
   zoneId: "11719165",
   scriptSrc: "https://nap5k.com/tag.min.js",
 } as const;
@@ -16,6 +17,11 @@ let scriptInjected = false;
  * Preserves strict idempotency and runs only in browser environments.
  */
 export function loadMonetagInPagePush(): void {
+  // Global disable guard
+  if (!MONETAG_CONFIG.enabled) {
+    return;
+  }
+
   if (typeof window === "undefined" || typeof document === "undefined") {
     return;
   }

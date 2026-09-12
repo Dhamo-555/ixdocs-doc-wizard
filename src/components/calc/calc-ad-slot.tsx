@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { loadMonetagInPagePush } from "@/lib/monetag";
+import { loadMonetagInPagePush, MONETAG_CONFIG } from "@/lib/monetag";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,6 +16,10 @@ export function CalcAdSlot({ className }: { className?: string }) {
 
     loadMonetagInPagePush();
   }, []);
+
+  if (!MONETAG_CONFIG.enabled) {
+    return null;
+  }
 
   return (
     <div

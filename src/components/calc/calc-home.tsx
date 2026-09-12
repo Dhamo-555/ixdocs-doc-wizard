@@ -4,6 +4,7 @@ import { CALCULATORS, POPULAR_CALCULATORS, type CalculatorCategory } from "@/lib
 import { CalcCard } from "./calc-card";
 import { CalcSearch } from "./calc-search";
 import { CalcAdSlot } from "./calc-ad-slot";
+import { MONETAG_CONFIG } from "@/lib/monetag";
 
 const CATEGORIES: { id: CalculatorCategory | "all"; label: string }[] = [
   { id: "all", label: "All Calculators" },
@@ -205,10 +206,12 @@ export function CalcHome() {
         </div>
       </section>
 
-      {/* EXACTLY ONE Monetag AdSlot on the Calculator Homepage */}
-      <section className="container-page py-6">
-        <CalcAdSlot />
-      </section>
+      {/* EXACTLY ONE Monetag AdSlot on the Calculator Homepage (rendered only if enabled) */}
+      {MONETAG_CONFIG.enabled ? (
+        <section className="container-page py-6">
+          <CalcAdSlot />
+        </section>
+      ) : null}
     </div>
   );
 }
