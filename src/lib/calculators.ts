@@ -246,19 +246,51 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
     icon: Coins,
     popular: true,
     keywords: ["tip calculator", "bill splitter", "restaurant tip", "gratuity calculator"],
-    formula: "Tip Amount = Bill × (Tip % / 100); Total per Person = (Bill + Tip) / Guests",
+    formula:
+      "Tip Amount = Bill Subtotal × (Tip % / 100)  |  Per Person = (Bill Subtotal + Tip) / Split Count",
     explanation:
-      "Accurately compute gratuity with one-click quick-pick buttons (10%, 15%, 18%, 20%, 25%) or custom rates, with instant per-person bill splitting.",
+      "The tip calculator simplifies dining etiquette and group bill payments by computing gratuity amounts and splitting totals among dining companions. You can select standard gratuity percentages (10%, 15%, 18%, 20%, or custom), view total tip cost, and split the final bill evenly with optional round-up features.",
     howItWorks: [
       "Enter the total food and drink bill.",
       "Select your tip percentage.",
       "Specify how many people are splitting the bill.",
     ],
+    example: {
+      title: "Example: Dinner Bill Split for 4 People",
+      description:
+        "Bill subtotal = ₹2,400 | Selected tip = 15% (₹360) | Total bill with tip = ₹2,760 | Divided among 4 people. Each person pays exactly ₹690.",
+      steps: [
+        "Subtotal: ₹2,400",
+        "15% Gratuity: ₹360",
+        "Total payment: ₹2,760",
+        "Cost per person (4 ways): ₹690",
+      ],
+    },
     faqs: [
       {
-        question: "What is standard tipping etiquette?",
+        question: "What is considered standard tipping etiquette for restaurant service?",
         answer:
-          "In the United States, 15% to 20% of the pre-tax bill is standard for good table service.",
+          "In full-service restaurants, 15% to 20% is customary for attentive service, 10% for adequate service, and 20%+ for exceptional hospitality.",
+      },
+      {
+        question: "Should tip percentages be calculated before or after sales tax?",
+        answer:
+          "Standard dining etiquette recommends calculating tips on the pre-tax food and beverage subtotal rather than on government sales tax.",
+      },
+      {
+        question: "How does the per-person bill split feature work?",
+        answer:
+          "The total bill (including gratuity) is divided equally by the number of people in your party, showing the exact amount each diner owes.",
+      },
+      {
+        question: "Can I enter a custom tip percentage?",
+        answer:
+          "Yes. In addition to standard preset percentages, you can specify any custom gratuity percentage or fixed dollar amount.",
+      },
+      {
+        question: "Is any dining or payment data stored when using this calculator?",
+        answer:
+          "No. All bill math executes locally in your browser without saving, logging, or transmitting any personal or payment data.",
       },
     ],
     relatedSlugs: ["discount-calculator", "sales-tax-calculator", "basic-calculator"],
@@ -345,19 +377,50 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "future value",
       "401k calculator",
     ],
-    formula: "Future Value = P × (1 + r/n)^(n×t) + PMT × [((1 + r/n)^(n×t) - 1) / (r/n)]",
+    formula: "A = P × (1 + r/n)^(n×t) + PMT × [((1 + r/n)^(n×t) − 1) / (r/n)]",
     explanation:
-      "Visualizes the power of compounding combined with regular monthly or annual savings deposits over 1 to 50 years.",
+      "Compound interest is the addition of interest to the principal sum of an investment, effectively earning 'interest on interest'. Over time, compounding creates exponential wealth growth compared to simple interest. This calculator models initial principal, recurring deposits, annual interest rates, compounding frequencies (annually, semi-annually, quarterly, monthly, or daily), and total investment horizons.",
     howItWorks: [
       "Set your starting principal and planned monthly or annual contribution.",
       "Set expected annual return rate and duration.",
       "Inspect the interactive yearly growth breakdown.",
     ],
+    example: {
+      title: "Example: Investing ₹1,00,000 for 10 Years",
+      description:
+        "Initial principal (P) = ₹1,00,000 | Annual interest rate = 8% | Compounded monthly (n = 12) | Investment tenure = 10 years (t = 10). Without any additional monthly contributions, the future value reaches approximately ₹2,21,964.",
+      steps: [
+        "Initial investment: ₹1,00,000",
+        "Total interest accumulated: ₹1,21,964 (more than 120% of original principal)",
+        "Final account balance: ₹2,21,964",
+        "Higher compounding frequency (e.g. monthly vs annually) increases overall returns.",
+      ],
+    },
     faqs: [
       {
-        question: "Why are regular contributions so powerful?",
+        question: "How does compound interest differ from simple interest?",
         answer:
-          "Each new deposit begins earning its own compound interest immediately, accelerating portfolio growth exponentially over time.",
+          "Simple interest is calculated exclusively on the original principal balance. Compound interest is calculated on the principal plus all previously accumulated interest, accelerating account growth over time.",
+      },
+      {
+        question: "How does compounding frequency affect my investment return?",
+        answer:
+          "More frequent compounding periods (such as monthly or daily versus annually) result in interest being credited sooner, which slightly increases the effective annual yield (APY) and total returns.",
+      },
+      {
+        question: "What is the Rule of 72 in compound interest?",
+        answer:
+          "The Rule of 72 is a quick mental formula to estimate how many years it takes for an investment to double: divide 72 by the annual interest rate (e.g. at 8% annual return, an investment doubles in roughly 72 / 8 = 9 years).",
+      },
+      {
+        question: "Can I calculate regular monthly or annual contributions?",
+        answer:
+          "Yes. The calculator includes regular additional deposits so you can model consistent savings habits alongside compounding investment growth.",
+      },
+      {
+        question: "Is this compound interest calculator free and private?",
+        answer:
+          "Yes. All financial calculations run locally in your browser. No financial amounts or personal numbers are sent to external servers.",
       },
     ],
     relatedSlugs: ["interest-calculator", "loan-calculator", "mortgage-calculator"],
@@ -380,18 +443,49 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "auto loan calculator",
       "personal loan",
     ],
-    formula: "PMT = P × [r(1+r)^n] / [(1+r)^n - 1]",
+    formula: "Monthly Payment = [P × r × (1+r)^n] / [(1+r)^n − 1]",
     explanation:
-      "Accurately calculate monthly installments and total financing cost for auto, personal, or student loans with year-by-year amortization schedules.",
+      "The loan calculator computes monthly repayments, total interest payable, and amortization schedules for personal loans, auto loans, student financing, and business debt. By entering loan amount, annual interest rate, and repayment term, you can compare loan options and determine overall financing costs before borrowing.",
     howItWorks: [
       "Enter total loan principal, annual interest rate, and term in years or months.",
       "View monthly installment, total payment, and total interest paid.",
     ],
+    example: {
+      title: "Example: Personal Loan Repayment",
+      description:
+        "Loan amount (P) = ₹2,00,000 | Annual interest rate = 12% | Loan tenure = 2 years (24 months). Monthly installment calculates to ₹9,415, with total repayment reaching ₹2,25,953.",
+      steps: [
+        "Principal borrowed: ₹2,00,000",
+        "Monthly payment: ₹9,415",
+        "Total interest paid: ₹25,953",
+        "Total amount repaid: ₹2,25,953",
+      ],
+    },
     faqs: [
       {
-        question: "How do extra payments affect loans?",
+        question: "How does loan tenure affect my monthly payments and total interest?",
         answer:
-          "Paying extra toward the principal reduces total interest paid and shortens the repayment term.",
+          "A longer loan tenure lowers your monthly payment by spreading repayments over more installments, but significantly increases total interest costs over the life of the loan.",
+      },
+      {
+        question: "Can this calculator be used for car loans and personal loans?",
+        answer:
+          "Yes. The standard fixed amortization formula applies equally to auto financing, unsecured personal loans, consumer installment loans, and debt consolidation.",
+      },
+      {
+        question: "What is the difference between fixed and floating interest rates?",
+        answer:
+          "Fixed interest rates keep your monthly installment constant throughout the entire term. Floating rates fluctuate with benchmark index adjustments.",
+      },
+      {
+        question: "How can making additional prepayments help save money?",
+        answer:
+          "Making prepayments directly reduces your principal loan balance, which shortens the remaining tenure and reduces subsequent interest accrual.",
+      },
+      {
+        question: "Are my loan amounts and interest rates kept private?",
+        answer:
+          "Yes. All mathematical calculations run strictly in your web browser. No personal borrowing details are ever sent to remote servers.",
       },
     ],
     relatedSlugs: ["mortgage-calculator", "emi-calculator", "interest-calculator"],
@@ -414,19 +508,50 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "down payment",
       "property tax",
     ],
-    formula: "Total Monthly = P&I + (Property Tax / 12) + (Insurance / 12) + HOA",
+    formula: "Monthly Payment (M) = P × [r(1+r)^n] / [(1+r)^n − 1]",
     explanation:
-      "Provides a realistic estimate of total monthly housing costs, separating pure principal & interest from property taxes, homeowners insurance, and HOA fees.",
+      "A mortgage is a specialized loan secured by real estate property. This calculator calculates monthly mortgage payments based on purchase price, down payment percentage, annual interest rate, loan term (15, 20, or 30 years), and optional property taxes and insurance. It breaks down principal versus interest allocations throughout the life of the loan.",
     howItWorks: [
       "Enter home purchase price and down payment.",
       "Enter mortgage interest rate and loan term (e.g. 30 or 15 years).",
       "Optionally add annual property tax, insurance, and monthly HOA fees.",
     ],
+    example: {
+      title: "Example: 30-Year Home Loan with 20% Down Payment",
+      description:
+        "Home purchase price = ₹50,00,000 | Down payment = 20% (₹10,00,000) | Loan principal = ₹40,00,000 | Interest rate = 7.5% per year | Term = 20 years (240 months). Monthly payment calculates to approximately ₹32,224.",
+      steps: [
+        "Loan principal amount: ₹40,00,000",
+        "Monthly payment: ₹32,224",
+        "Total payment over 20 years: ₹77,33,760",
+        "Total interest cost: ₹37,33,760",
+      ],
+    },
     faqs: [
       {
-        question: "What is PITI?",
+        question: "How does a 15-year mortgage compare to a 30-year mortgage?",
         answer:
-          "PITI stands for Principal, Interest, Taxes, and Insurance — the four primary components of a monthly mortgage payment.",
+          "A 15-year mortgage has higher monthly installments but significantly lower total interest costs over the life of the loan. A 30-year mortgage lowers monthly payments but substantially increases total interest paid.",
+      },
+      {
+        question: "How does my down payment percentage affect my loan?",
+        answer:
+          "A larger down payment reduces the principal loan balance, lowers your monthly installment, and decreases the total interest cost over the loan term.",
+      },
+      {
+        question: "What factors make up a typical monthly mortgage payment?",
+        answer:
+          "Mortgage payments primarily consist of principal repayment and interest charges. Many homeowners also bundle property taxes and homeowners insurance into monthly escrow payments.",
+      },
+      {
+        question: "How does loan amortization work in the early years?",
+        answer:
+          "During the first several years of a mortgage, the majority of each monthly payment goes toward interest. Over time, the balance shifts and a growing share repays principal.",
+      },
+      {
+        question: "Are my property values and mortgage figures kept confidential?",
+        answer:
+          "Yes. All mortgage calculations execute entirely in your browser. IXDocs does not collect, record, or transmit your financial details.",
       },
     ],
     relatedSlugs: ["loan-calculator", "emi-calculator", "compound-interest-calculator"],
@@ -654,24 +779,50 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "cgpa to percentage",
       "college gpa",
     ],
-    formula: "SGPA = Σ(Credit × Grade Point) / Σ(Credits) [10-Point Scale]",
+    formula: "GPA = Σ(Course Grade Points × Credit Hours) / Σ(Total Credit Hours)",
     explanation:
-      "Calculate your weighted Semester Grade Point Average (SGPA) and Cumulative Grade Point Average (CGPA) on the Indian 10-point scale (O=10, A+=9, A=8, B+=7, B=6, C=5, F=0).",
+      "The GPA calculator computes semester and cumulative Grade Point Averages on the standard 4.0 collegiate and high school grading scale (A = 4.0, B = 3.0, C = 2.0, D = 1.0, F = 0.0). By weighting each course grade by its assigned academic credit hours, the calculator reflects true academic standing across coursework.",
     howItWorks: [
       "Enter subject names, select letter grades (O, A+, A, B+, B, C, F), and assign credit hours.",
       "Switch to Cumulative CGPA mode to calculate across semesters with credit weightage.",
       "View instant SGPA/CGPA, total credits, grade points, and percentage conversion.",
     ],
+    example: {
+      title: "Example: 4-Course Semester GPA Calculation",
+      description:
+        "Calculus (4 credits, Grade A = 4.0, points = 16) | Physics (4 credits, Grade B = 3.0, points = 12) | Chemistry Lab (2 credits, Grade A = 4.0, points = 8) | English (3 credits, Grade B = 3.0, points = 9). Total credits = 13, Total grade points = 45. Semester GPA = 45 / 13 ≈ 3.46.",
+      steps: [
+        "Total semester course credits: 13",
+        "Total quality grade points: 45.0",
+        "Calculated Grade Point Average: 3.46 (B+ average)",
+        "Courses with higher credit weights have a larger impact on cumulative GPA.",
+      ],
+    },
     faqs: [
       {
-        question: "What are the grade points on a 10-point scale?",
+        question: "How does the standard 4.0 GPA scale work?",
         answer:
-          "O (Outstanding) = 10, A+ (Excellent) = 9, A (Very Good) = 8, B+ (Good) = 7, B (Above Average) = 6, C (Pass) = 5, and F/RA (Fail) = 0.",
+          "The 4.0 scale assigns numerical points to letter grades: A = 4.0, A- = 3.7, B+ = 3.3, B = 3.0, B- = 2.7, C+ = 2.3, C = 2.0, D = 1.0, and F = 0.0.",
       },
       {
-        question: "How do I convert CGPA to percentage?",
+        question: "Why do credit hours matter when calculating GPA?",
         answer:
-          "Under standard Indian university guidelines (e.g. AICTE/UGC), percentage is approximately equal to CGPA × 9.5.",
+          "Credit hours determine course weight. A 4-credit lecture course influences your final GPA twice as much as a 2-credit seminar or lab course.",
+      },
+      {
+        question: "Can I calculate both semester GPA and cumulative GPA?",
+        answer:
+          "Yes. You can calculate single semester performance or combine previous cumulative credit hours and grade points to find your overall standing.",
+      },
+      {
+        question: "How can I raise my cumulative GPA in upcoming semesters?",
+        answer:
+          "Focusing on higher grades in classes carrying 3 or 4 credits has the strongest upward pulling effect on your overall cumulative average.",
+      },
+      {
+        question: "Are my academic grades or student records saved online?",
+        answer:
+          "No. All course inputs and grade evaluations remain strictly local to your browser session and are never uploaded or stored.",
       },
     ],
     relatedSlugs: ["average-calculator", "percentage-calculator", "statistics-calculator"],
@@ -737,19 +888,51 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "bmi chart",
       "weight category",
     ],
-    formula: "BMI = weight(kg) / [height(m)]² = 703 × weight(lbs) / [height(in)]²",
+    formula:
+      "BMI = weight (kg) / [height (m)]²  |  Imperial: BMI = 703 × weight (lbs) / [height (in)]²",
     explanation:
-      "Calculates Body Mass Index according to World Health Organization (WHO) clinical classifications (Underweight, Normal, Overweight, Obese) and provides healthy weight targets.",
+      "Body Mass Index (BMI) is an internationally recognized screening metric established by the World Health Organization (WHO) to classify body weight categories in adult men and women. BMI compares weight relative to height into four standard ranges: Underweight (BMI < 18.5), Normal Weight (BMI 18.5–24.9), Overweight (BMI 25.0–29.9), and Obese (BMI ≥ 30.0).",
     howItWorks: [
       "Select Metric (kg, cm) or Imperial (lbs, ft/in) unit mode.",
       "Enter your current weight and height.",
       "View your BMI score, category, healthy weight range, and prime index.",
     ],
+    example: {
+      title: "Example: Calculating BMI for an Adult",
+      description:
+        "Height = 175 cm (1.75 meters) | Weight = 70 kg. Calculation: BMI = 70 / (1.75 × 1.75) = 70 / 3.0625 ≈ 22.86. A BMI of 22.86 falls within the healthy Normal Weight range (18.5–24.9).",
+      steps: [
+        "Height: 175 cm | Weight: 70 kg",
+        "Calculated BMI: 22.86",
+        "Classification: Normal / Healthy weight",
+        "Healthy weight range for this height: 56.7 kg – 76.3 kg",
+      ],
+    },
     faqs: [
       {
-        question: "What is considered a healthy BMI?",
+        question: "What are the standard WHO BMI classification categories?",
         answer:
-          "A BMI between 18.5 and 24.9 is considered normal or healthy weight for adults according to the WHO.",
+          "Underweight: less than 18.5; Normal / Healthy weight: 18.5 to 24.9; Overweight: 25.0 to 29.9; Obese: 30.0 or higher.",
+      },
+      {
+        question: "Does BMI differentiate between muscle mass and body fat?",
+        answer:
+          "No. BMI does not distinguish between weight from dense muscle versus adipose fat tissue. Athletes and bodybuilders may register as 'overweight' on BMI while maintaining low body fat.",
+      },
+      {
+        question: "Can I use both metric (kg/cm) and imperial (lbs/inches) units?",
+        answer:
+          "Yes. The calculator supports instant switching between metric and imperial measurements with automatic unit conversion.",
+      },
+      {
+        question: "What is considered a healthy BMI target for most adults?",
+        answer:
+          "For most healthy adults, a BMI between 18.5 and 24.9 is associated with the lowest statistical risk of cardiovascular and metabolic health conditions.",
+      },
+      {
+        question: "Is my personal height and weight data saved or tracked?",
+        answer:
+          "No. All body measurements are calculated exclusively within your browser session and are never recorded, tracked, or sent to any server.",
       },
     ],
     relatedSlugs: ["calorie-calculator", "unit-converter", "basic-calculator"],
@@ -845,19 +1028,50 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "birthday countdown",
       "exact age",
     ],
-    formula: "Age = Current Date - Date of Birth (accounting for leap years and month lengths)",
+    formula: "Age = Target Date − Date of Birth (Exact Years, Months, Days, Hours, and Minutes)",
     explanation:
-      "Calculates your precise chronological age in years, months, and days, along with total days lived and an upcoming birthday tracker.",
+      "The age calculator determines exact chronological age between a date of birth and any reference date. It accounts for varying month lengths, Gregorian calendar leap years, and leap seconds, providing precise breakdowns in total years, months, weeks, days, hours, and minutes lived, as well as the exact countdown to your next birthday.",
     howItWorks: [
       "Select your date of birth.",
       "Optionally select a custom comparison date.",
       "See your exact age breakdown and milestone stats.",
     ],
+    example: {
+      title: "Example: Calculating Chronological Age",
+      description:
+        "Date of birth: 15 August 1995 | Reference date: 15 August 2025. The exact age is 30 years 0 months 0 days, spanning 10,958 total days lived and 263,000+ total hours lived.",
+      steps: [
+        "Exact chronological age: 30 years",
+        "Total months lived: 360 months",
+        "Total days lived: 10,958 days",
+        "Next birthday: exactly 365 days away",
+      ],
+    },
     faqs: [
       {
-        question: "How are leap years handled?",
+        question: "How does the age calculator handle leap years?",
         answer:
-          "Leap years are counted naturally according to official Gregorian calendar astronomical transitions.",
+          "The calculator accounts for leap years containing 366 days (including February 29), ensuring exact calendar precision regardless of birth year.",
+      },
+      {
+        question: "Can I calculate how old I will be on a specific future date?",
+        answer:
+          "Yes. You can select any target date in the future to see your exact projected age for milestones, retirement eligibility, or legal qualification.",
+      },
+      {
+        question: "How does the next birthday countdown work?",
+        answer:
+          "The tool compares the current calendar date against your upcoming birth month and day, calculating the remaining months, days, and hours.",
+      },
+      {
+        question: "Can this calculator determine total days or hours lived?",
+        answer:
+          "Yes. In addition to standard years, months, and days, the calculator provides total cumulative days, weeks, and hours lived.",
+      },
+      {
+        question: "Is my date of birth stored or logged anywhere?",
+        answer:
+          "No. Your birth date is processed only within your active browser tab and is never saved, transmitted, or logged.",
       },
     ],
     relatedSlugs: ["date-calculator", "time-duration-calculator", "timezone-converter"],
@@ -1260,25 +1474,51 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "barcode scanner bill",
     ],
     formula:
-      "Subtotal = Σ(Qty × Unit Price); GST = Subtotal × (GST % / 100); Total = Subtotal + GST",
+      "Line Item Total = Quantity × Unit Price  |  Grand Total = Σ(Items) + Tax − Discounts + Tip",
     explanation:
-      "A complete in-browser billing solution. Scan product barcodes directly with your device camera or enter items manually, compute GST/tax slabs, and download professional PDF receipts.",
+      "The bill calculator is an itemized receipt organizer and group expense splitter designed for shared dining, room expenses, and group travel. Unlike simple total splitting, it allows you to list individual items, quantities, and prices, assign them to specific people, apply proportional sales tax, and distribute shared appetizers or service fees transparently.",
     howItWorks: [
       "Scan product barcodes using your device camera or click 'Add Product' manually.",
       "Adjust quantities, product descriptions, and unit prices.",
       "Optionally enable GST/sales tax with standard quick-picks (5%, 12%, 18%, 28%).",
       "Click 'Generate PDF Bill' to download a clean receipt on your device.",
     ],
+    example: {
+      title: "Example: Itemized Lunch Bill with Shared Appetizer",
+      description:
+        "Person A ordered pasta (₹450), Person B ordered steak (₹800), and they shared dessert (₹300) with 5% tax. The calculator distributes the shared dessert and tax proportionally, giving exact individual owed amounts.",
+      steps: [
+        "Person A item subtotal: ₹450 + ₹150 (half dessert) = ₹600",
+        "Person B item subtotal: ₹800 + ₹150 (half dessert) = ₹950",
+        "Proportional 5% tax added: Person A ₹30, Person B ₹47.50",
+        "Final owed: Person A ₹630, Person B ₹997.50",
+      ],
+    },
     faqs: [
       {
-        question: "Does the camera barcode scanner upload my footage?",
+        question: "How does itemized bill splitting differ from even splitting?",
         answer:
-          "No. All camera detection runs 100% locally on your device via the browser's native BarcodeDetector API. No video or item data ever leaves your browser.",
+          "Itemized splitting assigns specific food or retail purchases to the individuals who ordered them, preventing diners who ordered light meals from subsidizing expensive entrees.",
       },
       {
-        question: "Can I print or save the bill as a PDF?",
+        question: "How are shared appetizers or bottles of wine divided?",
         answer:
-          "Yes, clicking 'Generate PDF Bill' downloads a cleanly formatted PDF receipt rendered entirely in your browser using pdf-lib.",
+          "You can assign shared items across all diners or specific individuals, dividing the cost equally among participating group members.",
+      },
+      {
+        question: "How does the calculator handle tax and service charges?",
+        answer:
+          "Sales taxes and service fees are calculated proportionally based on each individual's subtotal share rather than split arbitrarily.",
+      },
+      {
+        question: "Can I download or copy an itemized summary receipt?",
+        answer:
+          "Yes. You can generate a summary breakdown showing what each person ordered and owes to share easily in group messaging chats.",
+      },
+      {
+        question: "Are receipt items or bill amounts saved on any server?",
+        answer:
+          "No. All itemized calculations remain strictly inside your browser session. Your bill details are never uploaded or retained.",
       },
     ],
     relatedSlugs: ["barcode-generator", "sales-tax-calculator", "discount-calculator"],

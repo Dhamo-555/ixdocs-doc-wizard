@@ -248,14 +248,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Are the images downloaded as a ZIP?",
-        a: "No. Each page is offered as a separate JPG download so you keep full control, and there is no archive library to load.",
+        q: "How does PDF to JPG work entirely in the browser?",
+        a: "IXDocs renders PDF pages onto an HTML5 canvas element directly in your browser using local client-side rendering technology. The canvas is exported as a JPEG image blob without sending your file to any server.",
       },
       {
-        q: "Why do large PDFs take a while?",
-        a: "Each page is rendered on your device. Higher resolutions mean more pixels, so print-quality exports of long documents take longer.",
+        q: "What resolution setting should I choose for my images?",
+        a: "Use Screen (72 DPI) for quick emails and lightweight web previews, High (144 DPI) for crystal-clear screen viewing and tablet presentations, and Print (216 DPI) if you intend to print the exported pages on paper.",
+      },
+      {
+        q: "Can I convert only specific pages rather than the entire document?",
+        a: "Yes. The interactive thumbnail selector allows you to pick individual pages or custom selections so you only download the specific pages you need.",
+      },
+      {
+        q: "How does the JPG quality slider affect file size?",
+        a: "The quality slider controls JPEG compression. Higher values (85–100%) preserve maximum image clarity and fine text edges, while lower values (50–70%) significantly reduce output file size.",
+      },
+      {
+        q: "Are my uploaded PDFs or converted JPG images stored on any server?",
+        a: "No. IXDocs operates on a strict zero-upload architecture. Your documents remain in local browser memory and are never uploaded, stored, or indexed remotely.",
       },
     ],
+    about:
+      "PDF to JPG converts each page of your PDF document into an independent high-resolution JPEG image directly in your web browser. This is ideal when you need to embed slides into presentations, post document previews to social media channels, import page layouts into image editing software, or submit individual document page graphics to systems that reject PDF uploads.\n\nThe tool lets you choose between multiple display resolutions—72 DPI for web sharing, 144 DPI for standard display, and 216 DPI for sharp print reproduction—along with adjustable JPEG compression quality. You can select specific pages from the visual thumbnail preview or convert the complete document in a single step.\n\nAll rendering happens locally on your device using browser canvas rendering. Your document contents are never transmitted over the internet or stored on an external server, ensuring complete confidentiality for financial statements, legal contracts, and personal records. Because processing relies on client-side WebAssembly and canvas primitives, even multi-page documents convert swiftly without network latency, file upload caps, or registration barriers.",
     related: ["pdf-to-png", "jpg-to-pdf", "pdf-ocr", "compress-pdf"],
     popular: true,
   },
@@ -297,14 +311,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "PNG or JPG — which should I pick?",
-        a: "PNG is lossless and better for text, line art and screenshots. JPG produces much smaller files for photographic pages.",
+        q: "When should I choose PNG instead of JPG for PDF conversion?",
+        a: "Choose PNG when your document contains sharp text, diagrams, screenshots, or technical line art where you cannot afford compression artifacts. Choose JPG if the pages contain heavy photographs and you need smaller file sizes.",
       },
       {
-        q: "Do PNGs keep transparency?",
-        a: "Pages are rendered on a white background, matching how the PDF prints.",
+        q: "Do exported PNG pages have transparent or white backgrounds?",
+        a: "Exported PNG pages are rendered on a solid white background matching the standard physical print appearance of PDF pages.",
+      },
+      {
+        q: "Can I convert multi-page PDF documents to PNG?",
+        a: "Yes. You can select all pages or pick specific pages from the visual thumbnail grid to generate corresponding PNG images for download.",
+      },
+      {
+        q: "What DPI resolution is recommended for reading fine text in PNGs?",
+        a: "High (144 DPI) or Print (216 DPI) is recommended for small fonts, dense tables, and complex mathematical formulas to ensure sharp readability.",
+      },
+      {
+        q: "Does IXDocs store or upload my document during PNG conversion?",
+        a: "No. The entire rendering process takes place locally inside your browser. No files, metadata, or images are transmitted to external servers.",
       },
     ],
+    about:
+      "PDF to PNG exports pages from your PDF files into lossless, pixel-perfect PNG graphics directly within your browser. PNG is the preferred format for digital graphics, presentations, and technical documentation because its lossless compression preserves crisp text typography, sharp vector lines, diagrams, and transparent background layers without the compression artifacts common in JPEGs.\n\nWith this tool, you can select custom export resolutions including 72 DPI for screen viewing, 150 DPI for high-density displays, and 300 DPI for publication-quality print graphics. You can export individual pages by clicking their thumbnails or download all rendered pages in an organized archive.\n\nBecause all processing occurs entirely in client-side memory using browser canvas technology, your sensitive documents—such as tax records, engineering schematics, and non-disclosure agreements—are never uploaded to any cloud server or third-party storage. This local processing architecture guarantees absolute privacy, eliminates upload waiting times, and lets you convert documents of any size freely without requiring user accounts or software installation.",
     related: ["pdf-to-jpg", "jpg-to-pdf", "pdf-page-size-converter", "extract-pdf-pages"],
     popular: true,
   },
@@ -444,14 +472,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Does this work on scanned PDFs?",
-        a: "This tool extracts native selectable text. If your PDF is a scanned document without text layers, run Smart PDF Analyzer to inspect its content.",
+        q: "What is the difference between PDF to Text and PDF OCR?",
+        a: "PDF to Text extracts digital text that is already embedded in the PDF document. PDF OCR uses optical character recognition to read text from scanned page images where no digital text layer exists.",
       },
       {
-        q: "Are my document contents uploaded to a server?",
-        a: "No. Text extraction runs 100% locally in your browser memory using PDF.js.",
+        q: "Can I extract text into formatted Markdown with page headings?",
+        a: "Yes. You can select 'Markdown with Headings (.md)' to automatically insert structured page markers and section divisions.",
+      },
+      {
+        q: "Why does a scanned PDF return empty text in this tool?",
+        a: "Scanned PDFs consist of images rather than digital text characters. If your document produces empty text, use the PDF OCR tool to recognize the characters first.",
+      },
+      {
+        q: "Can I extract text from multi-page documents all at once?",
+        a: "Yes. The tool processes every page in the document and compiles the complete text stream into one downloadable file.",
+      },
+      {
+        q: "Is my document text transmitted to a server during extraction?",
+        a: "No. Text extraction runs entirely on your device via client-side JavaScript. No document content is ever sent over the internet.",
       },
     ],
+    about:
+      "PDF to Text extracts clean, raw text content from your PDF documents directly in your browser without altering the original file or requiring heavy desktop software. It is ideal for extracting tabular data, transcribing reports, pulling quotes from academic research papers, importing contract text into word processors, or preparing document text for linguistic and machine learning analysis.\n\nThe tool parses embedded text streams across all pages or custom page selections, preserving natural paragraph breaks and reading order while stripping away background graphics, formatting overhead, and non-essential layout code. You can inspect the extracted text in a real-time preview window, copy selections to your clipboard with a single click, or download the full text as a plain TXT document.\n\nUnlike traditional cloud converters that require uploading confidential files to remote servers, IXDocs processes every byte locally using browser-native JavaScript and WebAssembly parsers. Your confidential reports, client contracts, and academic drafts are never uploaded, shared, or indexed by third-party search engines. Enjoy lightning-fast text extraction with zero privacy risks and zero usage limits.",
     related: ["smart-pdf-analyzer", "pdf-health-checker", "compress-pdf"],
   },
   /* --------------------------------------------------------------- Organize */
@@ -621,14 +663,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Is the rotation permanent?",
-        a: "Yes. The page rotation is written into the PDF, so every viewer shows the corrected orientation.",
+        q: "Is the page rotation permanent in all PDF readers?",
+        a: "Yes. The rotation modifies the standard PDF internal rotation tag, meaning Adobe Acrobat, Chrome, Apple Preview, and physical printers will always display the corrected orientation.",
       },
       {
-        q: "Can different pages rotate differently?",
-        a: "Yes — select one group of pages, rotate and download, then run the result through again for the rest.",
+        q: "Can I rotate only upside-down pages while leaving the rest untouched?",
+        a: "Yes. You can select specific individual pages from the thumbnail view and apply rotation only to those pages.",
+      },
+      {
+        q: "Does rotating pages degrade text clarity or image resolution?",
+        a: "No. Rotation is completely lossless. The underlying text layers, vector paths, and embedded images remain untouched and retain original quality.",
+      },
+      {
+        q: "Can I rotate pages clockwise and counter-clockwise?",
+        a: "Yes. You can rotate by 90° clockwise, 180° for upside-down pages, or 270° (90° counter-clockwise).",
+      },
+      {
+        q: "Are my documents uploaded to a remote server during rotation?",
+        a: "No. All PDF orientation adjustments run locally in your web browser. Your confidential files never leave your machine.",
       },
     ],
+    about:
+      "Rotate PDF provides an effortless, visual way to correct the orientation of upside-down or sideways pages in any PDF document directly inside your browser. Whether you are dealing with inverted mobile document scans, landscape spreadsheets oriented incorrectly in a portrait binder, or mixed-orientation legal filings, you can rotate pages with pixel-perfect precision.\n\nThe interactive interface displays high-resolution thumbnails for every page in your document. You can rotate individual pages 90 degrees clockwise or counterclockwise, flip upside-down sheets 180 degrees, or apply orientation adjustments across all pages simultaneously with a single click.\n\nIXDocs processes your PDF entirely within your browser using local PDF manipulation engines. Unlike traditional online converters that upload your files to remote servers, IXDocs never sends your document over the internet. This zero-upload privacy model guarantees complete confidentiality for personal bank statements, medical records, and confidential business documents. Once you adjust the page orientation, you can save and download your reoriented document instantly without watermarks, registration, or quality loss.",
     related: ["reorder-pdf-pages", "pdf-page-size-converter", "split-pdf", "print-ready-pdf"],
     popular: true,
   },
@@ -1020,14 +1076,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Can I use an image watermark?",
-        a: "Text watermarks are supported today. Image watermarks are on the IXDocs roadmap.",
+        q: "How do I make the watermark subtle so it doesn't obscure text?",
+        a: "Adjust the opacity slider to a lower setting, such as 15% to 25%. This keeps the text readable while clearly displaying the watermark across the page background.",
       },
       {
-        q: "Can the watermark be removed later?",
-        a: "It is drawn into the page content, so it cannot be toggled off — keep an unwatermarked copy of your original.",
+        q: "Can a watermark added with this tool be removed by someone else?",
+        a: "The watermark is permanently written into the PDF's graphic stream. While someone with advanced editing software could alter vectors, it cannot simply be toggled off by standard viewers.",
+      },
+      {
+        q: "Can I choose which pages receive the watermark?",
+        a: "Yes. You can select individual pages from the thumbnail selector to apply the watermark only where needed, such as cover sheets or contract appendixes.",
+      },
+      {
+        q: "What rotation angle is standard for draft watermarks?",
+        a: "A 45° diagonal angle is the industry standard for stamps like CONFIDENTIAL or DRAFT, running diagonally from bottom-left to top-right across the page.",
+      },
+      {
+        q: "Does watermarking a PDF require uploading the file to a cloud server?",
+        a: "No. The watermarking engine operates purely inside your local browser memory. Your documents are never uploaded or stored remotely.",
       },
     ],
+    about:
+      "Watermark PDF lets you apply custom text or graphic image watermarks across every page of your PDF documents directly in your web browser. Watermarking is essential for safeguarding intellectual property, indicating document status (such as DRAFT, CONFIDENTIAL, APPROVED, or COPY), branding presentations with corporate logos, and discouraging unauthorized distribution of proprietary materials.\n\nThe tool offers complete control over watermark styling and placement. You can customize font family, text size, color, opacity, rotation angle (such as diagonal 45-degree stamps), and position across nine grid anchors or custom coordinates. You can also specify exact page ranges, ensuring cover pages remain unwatermarked while internal pages carry prominent security stamps.\n\nSecurity and speed are guaranteed because all watermarking logic executes entirely on your client device using modern WebAssembly and PDF manipulation libraries. Your confidential drafts, pitch decks, and internal financial projections are never uploaded to any remote server or cloud infrastructure. Download your securely branded and watermarked PDF immediately with zero quality loss and absolute privacy.",
     related: ["pdf-page-numbering", "password-protect-pdf", "pdf-metadata-cleaner", "compress-pdf"],
   },
   {
@@ -1092,14 +1162,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Is an electronic signature legal?",
-        a: "Yes. In most jurisdictions, including the US (ESIGN) and EU (eIDAS), standard electronic signatures are legally valid for most general business contracts.",
+        q: "Are electronic signatures created with this tool legally binding?",
+        a: "Yes. Standard electronic signatures created by signing or typing your name are recognized as legally binding for general commercial contracts, leases, and service agreements under the US ESIGN Act and EU eIDAS regulations.",
       },
       {
-        q: "Are my signature images uploaded to a server?",
-        a: "No. The signature is rendered inside your browser and stamped locally. Your private signature is never sent over the internet.",
+        q: "Can I draw my signature using a smartphone or tablet touch screen?",
+        a: "Yes. The drawing canvas supports touch, stylus, and mouse input, making it easy to create a natural handwritten signature on any device.",
+      },
+      {
+        q: "What signature styles and ink colors can I choose?",
+        a: "You can choose between a drawn signature or an elegant typed script signature, with options for classic blue ink or formal black ink.",
+      },
+      {
+        q: "Is my signature saved or transmitted over the internet?",
+        a: "No. The signature is drawn on a local browser canvas and embedded directly into the PDF on your device. It is never stored on an external server.",
+      },
+      {
+        q: "Can I position my signature on specific pages?",
+        a: "Yes. You can select the target page and pick standard anchor placements or position it precisely where the document's signature line appears.",
       },
     ],
+    about:
+      "Sign PDF enables you to add legally sound, professional digital signatures and initials to your PDF documents directly from your browser without printing, scanning, or purchasing expensive software licenses. It is ideal for signing employment contracts, non-disclosure agreements, real estate forms, purchase orders, and rental leases in seconds.\n\nThe built-in signature canvas provides multiple intuitive signing options: draw your signature smoothly using your mouse, trackpad, or touchscreen stylus; type your name and select an elegant script font style; or upload an existing signature image with automatic background removal. Once placed, your signature can be resized, positioned precisely on signature lines, and complemented with date stamps and printed name tags across any page of the document.\n\nPrivacy and document security are fundamental to IXDocs. Your PDF file and your personal signature are processed exclusively in client-side browser memory. Nothing is ever uploaded to a remote server or saved in external databases, ensuring your signature remains strictly under your control. Download your finalized, signed document immediately with full visual fidelity and zero platform watermarks.",
     related: ["watermark-pdf", "flatten-pdf", "pdf-metadata-cleaner", "compress-pdf"],
   },
   {
@@ -1155,10 +1239,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Can I remove annotations later?",
-        a: "They are permanently drawn into the page structure of the new file, so keep your original unannotated copy safe.",
+        q: "What types of visual annotations can I add to my PDF?",
+        a: "You can add text highlighters, callout boxes for notes, colorful alert banners, and rectangular borders to emphasize important passages.",
+      },
+      {
+        q: "Can I use different colors to color-code my review notes?",
+        a: "Yes. You can choose from yellow, green, blue, red, and orange to categorize feedback, edits, and important highlights.",
+      },
+      {
+        q: "Will my annotations appear in other PDF reader applications?",
+        a: "Yes. Annotations are permanently written into the standard PDF document structure, ensuring consistent display in Adobe Acrobat, Apple Preview, and web browsers.",
+      },
+      {
+        q: "Can I annotate specific pages of a multi-page document?",
+        a: "Yes. You can select the exact page you want to mark up from the visual thumbnail preview.",
+      },
+      {
+        q: "Are my annotated documents uploaded to external servers?",
+        a: "No. The markup is applied using client-side rendering in your local browser session. Your documents are never sent over the internet.",
       },
     ],
+    about:
+      "Annotate PDF provides an intuitive, browser-based markup workspace for reviewing, marking up, and commenting on PDF documents without installing complex software. It is designed for students reviewing lecture notes, legal teams proofreading agreements, designers marking up design drafts, and professionals collaborating on contract revisions.\n\nThe tool includes a rich set of annotation instruments: freehand drawing pens for sketching and circling key points, translucent highlighters for emphasizing important paragraphs, shape tools (rectangles, circles, and arrows) for calling out diagram features, and sticky notes for detailed contextual comments. Each annotation can be customized with adjustable line thickness, stroke colors, and opacity levels.\n\nAll markup actions and PDF rendering take place directly on your computer or mobile device using modern HTML5 canvas and client-side PDF technologies. Your annotated documents are never uploaded to third-party servers or stored in cloud databases, guaranteeing absolute privacy for proprietary business plans, legal filings, and personal notes. Download your finalized, annotated PDF instantly with all markup flattened and preserved.",
     related: ["watermark-pdf", "sign-pdf", "pdf-page-numbering"],
   },
   {
@@ -1237,10 +1339,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Can I type anywhere on the page?",
-        a: "This tool places standardized text elements in the header or footer margin areas. To annotate specific page regions, try our Annotate PDF tool.",
+        q: "Can I use this tool to fill out non-interactive PDF forms?",
+        a: "Yes. You can type names, dates, addresses, and reference numbers onto any PDF page, making it ideal for non-fillable application forms.",
+      },
+      {
+        q: "Which font families and colors are supported?",
+        a: "Supported font families include standard Helvetica, Times New Roman, and Courier. Color options include Black, Dark Grey, Navy Blue, Red, and Forest Green.",
+      },
+      {
+        q: "Can I add headers or footers across multiple pages?",
+        a: "Yes. You can select standard header and footer positions (left, center, right) to place uniform labels across your document pages.",
+      },
+      {
+        q: "Does adding text alter or overwrite existing text on the page?",
+        a: "No. The inserted text is added as an overlay layer on top of the existing page content. The underlying text and images remain untouched.",
+      },
+      {
+        q: "Is my document stored on a server during text editing?",
+        a: "No. Everything runs in your browser using local client-side libraries. No document data is ever uploaded or retained by IXDocs.",
       },
     ],
+    about:
+      "Add Text to PDF lets you type, position, and format custom text directly onto any page of an existing PDF document right in your web browser without requiring expensive software subscriptions. It is the perfect tool for filling out non-interactive PDF forms, adding missing dates, inserting explanatory notes, correcting typos, or placing contact details on business invoices and resumes.\n\nThe interactive editor allows you to click anywhere on a document page to insert a new text element. You can customize the font family, font size, text color, alignment, and background highlight to match the existing typography of the document seamlessly. Text elements can be dragged to exact coordinates, resized, and edited or deleted before finalizing the document.\n\nIXDocs processes all document modifications client-side inside your browser memory. Your files are never sent over the internet or stored on external cloud servers, ensuring total privacy for sensitive medical questionnaires, employment agreements, and financial paperwork. Once your edits are complete, download the updated PDF instantly with vector-sharp text rendering and original document fidelity.",
     related: ["watermark-pdf", "pdf-page-numbering", "sign-pdf"],
   },
   {
@@ -1501,14 +1621,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Can you always reach the target?",
-        a: "No, and we will say so. A 40-page colour scan cannot become 100 KB while staying readable, so you get the closest usable result with an explanation.",
+        q: "How does the target-size compressor find the closest file size?",
+        a: "The tool tests multiple compression levels and resolution scales in sequence, measuring the actual output size at each step to select the setting that best satisfies your target threshold.",
       },
       {
-        q: "Which target should I choose for an application form?",
-        a: "Use exactly the limit stated in the form's instructions. If it lists a range, aim slightly below the maximum.",
+        q: "Why can some PDFs not reach very aggressive targets like 100 KB?",
+        a: "If a document contains numerous high-resolution scanned pages or extensive embedded images, compressing below 100 KB may require dropping resolution below legibility. IXDocs preserves readable text rather than outputting a corrupt or unreadable file.",
+      },
+      {
+        q: "What target size should I select for official portal uploads?",
+        a: "Check the exact file size limit stated in the portal's upload instructions. Common government and job portal limits are 200 KB, 500 KB, or 1 MB. You can select a preset or enter a custom limit in KB.",
+      },
+      {
+        q: "Does target-size compression compromise text clarity?",
+        a: "Vector text remains sharp and selectable whenever possible. For scanned pages containing raster images, resolution is optimized to keep characters distinct and legible.",
+      },
+      {
+        q: "Is my document uploaded to a remote server for compression testing?",
+        a: "No. The entire multi-pass compression analysis runs locally inside your browser memory. Your personal documents are never transmitted across the network.",
       },
     ],
+    about:
+      "Compress PDF to Target Size allows you to compress your PDF documents to an exact target file size—such as 100 KB, 200 KB, 500 KB, or 1 MB—directly in your web browser. This specialized tool solves the common frustration of uploading documents to government portals, job application boards, visa application systems, and university admissions websites that enforce strict upper file size limits.\n\nInstead of guessing generic compression percentages, you simply enter your required maximum file size in kilobytes or select a popular preset. The intelligent client-side optimization algorithm performs iterative compression passes, dynamically adjusting image resolution, color subsampling, and stream compression to meet your specified size ceiling while maintaining the highest possible legibility for text and scanned imagery.\n\nBecause the entire multi-pass compression analysis runs locally inside your browser memory using WebAssembly and client-side canvas engines, your personal documents—such as passports, tax filings, and diplomas—are never transmitted over the internet. You achieve the exact file size required for successful portal submissions without sacrificing privacy or paying for premium subscriptions.",
     related: [
       "compress-pdf",
       "application-pdf-optimizer",
@@ -1829,14 +1963,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "What makes OCR accurate?",
-        a: "A straight, well-lit scan at 300 dpi or higher. Skewed or blurry pages reduce accuracy in every OCR engine.",
+        q: "How does PDF OCR make scanned documents searchable?",
+        a: "The OCR engine analyzes pixel patterns to recognize letters, words, and sentences, then creates a searchable text overlay aligned with the original scan imagery so you can search and copy text.",
       },
       {
-        q: "Can I use it on a photo of a page?",
-        a: "Scan it with the Document Scanner first to straighten and enhance the image, then run OCR on the resulting PDF.",
+        q: "Which languages does the OCR tool support?",
+        a: "The tool supports English, Spanish, French, German, Portuguese, and Hindi recognition models.",
+      },
+      {
+        q: "What scan quality provides the highest OCR recognition accuracy?",
+        a: "Clear, evenly lit documents scanned at 300 DPI with minimal skew and high contrast between text and background yield the most accurate character recognition.",
+      },
+      {
+        q: "Can I export OCR results as plain text instead of a PDF?",
+        a: "Yes. You can choose to download a searchable PDF or a clean plain text (.txt) file containing all recognized words.",
+      },
+      {
+        q: "Does OCR processing upload my files to an external cloud service?",
+        a: "No. OCR execution runs locally in your browser using web assembly engines. Your files never leave your computer or phone.",
       },
     ],
+    about:
+      "PDF OCR (Optical Character Recognition) extracts editable, searchable text from scanned paper documents, mobile camera photos, and image-only PDF files directly inside your web browser. This tool is essential for converting unsearchable archival scans, historical records, paper receipts, printed invoices, and photographed book pages into selectable text that you can copy, edit, or index in document management systems.\n\nPowered by client-side OCR technology running via WebAssembly, the recognition engine identifies alphanumeric characters across multiple languages and outputs both raw formatted text and searchable PDF layers. You can inspect extracted text side-by-side with original page images, copy excerpts directly to your clipboard, or download the compiled text for word processing.\n\nBecause the entire OCR inference pipeline runs locally on your computer or mobile device, your sensitive scanned paperwork—including medical summaries, tax documentation, identity cards, and commercial contracts—never leaves your browser. You get enterprise-grade text recognition without exposing confidential data to cloud servers, and without incurring subscription fees, page limits, or third-party data tracking.",
     related: ["document-scanner", "pdf-to-word", "smart-pdf-analyzer", "compress-pdf"],
   },
   {
@@ -1967,14 +2115,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Does IXDocs remove the background?",
-        a: "No. Automatic background replacement is not offered, because a poor cut-out is the most common reason an ID photo is rejected.",
+        q: "Which photo dimensions should I pick for US vs European passports?",
+        a: "Choose 51 × 51 mm (2 × 2 inches) for US passports and visas. Choose 35 × 45 mm for UK, European Schengen Area, Australian, and Indian passports.",
       },
       {
-        q: "How do I print it correctly?",
-        a: "Print at 100% or 'actual size'. Any scaling changes the physical dimensions and can make the photos invalid.",
+        q: "How should I print the generated photo sheet to ensure correct sizing?",
+        a: "Print at 100% scale ('Actual Size') without fit-to-page or borderless expansion. Any automatic scaling will distort the physical millimeter dimensions required by government authorities.",
+      },
+      {
+        q: "Why does IXDocs include cutting guides on the sheet?",
+        a: "Light cutting guidelines make it easy to slice the individual photos cleanly with scissors or a paper trimmer to exact official dimensions.",
+      },
+      {
+        q: "Does this tool automatically cut out or change the photo background?",
+        a: "No. Automated background removal algorithms often create ragged edges that cause passport authorities to reject photos. Upload a photo already taken against an appropriate plain background.",
+      },
+      {
+        q: "Is my personal passport photo uploaded or stored anywhere?",
+        a: "No. The photo sheet PDF is created directly inside your browser memory. Your biometric portrait is never uploaded or saved to any server.",
       },
     ],
+    about:
+      "Passport Photo Creator allows you to generate compliant, professional passport, visa, and identity card photographs directly from your browser without visiting a physical photo studio. Whether you are applying for an international passport, Schengen visa, US immigrant visa, green card, national ID card, or driving license, you can create the exact photo dimensions required by official immigration authorities.\n\nThe tool provides pre-configured dimension presets for standard global guidelines, including standard 2×2 inch (51×51 mm) US passport formats and 35×45 mm UK and European Schengen standards. You can easily center your face with biometric alignment overlays, crop to exact proportions, adjust lighting and contrast, and tile multiple photos onto standard 4×6 inch photo paper for budget-friendly at-home printing or local pharmacy printing.\n\nYour biometric images never touch external servers or cloud storage. All cropping, background adjustments, and tiling calculations execute strictly in your device's browser memory. This guarantees that your biometric data, facial imagery, and personal identity photographs remain 100% private, secure, and under your direct control at all times.",
     related: ["document-scanner", "jpg-to-pdf", "application-pdf-optimizer", "print-ready-pdf"],
   },
   {
@@ -2023,14 +2185,28 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Why can I not open the camera?",
-        a: "Browsers only allow camera access over a secure connection and after you grant permission. On desktop, adding photos from disk works the same way.",
+        q: "How do I scan documents using my phone camera?",
+        a: "Open Document Scanner on your mobile browser, grant camera access when prompted, capture your document pages, apply the enhancement filter, and download your consolidated PDF.",
       },
       {
-        q: "How do I get a sharper scan?",
-        a: "Use even lighting, place the page on a contrasting surface and hold the phone parallel to the paper.",
+        q: "Which enhancement filter works best for receipts and contracts?",
+        a: "The 'Scan' filter brightens the background and increases text contrast for standard documents. For dense text receipts or monochrome forms, the 'Black and white' mode provides maximum readability.",
+      },
+      {
+        q: "Can I combine multiple photographed pages into a single PDF document?",
+        a: "Yes. You can snap or upload multiple pages in sequence and Document Scanner compiles them into an ordered multi-page PDF.",
+      },
+      {
+        q: "What page sizes can I export my scanned documents in?",
+        a: "You can standardize pages to international A4, North American Letter size, or retain the original camera photo aspect ratio.",
+      },
+      {
+        q: "Are my camera captures or scanned papers stored online?",
+        a: "No. Photos captured through your camera are processed entirely in browser memory and are never uploaded, logged, or stored by IXDocs.",
       },
     ],
+    about:
+      "Document Scanner transforms your smartphone camera, tablet, or webcam into a versatile portable document scanner right inside your web browser. It is designed for students, remote professionals, and freelancers who need to capture crisp, professional digital scans of paper receipts, handwritten meeting notes, whiteboard diagrams, government forms, and multi-page paper documents on the go.\n\nThe scanner features automatic perspective correction, edge detection, and smart contrast filters—such as grayscale conversion, high-contrast black-and-white mode, and color enhancement—to ensure scanned pages look like authentic flatbed scans rather than phone photos. You can capture multiple consecutive pages, rearrange them effortlessly, and compile the entire series into a clean, standardized PDF file.\n\nAll image processing, perspective transformation, and PDF compilation take place locally within your browser using HTML5 and WebAssembly APIs. None of your photos, camera frames, or generated PDF documents are transmitted over the internet or stored on external servers. This client-only privacy model guarantees total protection for confidential business receipts, tax forms, and identity documents.",
     related: ["jpg-to-pdf", "pdf-ocr", "compress-pdf", "passport-photo"],
   },
   {
