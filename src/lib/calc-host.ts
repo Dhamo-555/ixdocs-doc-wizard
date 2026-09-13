@@ -37,14 +37,10 @@ export const CALCULATOR_SLUGS = [
   "scientific-calculator",
 ] as const;
 
-export const CALCULATOR_PATHS: readonly string[] = [
-  "/calculators",
-  ...CALCULATOR_SLUGS.map((slug) => `/${slug}`),
-];
+export const CALCULATOR_PATHS: readonly string[] = [...CALCULATOR_SLUGS.map((slug) => `/${slug}`)];
 
 export function isCalculatorPath(pathname: string): boolean {
   const normalized = pathname.replace(/\/$/, "") || "/";
-  if (normalized === "/calculators") return true;
   return CALCULATOR_PATHS.some((p) => p === normalized);
 }
 

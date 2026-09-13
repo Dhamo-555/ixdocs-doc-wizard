@@ -20,6 +20,7 @@ import { Route as BarcodeGeneratorRouteImport } from './routes/barcode-generator
 import { Route as BasicCalculatorRouteImport } from './routes/basic-calculator'
 import { Route as BillCalculatorRouteImport } from './routes/bill-calculator'
 import { Route as BmiCalculatorRouteImport } from './routes/bmi-calculator'
+import { Route as CalcSitemapDotxmlRouteImport } from './routes/calc-sitemap[.]xml'
 import { Route as CalculatorsRouteImport } from './routes/calculators'
 import { Route as CalorieCalculatorRouteImport } from './routes/calorie-calculator'
 import { Route as CompoundInterestCalculatorRouteImport } from './routes/compound-interest-calculator'
@@ -142,6 +143,11 @@ const BillCalculatorRoute = BillCalculatorRouteImport.update({
 const BmiCalculatorRoute = BmiCalculatorRouteImport.update({
   id: '/bmi-calculator',
   path: '/bmi-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalcSitemapDotxmlRoute = CalcSitemapDotxmlRouteImport.update({
+  id: '/calc-sitemap.xml',
+  path: '/calc-sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalculatorsRoute = CalculatorsRouteImport.update({
@@ -498,6 +504,7 @@ export interface FileRoutesByFullPath {
   '/basic-calculator': typeof BasicCalculatorRoute
   '/bill-calculator': typeof BillCalculatorRoute
   '/bmi-calculator': typeof BmiCalculatorRoute
+  '/calc-sitemap.xml': typeof CalcSitemapDotxmlRoute
   '/calculators': typeof CalculatorsRoute
   '/calorie-calculator': typeof CalorieCalculatorRoute
   '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
@@ -579,6 +586,7 @@ export interface FileRoutesByTo {
   '/basic-calculator': typeof BasicCalculatorRoute
   '/bill-calculator': typeof BillCalculatorRoute
   '/bmi-calculator': typeof BmiCalculatorRoute
+  '/calc-sitemap.xml': typeof CalcSitemapDotxmlRoute
   '/calculators': typeof CalculatorsRoute
   '/calorie-calculator': typeof CalorieCalculatorRoute
   '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
@@ -661,6 +669,7 @@ export interface FileRoutesById {
   '/basic-calculator': typeof BasicCalculatorRoute
   '/bill-calculator': typeof BillCalculatorRoute
   '/bmi-calculator': typeof BmiCalculatorRoute
+  '/calc-sitemap.xml': typeof CalcSitemapDotxmlRoute
   '/calculators': typeof CalculatorsRoute
   '/calorie-calculator': typeof CalorieCalculatorRoute
   '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
@@ -744,6 +753,7 @@ export interface FileRouteTypes {
     | '/basic-calculator'
     | '/bill-calculator'
     | '/bmi-calculator'
+    | '/calc-sitemap.xml'
     | '/calculators'
     | '/calorie-calculator'
     | '/compound-interest-calculator'
@@ -825,6 +835,7 @@ export interface FileRouteTypes {
     | '/basic-calculator'
     | '/bill-calculator'
     | '/bmi-calculator'
+    | '/calc-sitemap.xml'
     | '/calculators'
     | '/calorie-calculator'
     | '/compound-interest-calculator'
@@ -906,6 +917,7 @@ export interface FileRouteTypes {
     | '/basic-calculator'
     | '/bill-calculator'
     | '/bmi-calculator'
+    | '/calc-sitemap.xml'
     | '/calculators'
     | '/calorie-calculator'
     | '/compound-interest-calculator'
@@ -988,6 +1000,7 @@ export interface RootRouteChildren {
   BasicCalculatorRoute: typeof BasicCalculatorRoute
   BillCalculatorRoute: typeof BillCalculatorRoute
   BmiCalculatorRoute: typeof BmiCalculatorRoute
+  CalcSitemapDotxmlRoute: typeof CalcSitemapDotxmlRoute
   CalculatorsRoute: typeof CalculatorsRoute
   CalorieCalculatorRoute: typeof CalorieCalculatorRoute
   CompoundInterestCalculatorRoute: typeof CompoundInterestCalculatorRoute
@@ -1135,6 +1148,13 @@ declare module '@tanstack/react-router' {
       path: '/bmi-calculator'
       fullPath: '/bmi-calculator'
       preLoaderRoute: typeof BmiCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calc-sitemap.xml': {
+      id: '/calc-sitemap.xml'
+      path: '/calc-sitemap.xml'
+      fullPath: '/calc-sitemap.xml'
+      preLoaderRoute: typeof CalcSitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calculators': {
@@ -1628,6 +1648,7 @@ const rootRouteChildren: RootRouteChildren = {
   BasicCalculatorRoute: BasicCalculatorRoute,
   BillCalculatorRoute: BillCalculatorRoute,
   BmiCalculatorRoute: BmiCalculatorRoute,
+  CalcSitemapDotxmlRoute: CalcSitemapDotxmlRoute,
   CalculatorsRoute: CalculatorsRoute,
   CalorieCalculatorRoute: CalorieCalculatorRoute,
   CompoundInterestCalculatorRoute: CompoundInterestCalculatorRoute,

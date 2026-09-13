@@ -93,7 +93,7 @@ function EmiCalculatorPage() {
   return (
     <CalcPageLayout calc={calcMeta}>
       <div className="grid gap-8 lg:grid-cols-12">
-        <div className="space-y-6 lg:col-span-7">
+        <div className="space-y-6 lg:col-span-7 min-w-0">
           <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-5">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <h2 className="text-base font-bold text-foreground">Loan Details</h2>
@@ -115,7 +115,7 @@ function EmiCalculatorPage() {
                   value={loanAmountStr}
                   onChange={(e) => setLoanAmountStr(e.target.value)}
                   placeholder="0"
-                  className="w-full rounded-xl border border-border bg-background pl-8 pr-3.5 py-2.5 text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
+                  className="w-full rounded-xl border border-border bg-background pl-8 pr-3.5 py-2.5 text-base sm:text-lg font-bold text-foreground focus:border-emerald-600 focus:outline-none"
                 />
               </div>
             </div>
@@ -183,7 +183,7 @@ function EmiCalculatorPage() {
             </div>
 
             {/* Quick tenure buttons */}
-            <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2 border-t border-border">
               {(tenureUnit === "years" ? [5, 10, 15, 20, 25, 30] : [12, 24, 36, 60, 120, 240]).map(
                 (val) => (
                   <button
@@ -205,31 +205,33 @@ function EmiCalculatorPage() {
 
           {/* Yearly Amortization */}
           {result.amortization.length > 0 && (
-            <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-4">
+            <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-4 min-w-0">
               <h3 className="text-sm font-bold text-foreground">Repayment Schedule (Annual)</h3>
-              <div className="max-h-60 overflow-x-auto rounded-xl border border-border">
-                <table className="w-full text-xs min-w-[320px]">
+              <div className="max-h-60 overflow-x-auto rounded-xl border border-border overscroll-x-contain">
+                <table className="w-full text-xs min-w-[280px] sm:min-w-[320px]">
                   <thead className="bg-surface/60 border-b border-border text-muted-foreground">
                     <tr>
-                      <th className="py-2 px-3 text-left">Year</th>
-                      <th className="py-2 px-3 text-right">Principal Paid</th>
-                      <th className="py-2 px-3 text-right">Interest Paid</th>
-                      <th className="py-2 px-3 text-right">Balance</th>
+                      <th className="py-2 px-2.5 sm:px-3 text-left">Year</th>
+                      <th className="py-2 px-2.5 sm:px-3 text-right">Principal Paid</th>
+                      <th className="py-2 px-2.5 sm:px-3 text-right">Interest Paid</th>
+                      <th className="py-2 px-2.5 sm:px-3 text-right">Balance</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/60">
                     {result.amortization.map((row) => (
                       <tr key={row.year} className="hover:bg-surface/40">
-                        <td className="py-1.5 px-3 font-semibold">Year {row.year}</td>
-                        <td className="py-1.5 px-3 text-right">
+                        <td className="py-1.5 px-2.5 sm:px-3 font-semibold whitespace-nowrap">
+                          Year {row.year}
+                        </td>
+                        <td className="py-1.5 px-2.5 sm:px-3 text-right whitespace-nowrap">
                           {currency.symbol}
                           {row.principalPaid.toLocaleString(numLocale)}
                         </td>
-                        <td className="py-1.5 px-3 text-right text-amber-600 font-medium">
+                        <td className="py-1.5 px-2.5 sm:px-3 text-right text-amber-600 font-medium whitespace-nowrap">
                           {currency.symbol}
                           {row.interestPaid.toLocaleString(numLocale)}
                         </td>
-                        <td className="py-1.5 px-3 text-right font-bold">
+                        <td className="py-1.5 px-2.5 sm:px-3 text-right font-bold whitespace-nowrap">
                           {currency.symbol}
                           {row.balance.toLocaleString(numLocale)}
                         </td>
@@ -243,15 +245,15 @@ function EmiCalculatorPage() {
         </div>
 
         {/* Results Card */}
-        <div className="space-y-6 lg:col-span-5">
+        <div className="space-y-6 lg:col-span-5 min-w-0">
           <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-5">
             <h2 className="text-base font-bold text-foreground">Monthly EMI</h2>
 
-            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-4 sm:p-5 min-w-0 overflow-hidden">
+              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 block">
                 Equated Monthly Installment
               </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+              <div className="mt-1 text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground tracking-tight break-words">
                 {currency.symbol}
                 {result.monthlyEmi.toLocaleString(numLocale, {
                   minimumFractionDigits: 2,
@@ -265,7 +267,7 @@ function EmiCalculatorPage() {
 
             {/* Principal vs Interest progress visual */}
             <div className="space-y-2">
-              <div className="flex justify-between text-xs font-semibold">
+              <div className="flex justify-between text-xs font-semibold gap-1">
                 <span className="text-emerald-600">Principal ({result.principalPercent}%)</span>
                 <span className="text-amber-600">Interest ({result.interestPercent}%)</span>
               </div>
@@ -281,17 +283,17 @@ function EmiCalculatorPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-xs pt-2 border-t border-border">
-              <div className="rounded-xl border border-border p-3.5 bg-surface/30">
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3 text-xs pt-2 border-t border-border">
+              <div className="rounded-xl border border-border p-3 sm:p-3.5 bg-surface/30 min-w-0">
                 <span className="text-muted-foreground">Total Interest</span>
-                <p className="mt-1 text-base font-bold text-amber-600">
+                <p className="mt-1 text-sm sm:text-base font-bold text-amber-600 break-words">
                   {currency.symbol}
                   {result.totalInterest.toLocaleString(numLocale)}
                 </p>
               </div>
-              <div className="rounded-xl border border-border p-3.5 bg-surface/30">
+              <div className="rounded-xl border border-border p-3 sm:p-3.5 bg-surface/30 min-w-0">
                 <span className="text-muted-foreground">Total Payment</span>
-                <p className="mt-1 text-base font-bold text-foreground">
+                <p className="mt-1 text-sm sm:text-base font-bold text-foreground break-words">
                   {currency.symbol}
                   {result.totalAmount.toLocaleString(numLocale)}
                 </p>

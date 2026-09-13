@@ -85,6 +85,8 @@ export interface Tool {
   actionLabel: string;
   steps: string[];
   faqs: { q: string; a: string }[];
+  /** Optional 150–250 word "About this tool" supporting content for SEO. */
+  about?: string;
   related: string[];
   popular?: boolean;
 }
@@ -176,7 +178,25 @@ const ALL_TOOLS: Tool[] = [
         q: "Will image quality drop?",
         a: "JPG and PNG images are embedded as-is, so no re-compression happens. WebP images are re-encoded to JPEG because PDF has no native WebP support.",
       },
+      {
+        q: "Can I combine multiple images into one PDF?",
+        a: "Yes — add as many images as you need and arrange them in the order you want. Each image becomes one page in the final document.",
+      },
+      {
+        q: "Can I control the page order before converting?",
+        a: "Yes. Use the drag handles or arrow controls to reorder images before generating the PDF. The final document follows the order shown.",
+      },
+      {
+        q: "What image formats are supported?",
+        a: "This tool accepts JPG, PNG, and WebP files. BMP and TIFF formats are not currently supported — convert those to JPG first.",
+      },
+      {
+        q: "Are my images uploaded to a server?",
+        a: "No. The PDF is assembled entirely in your browser. Your image files are never transmitted over the internet.",
+      },
     ],
+    about:
+      "JPG to PDF lets you turn one or more photos or images into a properly formatted PDF document — directly in your browser, without uploading files to a server. This is useful when you need to submit scanned documents, share photos as a single attachment, or prepare image-based records for archiving.\n\nYou can add multiple images in one go, reorder them freely, and choose from several standard page sizes including A4 and Letter. Images are embedded at their original quality, so there is no additional compression applied to JPG or PNG files. WebP images are automatically converted to JPEG since the PDF format does not support WebP natively.\n\nCommon use cases: converting scanned receipts into a single PDF for expense claims, compiling product photos into a catalogue page, or preparing identity documents in PDF format for online submissions. Since everything runs locally, there is no account required and no data is shared with any server.",
     related: ["pdf-to-jpg", "pdf-to-png", "merge-pdf", "compress-pdf"],
     popular: true,
   },
@@ -467,7 +487,25 @@ const ALL_TOOLS: Tool[] = [
         q: "Can I merge a password-protected PDF?",
         a: "Encrypted PDFs must be unlocked first — the browser cannot read their pages while they are protected.",
       },
+      {
+        q: "Can I combine multiple PDFs into one file?",
+        a: "Yes — add as many PDF files as you need. There is no fixed limit on the number of files, though very large batches may be slower on lower-powered devices because merging happens in your browser.",
+      },
+      {
+        q: "Can I control the order of merged pages?",
+        a: "Yes. Use the drag handles or the up/down arrow buttons to rearrange files before merging. The resulting PDF follows the order shown in the list.",
+      },
+      {
+        q: "Is merging done in the browser or on a server?",
+        a: "Entirely in the browser. Your PDF files are never sent to a server — the combined document is assembled locally on your device using pdf-lib.",
+      },
+      {
+        q: "Do I need an account to merge PDFs?",
+        a: "No account, registration, or email address is required. Add your files and download the merged result immediately.",
+      },
     ],
+    about:
+      "Merge PDF combines multiple separate PDF documents into a single, ordered file — without uploading your documents to a server. The entire process runs inside your browser using a library called pdf-lib, which means your content stays on your device throughout.\n\nThis is useful for a wide range of everyday tasks: combining chapters exported from different applications, assembling monthly reports into one archive, joining scanned pages from different sessions, or consolidating contracts and attachments before sending.\n\nYou can add as many files as you need and reorder them before merging. All pages from each document are preserved in full — the merge only joins them sequentially without altering content, images, or fonts. If a document is password-protected, it needs to be unlocked first, since the browser cannot access the pages of an encrypted PDF.\n\nNo account is required, and there are no usage limits. The result downloads directly to your device.",
     related: ["split-pdf", "reorder-pdf-pages", "extract-pdf-pages", "delete-pdf-pages"],
     popular: true,
   },
@@ -523,7 +561,25 @@ const ALL_TOOLS: Tool[] = [
         q: "Does splitting change quality?",
         a: "No. Pages are copied without re-encoding, so the content is identical to the original.",
       },
+      {
+        q: "Can I extract selected pages rather than splitting by range?",
+        a: "For selecting specific pages visually, try the Extract PDF Pages tool. Split PDF is better suited for range-based division or splitting every page into its own file.",
+      },
+      {
+        q: "Can I split a PDF into multiple separate files?",
+        a: 'Yes. Choose "One file per page" to get a separate download for each page, or define custom ranges to group pages into specific files.',
+      },
+      {
+        q: "Can I choose specific page ranges?",
+        a: "Yes. Enter ranges as comma-separated values such as 1-3, 5, 8-10. Each range produces one output file, and single page numbers also work.",
+      },
+      {
+        q: "Is my PDF uploaded to a server when I split it?",
+        a: "No. The split operation runs entirely in your browser. Your document is never sent to a remote server.",
+      },
     ],
+    about:
+      "Split PDF divides a single document into two or more smaller files based on the page ranges you specify. It also supports splitting every page into its own individual file — useful when you need to distribute pages separately or process them one at a time.\n\nThe tool runs entirely in your browser, so your document stays on your device throughout the process. Pages are copied from the original without any re-encoding, which means the resulting files are identical in quality to the source.\n\nCommon use cases: extracting a specific chapter from a long report, separating an invoice attachment from a multi-page contract, breaking a combined scan into individual records, or isolating a few pages to share without exposing the full document.\n\nTo specify ranges, enter them as comma-separated values in the format 1-3, 5, 8-10. Each range becomes one output PDF. If you prefer to select pages visually, the Extract PDF Pages tool may be a better fit for that workflow.",
     related: ["merge-pdf", "extract-pdf-pages", "delete-pdf-pages", "compress-pdf"],
     popular: true,
   },
@@ -882,7 +938,17 @@ const ALL_TOOLS: Tool[] = [
         q: "Can I add images or signatures to my PDF?",
         a: "Yes. You can insert PNG, JPG, or WebP images, reposition and resize them anywhere on any page, and draw signatures using the freehand pen tool.",
       },
+      {
+        q: "Can I add or change text in a PDF?",
+        a: "You can add new text labels, callouts, and typed content on top of any page. This tool does not reflow or alter the existing PDF text layer — it adds text as an overlay annotation.",
+      },
+      {
+        q: "Can I edit a PDF without installing any software?",
+        a: "Yes. This tool runs entirely in your browser with no installation required. Open the page, upload your PDF, make your edits, and download.",
+      },
     ],
+    about:
+      "Edit PDF is a browser-based tool for making common modifications to PDF documents without installing any software and without uploading your file to a server. The editor loads your document locally in your browser, so your content stays on your device throughout the session.\n\nThe toolbar supports several editing actions: adding text labels, covering unwanted content with a clean white mask (sometimes called whiteout or redaction), inserting images, drawing freehand, highlighting sections, and adding basic shapes. Any element you add can be repositioned and resized before you export.\n\nThis is useful for everyday tasks like filling in a PDF form that has no interactive fields, adding a signature image, annotating a draft document before review, or covering sensitive information before sharing.\n\nNote that this tool adds annotations on top of the existing PDF structure — it does not edit the underlying PDF text flow or reflow text around changes. For more specific operations like adding a watermark, signing with a drawn signature, or numbering pages, dedicated tools for those tasks are available.",
     related: ["compress-pdf", "add-text-to-pdf", "annotate-pdf", "sign-pdf", "merge-pdf"],
   },
   {
@@ -1356,7 +1422,25 @@ const ALL_TOOLS: Tool[] = [
         q: "Does compression lose quality?",
         a: "Levels other than Structure only re-encode pages as images, so there is some quality loss. Start with Balanced and step up if you need more.",
       },
+      {
+        q: "Can I reduce PDF file size without changing the format?",
+        a: "Yes. The output is always a PDF file. Compression reduces the size of embedded images and page rendering — the file stays in PDF format throughout.",
+      },
+      {
+        q: "What affects how much a PDF can be compressed?",
+        a: "The main factor is content type. PDFs that consist primarily of photographs or scanned pages compress significantly. Documents built from text, vectors, and line art compress very little because they are already efficient.",
+      },
+      {
+        q: "Can I compress a PDF entirely in my browser?",
+        a: "Yes. IXDocs processes the file locally using browser rendering technology. Your document is never sent to a remote server.",
+      },
+      {
+        q: "What should I do if the compressed PDF is still too large?",
+        a: "Try the Strong compression level, or use Compress PDF to Target Size if you need to meet a specific file size limit such as 200 KB or 1 MB.",
+      },
     ],
+    about:
+      "Compress PDF reduces the file size of a PDF document by re-rendering its pages at a lower image resolution. This is most effective on documents that contain scanned pages, photographs, or high-resolution images — these are the primary source of large file sizes in most PDFs.\n\nIXDocs offers four compression levels. Light preserves the most detail while achieving modest size reductions. Balanced is the default and works well for most documents. Strong applies more aggressive compression for the smallest possible output. Structure only (lossless) restructures the PDF without re-rendering pages, which keeps text selectable but offers limited size reduction.\n\nThe tool reports the actual file sizes before and after compression — not projected estimates. If compression produces minimal savings, that result is shown honestly.\n\nAll processing happens in your browser. Your PDF is never uploaded to a server. If you need to meet a specific file size limit, such as a 200 KB upload cap on a government form, try the Compress PDF to Target Size tool instead.",
     related: [
       "compress-pdf-to-target-size",
       "pdf-health-checker",
@@ -2053,14 +2137,66 @@ export function toolsByCategory(category: ToolCategory) {
 }
 
 const SEARCH_ALIASES: Record<string, string[]> = {
-  "edit-pdf": ["edit pdf", "editor", "modify pdf", "change text", "add image", "whiteout", "draw on pdf", "highlight", "edit pdf online", "free pdf editor", "edit pdf in browser", "add text to pdf", "replace pdf text", "move pdf objects", "add images to pdf", "draw on pdf", "highlight pdf", "whiteout pdf", "basic pdf editing"],
+  "edit-pdf": [
+    "edit pdf",
+    "editor",
+    "modify pdf",
+    "change text",
+    "add image",
+    "whiteout",
+    "draw on pdf",
+    "highlight",
+    "edit pdf online",
+    "free pdf editor",
+    "edit pdf in browser",
+    "add text to pdf",
+    "replace pdf text",
+    "move pdf objects",
+    "add images to pdf",
+    "draw on pdf",
+    "highlight pdf",
+    "whiteout pdf",
+    "basic pdf editing",
+  ],
   "pdf-to-text": ["extract text", "txt", "text", "copy text", "read pdf", "pdf to txt", "markdown"],
   "crop-pdf": ["crop", "trim", "margins", "cut edges", "white space", "resize page", "trim pdf"],
-  "flatten-pdf": ["flatten", "acroform", "form fields", "lock", "read only", "flatten forms", "interactive"],
-  "sign-pdf": ["sign", "signature", "e-sign", "stamp", "initial", "sign document", "digital signature"],
+  "flatten-pdf": [
+    "flatten",
+    "acroform",
+    "form fields",
+    "lock",
+    "read only",
+    "flatten forms",
+    "interactive",
+  ],
+  "sign-pdf": [
+    "sign",
+    "signature",
+    "e-sign",
+    "stamp",
+    "initial",
+    "sign document",
+    "digital signature",
+  ],
   "annotate-pdf": ["annotate", "highlight", "markup", "notes", "callout", "draw", "pen"],
-  "add-text-to-pdf": ["type text", "add text", "insert text", "write on pdf", "label", "header", "footer"],
-  "grayscale-pdf": ["grayscale", "black and white", "b&w", "monochrome", "desaturate", "save ink", "printer ink"],
+  "add-text-to-pdf": [
+    "type text",
+    "add text",
+    "insert text",
+    "write on pdf",
+    "label",
+    "header",
+    "footer",
+  ],
+  "grayscale-pdf": [
+    "grayscale",
+    "black and white",
+    "b&w",
+    "monochrome",
+    "desaturate",
+    "save ink",
+    "printer ink",
+  ],
 
   "compress-pdf": [
     "compress",

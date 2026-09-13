@@ -177,8 +177,9 @@ export function ToolRoutePage({ slug }: { slug: string }) {
       </ul>
 
       <p className="mt-3 text-xs text-muted-foreground">
-        Your file is used for this task only and is not stored by IXDocs after you leave the page.
-        Please only upload documents you have permission to process.
+        Your files are processed locally in your browser and are never uploaded to a server. IXDocs
+        does not store, read, or transmit your documents — they remain on your device throughout. No
+        account is required. Please only upload documents you have permission to process.
       </p>
 
       <section aria-labelledby="how-to" className="mt-14">
@@ -212,6 +213,21 @@ export function ToolRoutePage({ slug }: { slug: string }) {
           ))}
         </Accordion>
       </section>
+
+      {tool.about ? (
+        <section aria-labelledby="tool-about" className="mt-14 max-w-3xl">
+          <h2 id="tool-about" className="text-lg font-bold">
+            About {tool.name}
+          </h2>
+          <div className="mt-3 space-y-3">
+            {tool.about.split("\n\n").map((paragraph, i) => (
+              <p key={i} className="text-sm text-muted-foreground leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <RelatedTools tool={tool} />
     </div>

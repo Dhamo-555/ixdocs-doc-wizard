@@ -153,22 +153,48 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
     ],
     formula: "Percentage = (Part / Whole) × 100",
     explanation:
-      "A versatile percentage solver covering standard percentage-of, proportion percentage, percentage increase/decrease over time, and comparative percent difference between two values.",
+      "Percentages express a number as a fraction of 100 and are used everywhere from shopping discounts and exam scores to financial growth and statistical analysis. This calculator covers four common percentage problems: finding a percentage of a value, determining what percentage one number is of another, calculating percentage increase or decrease between two values, and finding the relative percentage difference between two independent numbers.",
     howItWorks: [
       "Choose your desired calculation mode (What is X% of Y, Percent Change, etc.).",
       "Enter your starting and comparison values.",
       "The result and step-by-step breakdown calculate in real-time.",
     ],
+    example: {
+      title: "Example: Calculating a discount",
+      description:
+        "A product costs ₹4,500 and is on sale at 20% off. To find the discount amount: 20% of 4,500 = (20 / 100) × 4,500 = 900. The sale price is 4,500 − 900 = ₹3,600.",
+      steps: [
+        'Select the "What is X% of Y?" mode.',
+        "Enter 20 in the Percentage field.",
+        "Enter 4500 in the Of Value field.",
+        "The result shows 900 — that is your discount amount.",
+      ],
+    },
     faqs: [
       {
         question: "How do I calculate percentage increase?",
         answer:
-          "Subtract the original value from the new value, divide by the original value, and multiply by 100.",
+          "Subtract the original value from the new value, divide by the original value, and multiply by 100. For example, going from 80 to 100 is a 25% increase: ((100 − 80) / 80) × 100 = 25%.",
       },
       {
         question: "What is the difference between percent change and percent difference?",
         answer:
-          "Percent change compares a final value to an initial starting point. Percent difference compares two independent numbers against their mutual average.",
+          "Percent change compares a final value to an initial starting point and has a direction (increase or decrease). Percent difference compares two independent numbers against their mutual average and has no directional meaning.",
+      },
+      {
+        question: "How do I find what percentage X is of Y?",
+        answer:
+          "Divide X by Y and multiply by 100. For example, 25 is what percent of 200? Answer: (25 / 200) × 100 = 12.5%.",
+      },
+      {
+        question: "How do I calculate percentage decrease?",
+        answer:
+          "Use the same formula as percentage change: ((New − Old) / |Old|) × 100. When the result is negative, that is a decrease. For example, a drop from 500 to 400 is a 20% decrease.",
+      },
+      {
+        question: "Is this calculator free and does it require an account?",
+        answer:
+          "Completely free, no account or registration needed. All calculations run in your browser and nothing is stored.",
       },
     ],
     relatedSlugs: ["discount-calculator", "sales-tax-calculator", "tip-calculator"],
@@ -423,20 +449,51 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "car loan emi",
       "personal loan emi",
     ],
-    formula: "EMI = [P × r × (1+r)^n] / [(1+r)^n - 1]",
+    formula: "EMI = [P × r × (1+r)^n] / [(1+r)^n − 1]",
     explanation:
-      "Standard international and Indian financial formula for computing Equated Monthly Installments (EMI), with principal vs interest ratio charts.",
+      "An EMI (Equated Monthly Installment) is a fixed payment made every month by a borrower to a lender to repay a loan. Each EMI consists of a principal component and an interest component. In the early months of a loan, a larger share of the EMI goes toward interest. As the loan matures, the principal portion increases and the interest portion decreases. The EMI formula calculates a constant installment so the loan is fully repaid by the end of the tenure.",
     howItWorks: [
       "Input loan amount (Principal).",
       "Enter annual interest rate percentage.",
       "Specify loan tenure in months or years.",
       "View exact EMI and yearly repayment schedule.",
     ],
+    example: {
+      title: "Example: Home loan EMI calculation",
+      description:
+        "Principal (P) = ₹10,00,000 | Annual rate = 8.5% | Tenure = 15 years (180 months). Monthly rate r = 8.5 / (12 × 100) = 0.007083. EMI = [10,00,000 × 0.007083 × (1.007083)^180] / [(1.007083)^180 − 1] ≈ ₹9,847 per month.",
+      steps: [
+        "Total amount paid over 15 years ≈ ₹17,72,460",
+        "Total interest paid ≈ ₹7,72,460",
+        "Principal repaid = ₹10,00,000",
+        "Higher tenure lowers monthly EMI but increases total interest paid.",
+      ],
+    },
     faqs: [
       {
         question: "What does EMI stand for?",
         answer:
-          "EMI stands for Equated Monthly Installment — a fixed payment made by a borrower to a lender at a specified date each calendar month.",
+          "EMI stands for Equated Monthly Installment — a fixed payment made by a borrower to a lender at a specified date each calendar month. It covers both the principal and interest portions of the loan.",
+      },
+      {
+        question: "What is the EMI formula?",
+        answer:
+          "EMI = [P × r × (1+r)^n] / [(1+r)^n − 1], where P is the principal loan amount, r is the monthly interest rate (annual rate divided by 12 and by 100), and n is the number of monthly installments.",
+      },
+      {
+        question: "How does tenure affect EMI?",
+        answer:
+          "A longer tenure reduces your monthly EMI but significantly increases the total interest you pay over the life of the loan. A shorter tenure increases monthly EMI but reduces total interest paid.",
+      },
+      {
+        question: "Does the EMI change over the loan period?",
+        answer:
+          "For fixed-rate loans, the EMI remains constant throughout the tenure. The composition changes — early payments go mostly toward interest, while later payments go mostly toward principal.",
+      },
+      {
+        question: "Is this EMI calculator free and private?",
+        answer:
+          "Yes. All calculations run instantly in your browser. No data is stored or transmitted — your loan figures remain on your device.",
       },
     ],
     relatedSlugs: ["loan-calculator", "mortgage-calculator", "interest-calculator"],

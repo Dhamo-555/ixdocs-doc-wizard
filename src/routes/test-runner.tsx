@@ -12,11 +12,22 @@ interface TestResult {
   details?: string;
 }
 
+function DevOnlyPlaceholder() {
+  return (
+    <div className="mx-auto max-w-4xl px-4 py-16 text-center">
+      <h1 className="text-2xl font-bold tracking-tight text-foreground">Page Not Found</h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        This tool is only available in local development environments.
+      </p>
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/test-runner")({
   head: () => ({
     meta: [{ name: "robots", content: "noindex, nofollow" }],
   }),
-  component: TestRunnerPage,
+  component: import.meta.env.DEV ? TestRunnerPage : DevOnlyPlaceholder,
 });
 
 function TestRunnerPage() {
