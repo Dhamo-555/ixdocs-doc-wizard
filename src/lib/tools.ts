@@ -2479,6 +2479,239 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     related: ["pdf-to-png", "pdf-to-jpg", "jpg-to-pdf", "document-scanner"],
   },
+  {
+    slug: "redact-pdf",
+    name: "Redact PDF",
+    metaTitle: "Redact PDF — Black Out Sensitive Text & Images Online | IXDocs",
+    metaDescription:
+      "Redact sensitive text, names, and numbers in PDF documents entirely in your browser. Draw redaction boxes, then download a clean, permanently sanitized copy. Free on IXDocs.",
+    short: "Permanently black out sensitive text, names, and numbers in your PDF.",
+    intro:
+      "Permanently redact private information from PDF documents. Draw blackout boxes over sensitive text, numbers, or images and download a sanitized document that cannot be un-redacted.",
+    category: "Privacy",
+    icon: ShieldCheck,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF files (.pdf)",
+    multiple: false,
+    pageMode: "none",
+    options: [],
+    actionLabel: "Apply Redactions",
+    steps: [
+      "Upload your PDF document to the secure editor.",
+      "Navigate to the page containing sensitive information.",
+      "Draw blackout boxes over names, numbers, account details, or images.",
+      "Click Apply Redactions to permanently sanitize the document and download.",
+    ],
+    faqs: [
+      {
+        q: "Is redaction permanent and irreversible?",
+        a: "Yes. IXDocs permanently replaces redacted regions with opaque black pixels during local page rasterisation. Vector text, underlying font glyphs, and hidden object streams are destroyed on affected pages, ensuring no text can be highlighted, selected, or recovered.",
+      },
+      {
+        q: "Are my documents uploaded to a server to be redacted?",
+        a: "No. All redaction and raster rendering happens 100% inside your web browser using client-side JavaScript and the HTML5 Canvas API. Your file never leaves your computer.",
+      },
+      {
+        q: "Does this also clean hidden metadata from the PDF?",
+        a: "Redacting pages removes visual content from the document pages. To also remove author names, software stamps, creation timestamps, and revision histories, we recommend running your file through our PDF Metadata Cleaner as an additional privacy step.",
+      },
+      {
+        q: "Can someone select and copy text underneath the black boxes?",
+        a: "No. Unlike amateur tools that simply place a visual black shape over live selectable text, IXDocs bakes the redaction boxes into flat image pixels. There is no selectable text layer beneath the redacted areas.",
+      },
+      {
+        q: "Is this redaction tool free to use?",
+        a: "Yes. IXDocs Redact PDF is completely free with no account registration, no page limits, and no watermarks.",
+      },
+    ],
+    about:
+      "Redacting sensitive data from PDF files is a critical security and compliance requirement for legal filings, medical documentation, financial audits, and government submissions. Many casual PDF editors merely place a black rectangle annotation over vector text, leaving the underlying words accessible to anyone who selects, copies, or inspects the file stream. IXDocs Redact PDF eliminates this vulnerability by completely rasterising redacted pages and painting opaque black pixel barriers directly onto the image canvas before building the final PDF.\n\nBecause the entire process executes locally in your browser using modern WebAssembly and canvas primitives, your private records, personal identification numbers, and confidential client data are never uploaded to third-party servers. Your original source file remains completely untouched on your device, while the downloaded output contains a clean, permanent redaction record ready for public distribution or archival compliance. Note that page-level redaction sterilizes visual and vector contents on targeted pages; for total stripping of document-level metadata, revision tags, and hidden author properties across all pages, pair this tool with our PDF Metadata Cleaner.",
+    related: ["pdf-metadata-cleaner", "flatten-pdf", "pdf-ocr", "sign-pdf"],
+  },
+  {
+    slug: "split-pdf-by-size",
+    name: "Split PDF by Size",
+    metaTitle: "Split PDF by File Size — Divide PDF into Smaller Parts | IXDocs",
+    metaDescription:
+      "Split a large PDF into smaller files under a target size limit — perfect for email attachments. Works entirely in your browser. Free on IXDocs.",
+    short: "Split large PDF files into parts that stay under a target size in megabytes.",
+    intro:
+      "Split large PDF files into multiple smaller documents that each stay below your chosen target size limit. Ideal for email attachment limits and portal upload restrictions.",
+    category: "Organize",
+    icon: Scissors,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF files (.pdf)",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "target",
+        label: "Target size per part",
+        type: "select",
+        default: "2",
+        choices: [
+          { value: "1", label: "1 MB (Email safe)" },
+          { value: "2", label: "2 MB (Government / portal limit)" },
+          { value: "5", label: "5 MB (Standard upload cap)" },
+          { value: "10", label: "10 MB (Large attachment)" },
+          { value: "custom", label: "Custom MB" },
+        ],
+      },
+      {
+        key: "customMb",
+        label: "Custom size limit (MB)",
+        type: "number",
+        default: 2,
+        min: 0.1,
+        max: 50,
+        step: 0.5,
+        showIf: { key: "target", value: "custom" },
+        help: "Enter target size in megabytes for each split part.",
+      },
+    ],
+    actionLabel: "Split by Size",
+    steps: [
+      "Upload the PDF document you want to divide.",
+      "Select your target file size per part (e.g., 2 MB for portal uploads).",
+      "Click Split by Size to calculate page splits and generate individual parts.",
+      "Download individual parts or use Download All to save every part.",
+    ],
+    faqs: [
+      {
+        q: "How does Split PDF by Size determine where to split pages?",
+        a: "The tool sequentially accumulates pages into an output part and measures actual serialised byte size. Just before adding a page would push the file over your target limit, it closes that part and begins the next part with the new page.",
+      },
+      {
+        q: "Can a single page be larger than my target size?",
+        a: "Yes. If a single page with high-resolution imagery already exceeds your chosen target size, that individual page cannot be subdivided further without raster compression. If this occurs, the tool will advise you to compress the PDF first or increase your target size.",
+      },
+      {
+        q: "Are my files uploaded to a remote server?",
+        a: "No. The entire analysis, page extraction, and file packaging take place locally inside your browser. No document data is ever sent to IXDocs or external servers.",
+      },
+      {
+        q: "How are the output files named?",
+        a: "Each generated file is named with the original document title followed by part numbers (for example, document-part-1.pdf, document-part-2.pdf) so you can easily identify the sequence.",
+      },
+      {
+        q: "Is there a limit on how many parts can be created?",
+        a: "No. You can split documents with dozens or hundreds of pages into as many parts as needed to satisfy your upload or email requirements.",
+      },
+    ],
+    about:
+      "When sending multi-page reports, scanned records, or presentation decks via email or submission portals, strict file-size limits (such as 2 MB, 5 MB, or 10 MB) frequently prevent successful delivery. Manually guessing page ranges to produce small enough chunks is tedious and unreliable because different pages contain wildly different amounts of image and text data. IXDocs Split PDF by Size automates this process by measuring actual serialised PDF output sizes page by page.\n\nOur intelligent accumulation engine packs as many consecutive pages as possible into each part while guaranteeing that each generated document respects your target byte threshold. Every split part remains a completely valid, standalone PDF with preserved bookmarks, fonts, and page orientation. Because all calculations and file operations run directly in your browser session, large documents are processed rapidly without bandwidth bottlenecks or cloud storage exposure. Keep in mind that individual pages containing extremely heavy high-resolution images cannot be divided below their intrinsic page size; compressing the document first can help achieve tighter target limits.",
+    related: ["split-pdf", "compress-pdf", "compress-pdf-to-target-size", "merge-pdf"],
+  },
+  {
+    slug: "add-header-footer-pdf",
+    name: "Add Header & Footer to PDF",
+    metaTitle: "Add Header & Footer to PDF — Insert Text on Every Page Online | IXDocs",
+    metaDescription:
+      "Add custom header and footer text to every page of a PDF in your browser. Choose font size, position, and content. Free document tool by IXDocs.",
+    short: "Add custom header and footer text, dates, and page numbering to your PDF.",
+    intro:
+      "Add professional header and footer text to every page of your PDF document. Include dynamic page numbers, dates, titles, or confidentiality notices with customizable alignment and font sizing.",
+    category: "Edit PDF",
+    icon: Type,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF files (.pdf)",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "headerText",
+        label: "Header text",
+        type: "text",
+        default: "",
+        help: "Text at the top of each page. Use {page} for page number and {date} for today's date.",
+      },
+      {
+        key: "headerPosition",
+        label: "Header alignment",
+        type: "select",
+        default: "center",
+        choices: [
+          { value: "left", label: "Left aligned" },
+          { value: "center", label: "Center aligned" },
+          { value: "right", label: "Right aligned" },
+        ],
+      },
+      {
+        key: "footerText",
+        label: "Footer text",
+        type: "text",
+        default: "Page {page}",
+        help: "Text at the bottom of each page. Use {page} for page number and {date} for today's date.",
+      },
+      {
+        key: "footerPosition",
+        label: "Footer alignment",
+        type: "select",
+        default: "center",
+        choices: [
+          { value: "left", label: "Left aligned" },
+          { value: "center", label: "Center aligned" },
+          { value: "right", label: "Right aligned" },
+        ],
+      },
+      {
+        key: "fontSize",
+        label: "Font size (pt)",
+        type: "select",
+        default: "10",
+        choices: [
+          { value: "8", label: "8 pt (Small)" },
+          { value: "10", label: "10 pt (Standard)" },
+          { value: "12", label: "12 pt (Medium)" },
+          { value: "14", label: "14 pt (Large)" },
+        ],
+      },
+      {
+        key: "startPage",
+        label: "Start numbering at",
+        type: "number",
+        default: 1,
+        min: 1,
+        max: 9999,
+        help: "The initial number to use for the {page} token.",
+      },
+    ],
+    actionLabel: "Apply Header & Footer",
+    steps: [
+      "Upload your PDF document.",
+      "Enter header and/or footer text, using {page} and {date} tokens as desired.",
+      "Choose font size and alignment (left, center, or right).",
+      "Click Apply Header & Footer and download your updated PDF.",
+    ],
+    faqs: [
+      {
+        q: "What dynamic tokens can I use in headers and footers?",
+        a: "You can use {page} to automatically insert the sequential page number on each sheet, and {date} to insert the current date formatted according to your locale. You can combine these tokens with any custom text, such as 'Confidential — Page {page}' or 'Draft — {date}'.",
+      },
+      {
+        q: "Can I add only a header or only a footer?",
+        a: "Yes. If you only want a header, leave the footer text field empty. If you only want a footer (such as a page number), leave the header text field blank.",
+      },
+      {
+        q: "Does adding headers or footers alter the existing text in my PDF?",
+        a: "No. Header and footer labels are drawn onto a new text layer positioned in the document margins. The underlying content, layout, graphics, and text streams remain completely intact.",
+      },
+      {
+        q: "Are my PDF files processed confidentially?",
+        a: "Yes. All font embedding, text positioning, and PDF generation occur directly inside your browser. No files are uploaded to an external server or saved in the cloud.",
+      },
+      {
+        q: "What font is used for headers and footers?",
+        a: "The tool embeds standard Helvetica typography to ensure universal compatibility and clean readability across all PDF viewers, operating systems, and commercial printers.",
+      },
+    ],
+    about:
+      "Adding formal headers and footers transforms informal drafts and raw exports into polished, production-ready documentation suitable for business, legal, and educational distribution. Whether inserting confidentiality disclaimers, document revision numbers, date stamps, or standard page numbering, headers and footers provide critical orienting context for readers and archiving systems. IXDocs Add Header & Footer provides intuitive control over margin typography without requiring heavyweight desktop publishing suites or subscription software.\n\nOur client-side engine embeds high-legibility Helvetica typography directly into your document structure while dynamically evaluating tokens such as {page} and {date}. Margins and alignment coordinates are calculated precisely against each page's native dimensions, ensuring uniform appearance across mixed portrait and landscape documents. Because processing takes place entirely within your browser sandbox, sensitive contracts, academic transcripts, and internal memos remain strictly confidential on your machine. You can effortlessly combine custom headers on top with numbered footers below, tailoring margins, alignments, and font sizes to your organization's exact document standards.",
+    related: ["pdf-page-numbering", "watermark-pdf", "annotate-pdf", "add-text-to-pdf"],
+  },
 ];
 
 export const TOOLS: Tool[] = ALL_TOOLS.filter((t) => t.ready !== false);
@@ -2751,6 +2984,38 @@ const SEARCH_ALIASES: Record<string, string[]> = {
     "text to qr code",
     "barcode",
     "link to qr",
+  ],
+  "redact-pdf": [
+    "redact",
+    "redaction",
+    "black out",
+    "blackout",
+    "censor",
+    "sanitize",
+    "mask",
+    "remove sensitive",
+    "privacy",
+    "hide text",
+  ],
+  "split-pdf-by-size": [
+    "split by size",
+    "split mb",
+    "divide pdf",
+    "split into parts",
+    "split for email",
+    "reduce parts",
+    "size split",
+  ],
+  "add-header-footer-pdf": [
+    "header",
+    "footer",
+    "add header",
+    "add footer",
+    "page header",
+    "running head",
+    "bates",
+    "title",
+    "confidential header",
   ],
 };
 

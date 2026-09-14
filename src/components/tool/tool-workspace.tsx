@@ -319,6 +319,8 @@ type Phase = "idle" | "ready" | "processing" | "done" | "error";
 interface Thumb {
   page: number;
   url: string;
+  width?: number;
+  height?: number;
 }
 
 export function ToolWorkspace({ tool }: { tool: Tool }) {
@@ -346,6 +348,16 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   // Active page index in the editor preview (1-indexed)
   const [editorPage, setEditorPage] = useState(1);
 
+  // Dynamic preview aspect ratio and dimensions preserving page geometry (portrait/landscape)
+  const currentThumb = thumbs[editorPage - 1];
+  const pageAspect =
+    currentThumb?.width && currentThumb?.height
+      ? currentThumb.width / currentThumb.height
+      : 3 / 4;
+  const isLandscapePage = pageAspect > 1;
+  const previewWidth = isLandscapePage ? 560 : Math.round(560 * pageAspect);
+  const previewHeight = isLandscapePage ? Math.round(560 / pageAspect) : 560;
+
   // Sign PDF states
   const [sigX, setSigX] = useState(70); // percentage (0 - 100)
   const [sigY, setSigY] = useState(15); // percentage (0 - 100)
@@ -355,10 +367,10 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   const [sigColor, setSigColor] = useState("#000080");
   const [drawCanvasData, setDrawCanvasData] = useState<string | null>(null);
 
-  // Annotate PDF states
+  // Annotate / Redact PDF states
   const [annotTool, setAnnotTool] = useState<"pen" | "highlighter" | "text">("pen");
   const [annotColor, setAnnotColor] = useState("#ff0000"); // Red default
-  const [annotWidth, setAnnotWidth] = useState(6);
+  const [annotWidth, setAnnotWidth] = useState(tool.slug === "redact-pdf" ? 20 : 6);
   const [annotationsMap, setAnnotationsMap] = useState<Record<number, string>>({}); // page -> base64 PNG data
   const [annotText, setAnnotText] = useState("Approved");
 
@@ -402,9 +414,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     }
   }, [sigColor, signatureType, tool.slug]);
 
-  // Synchronize Annotate PDF drawing canvas dimensions and previous annotations
+  // Synchronize Annotate / Redact PDF drawing canvas dimensions and previous annotations
   useEffect(() => {
-    if (tool.slug !== "annotate-pdf") return;
+    if (tool.slug !== "annotate-pdf" && tool.slug !== "redact-pdf") return;
     const canvas = annotCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -418,7 +430,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
       };
       img.src = existing;
     }
-  }, [editorPage, annotationsMap, tool.slug]);
+  }, [editorPage, annotationsMap, tool.slug, previewWidth, previewHeight]);
 
   const startSigDraw = (
     e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
@@ -489,25 +501,39 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     if (!ctx) return;
     isDrawingAnnot.current = true;
     const rect = canvas.getBoundingClientRect();
-    const x =
+    const scaleX = rect.width ? canvas.width / rect.width : 1;
+    const scaleY = rect.height ? canvas.height / rect.height : 1;
+    const clientX =
       "touches" in e && e.touches[0]
-        ? e.touches[0].clientX - rect.left
+        ? e.touches[0].clientX
         : "clientX" in e
-          ? e.clientX - rect.left
+          ? e.clientX
           : 0;
-    const y =
+    const clientY =
       "touches" in e && e.touches[0]
-        ? e.touches[0].clientY - rect.top
+        ? e.touches[0].clientY
         : "clientY" in e
-          ? e.clientY - rect.top
+          ? e.clientY
           : 0;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.strokeStyle = annotTool === "highlighter" ? "rgba(255, 235, 59, 0.45)" : annotColor;
-    ctx.lineWidth = annotTool === "highlighter" ? annotWidth * 2 : annotWidth;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    ctx.strokeStyle =
+      tool.slug === "redact-pdf"
+        ? "#000000"
+        : annotTool === "highlighter"
+          ? "rgba(255, 235, 59, 0.45)"
+          : annotColor;
+    ctx.lineWidth =
+      tool.slug === "redact-pdf"
+        ? annotWidth
+        : annotTool === "highlighter"
+          ? annotWidth * 2
+          : annotWidth;
+    ctx.lineCap = tool.slug === "redact-pdf" ? "square" : "round";
+    ctx.lineJoin = tool.slug === "redact-pdf" ? "miter" : "round";
   };
 
   const drawAnnot = (
@@ -519,18 +545,22 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
-    const x =
+    const scaleX = rect.width ? canvas.width / rect.width : 1;
+    const scaleY = rect.height ? canvas.height / rect.height : 1;
+    const clientX =
       "touches" in e && e.touches[0]
-        ? e.touches[0].clientX - rect.left
+        ? e.touches[0].clientX
         : "clientX" in e
-          ? e.clientX - rect.left
+          ? e.clientX
           : 0;
-    const y =
+    const clientY =
       "touches" in e && e.touches[0]
-        ? e.touches[0].clientY - rect.top
+        ? e.touches[0].clientY
         : "clientY" in e
-          ? e.clientY - rect.top
+          ? e.clientY
           : 0;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -575,8 +605,10 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const scaleX = rect.width ? canvas.width / rect.width : 1;
+    const scaleY = rect.height ? canvas.height / rect.height : 1;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
 
     ctx.fillStyle = annotColor;
     ctx.font = `bold ${annotWidth * 2.5}px sans-serif`;
@@ -660,7 +692,10 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     let cancelled = false;
     const file = files[0];
     const isEditorTool =
-      tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf";
+      tool.slug === "sign-pdf" ||
+      tool.slug === "annotate-pdf" ||
+      tool.slug === "crop-pdf" ||
+      tool.slug === "redact-pdf";
     const wantsThumbs = (tool.pageMode && tool.pageMode !== "none") || isEditorTool;
     if (!file || !wantsThumbs || !file.type.includes("pdf")) {
       setThumbs([]);
@@ -674,7 +709,12 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
         for (let i = 1; i <= limit; i++) {
           const canvas = await renderPageToCanvas(doc, i, 0.28);
           if (cancelled) return;
-          pages.push({ page: i, url: canvas.toDataURL("image/jpeg", 0.6) });
+          pages.push({
+            page: i,
+            url: canvas.toDataURL("image/jpeg", 0.6),
+            width: canvas.width,
+            height: canvas.height,
+          });
           setThumbs([...pages]);
         }
         if (!cancelled) {
@@ -985,6 +1025,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                   "sign-pdf",
                   "watermark-pdf",
                   "password-protect-pdf",
+                  "redact-pdf",
                 ].includes(tool.slug)
                   ? "special"
                   : "pdf"
@@ -1173,7 +1214,10 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
 
           {/* Interactive Document Editor Viewport */}
           {thumbs.length &&
-          (tool.slug === "sign-pdf" || tool.slug === "annotate-pdf" || tool.slug === "crop-pdf") ? (
+          (tool.slug === "sign-pdf" ||
+            tool.slug === "annotate-pdf" ||
+            tool.slug === "crop-pdf" ||
+            tool.slug === "redact-pdf") ? (
             <div className="rounded-2xl border border-border bg-surface/50 p-4 sm:p-6 mb-6">
               <h3 className="text-base font-semibold mb-4">Interactive Page Editor</h3>
 
@@ -1209,15 +1253,18 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                   <div
                     onClick={handlePageClick}
                     className={cn(
-                      "relative border border-border shadow-md rounded-lg overflow-hidden bg-white max-w-full select-none",
+                      "relative border border-border shadow-md rounded-lg overflow-hidden bg-white max-w-full select-none mx-auto",
                       tool.slug === "sign-pdf" && "cursor-crosshair",
                     )}
-                    style={{ width: "420px", height: "560px" }}
+                    style={{
+                      width: `${previewWidth}px`,
+                      aspectRatio: `${previewWidth} / ${previewHeight}`,
+                    }}
                   >
                     <img
                       src={thumbs[editorPage - 1]?.url}
                       alt={`Page ${editorPage}`}
-                      className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                      className="absolute inset-0 w-full h-full object-contain pointer-events-none"
                     />
 
                     {/* Sign PDF Overlay */}
@@ -1239,12 +1286,12 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                       />
                     ) : null}
 
-                    {/* Annotate PDF Overlay Canvas */}
-                    {tool.slug === "annotate-pdf" ? (
+                    {/* Annotate / Redact PDF Overlay Canvas */}
+                    {tool.slug === "annotate-pdf" || tool.slug === "redact-pdf" ? (
                       <canvas
                         ref={annotCanvasRef}
-                        width={420}
-                        height={560}
+                        width={previewWidth}
+                        height={previewHeight}
                         onMouseDown={startAnnotDraw}
                         onMouseMove={drawAnnot}
                         onMouseUp={stopAnnotDraw}
@@ -1255,7 +1302,11 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                         onClick={handleCanvasClick}
                         className={cn(
                           "absolute inset-0 w-full h-full",
-                          annotTool === "text" ? "cursor-text" : "cursor-crosshair",
+                          tool.slug === "redact-pdf"
+                            ? "cursor-crosshair"
+                            : annotTool === "text"
+                              ? "cursor-text"
+                              : "cursor-crosshair",
                         )}
                       />
                     ) : null}
@@ -1480,6 +1531,56 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                         onClick={clearAnnotPage}
                       >
                         <Eraser className="size-4 mr-1.5" /> Clear Annotations on Page {editorPage}
+                      </Button>
+                    </>
+                  ) : null}
+
+                  {tool.slug === "redact-pdf" ? (
+                    <>
+                      <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground leading-relaxed">
+                        <strong className="text-foreground block font-semibold mb-1">
+                          Permanent Client-Side Redaction
+                        </strong>
+                        Draw solid black bars over sensitive names, account numbers, or text.
+                        During processing, the page is rasterised so underlying vector text is
+                        permanently destroyed.
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs font-semibold">
+                          <span>Blackout Brush Size</span>
+                          <span>{annotWidth || 20}px</span>
+                        </div>
+                        <div className="flex gap-2">
+                          {[12, 20, 32, 48].map((size) => (
+                            <Button
+                              key={size}
+                              type="button"
+                              variant={annotWidth === size ? "default" : "outline"}
+                              size="sm"
+                              className="flex-1"
+                              onClick={() => setAnnotWidth(size)}
+                            >
+                              {size}px
+                            </Button>
+                          ))}
+                        </div>
+                        <Slider
+                          value={[annotWidth || 20]}
+                          min={6}
+                          max={60}
+                          step={2}
+                          onValueChange={(val) => setAnnotWidth(val[0] || 20)}
+                          className="mt-2"
+                        />
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        className="mt-2 border-destructive/30 hover:border-destructive text-destructive min-h-11"
+                        onClick={clearAnnotPage}
+                      >
+                        <Eraser className="size-4 mr-1.5" /> Clear Redactions on Page {editorPage}
                       </Button>
                     </>
                   ) : null}

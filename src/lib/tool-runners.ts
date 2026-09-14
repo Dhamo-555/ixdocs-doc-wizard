@@ -1852,7 +1852,377 @@ const editPdf: Runner = async (ctx) => {
   };
 };
 
+/* --------------------------------------------------------------- Redact PDF */
+
+/**
+ * Permanently redacts selected rectangular regions from a PDF.
+ *
+ * Security approach: affected pages are fully rasterised via pdf.js canvas
+ * rendering. Black rectangles are painted onto the canvas pixels BEFORE the
+ * canvas is encoded as JPEG and embedded into the output PDF. This means the
+ * original vector text/image data is NOT present in the affected page — it has
+ * been replaced by a flat image that contains only the post-redaction pixels.
+ * No eval(), no new Function(), no external service.
+ *
+ * ctx.options["redactions"] must be a JSON string representing:
+ *   Array<{ page: number; rects: Array<{ x: number; y: number; w: number; h: number }> }>
+ * where coordinates are in canvas-pixel space at the renderScale used during
+ * the interactive preview, and page is 1-based.
+ */
+const redactPdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+
+  // Parse the redaction map passed from the UI if present.
+  const redactionMap: Record<number, Array<{ x: number; y: number; w: number; h: number }>> = {};
+  try {
+    const raw = ctx.options["redactions"];
+    if (raw && typeof raw === "string") {
+      const parsed = JSON.parse(raw) as Array<{
+        page: number;
+        rects: Array<{ x: number; y: number; w: number; h: number }>;
+      }>;
+      for (const item of parsed) {
+        if (item.rects && item.rects.length > 0) {
+          redactionMap[item.page] = item.rects;
+        }
+      }
+    }
+  } catch {
+    // Ignore parse errors; fall back to annotationsMap
+  }
+
+  // Also support interactive canvas annotationsMap from ToolWorkspace
+  const annotationsMap = (ctx.options["annotationsMap"] as Record<number, string>) || {};
+  const hasAnnotations = Object.keys(annotationsMap).length > 0;
+  const hasRects = Object.keys(redactionMap).length > 0;
+
+  if (!hasRects && !hasAnnotations) {
+    throw new ToolError(
+      "No redaction areas were selected. Use the blackout brush or draw redaction boxes on at least one page before processing."
+    );
+  }
+
+  // The render scale used by the preview canvas — must match what the UI uses.
+  const renderScale = num(ctx.options["renderScale"], 2);
+
+  const { PDFDocument } = await import("pdf-lib");
+  const src = await openRenderDoc(file);
+  const out = await PDFDocument.create();
+  const totalPages = src.numPages;
+  let affectedPages = 0;
+
+  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+    // Render every page to a canvas — rasterisation is the guarantee of
+    // permanent redaction; we cannot trust overlay-only approaches.
+    const canvas = await renderPageToCanvas(src, pageNum, renderScale);
+    const cctx = canvas.getContext("2d");
+    if (!cctx) throw new ToolError("Canvas context unavailable during redaction.");
+
+    let pageRedacted = false;
+
+    const rects = redactionMap[pageNum];
+    if (rects && rects.length > 0) {
+      // Paint opaque black over every selected region directly on the canvas
+      // pixels. This permanently destroys the underlying rasterised content.
+      cctx.fillStyle = "#000000";
+      for (const r of rects) {
+        cctx.fillRect(Math.floor(r.x), Math.floor(r.y), Math.ceil(r.w), Math.ceil(r.h));
+      }
+      pageRedacted = true;
+    }
+
+    const annotDataUrl = annotationsMap[pageNum];
+    if (annotDataUrl && typeof annotDataUrl === "string") {
+      const imgEl = new Image();
+      imgEl.src = annotDataUrl;
+      if (!imgEl.complete) {
+        await new Promise<void>((resolve, reject) => {
+          imgEl.onload = () => resolve();
+          imgEl.onerror = reject;
+        });
+      }
+      cctx.drawImage(imgEl, 0, 0, canvas.width, canvas.height);
+      pageRedacted = true;
+    }
+
+    if (pageRedacted) {
+      affectedPages++;
+    }
+
+    // Encode the (potentially redacted) canvas as JPEG and embed it.
+    const blob = await canvasToBlob(canvas, "image/jpeg", 0.88);
+    const img = await out.embedJpg(await blob.arrayBuffer());
+    // Create a new page at the canvas pixel dimensions — this preserves aspect
+    // ratio and prevents any pdf-lib coordinate-mapping confusion.
+    const page = out.addPage([img.width, img.height]);
+    page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+
+    ctx.onProgress(pageNum / totalPages);
+  }
+
+  const bytes = await out.save({ useObjectStreams: true });
+  const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
+  const outFile: OutputFile = {
+    name: `${baseName(file.name)}-redacted.pdf`,
+    blob,
+    size: blob.size,
+    kind: "pdf",
+  };
+
+  return {
+    outputs: [outFile],
+    stats: [
+      { label: "Pages redacted", value: `${affectedPages} of ${totalPages}`, tone: "success" },
+      { label: "Security", value: "Permanent raster overwrite", tone: "success" },
+      { label: "Total pages", value: String(totalPages) },
+      { label: "Output size", value: formatBytes(outFile.size) },
+    ],
+    message:
+      "Redaction permanently removes the selected content from the downloaded PDF. Your original file remains unchanged on your device. To also remove hidden metadata, run the PDF Metadata Cleaner next.",
+  };
+};
+
+/* -------------------------------------------------------- Split PDF by Size */
+
+/**
+ * Splits a PDF into parts where each part's serialized size is at or below the
+ * requested byte limit.
+ *
+ * Algorithm: greedy page accumulation with accurate size measurement.
+ * After each page is added to the current part, we serialise it and measure the
+ * resulting Blob size. When adding the next page would exceed the limit, we
+ * flush the current part and start a new one.
+ *
+ * This approach is O(n * saveDoc) but is the only way to guarantee accuracy
+ * because PDF serialisation overhead (object streams, xref tables, compression)
+ * is document-dependent and cannot be reliably estimated from source bytes alone.
+ */
+const splitPdfBySize: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+
+  const targetOption = str(ctx.options["target"], "2");
+  const targetMb =
+    targetOption === "custom" ? num(ctx.options["customMb"], 2) : num(targetOption, 2);
+
+  if (!Number.isFinite(targetMb) || targetMb <= 0) {
+    throw new ToolError("Enter a positive target size.");
+  }
+  const targetBytes = targetMb * 1024 * 1024;
+
+  const { PDFDocument } = await import("pdf-lib");
+  const src = await loadPdfDoc(file);
+  const totalPages = src.getPageCount();
+
+  if (totalPages === 0) throw new ToolError("This PDF has no pages.");
+
+  // Test whether even a single page exceeds the limit.
+  const singleTest = await PDFDocument.create();
+  const [firstPage] = await singleTest.copyPages(src, [0]);
+  singleTest.addPage(firstPage!);
+  const singleBytes = (await singleTest.save({ useObjectStreams: true })).length;
+
+  if (singleBytes > targetBytes) {
+    throw new ToolError(
+      `A single page of this document serialises to approximately ${formatBytes(singleBytes)}, which already exceeds your ${formatBytes(targetBytes)} limit. Try compressing the PDF first, or raise the target size.`
+    );
+  }
+
+  // If the whole file fits inside the limit, return it as-is.
+  if (file.size <= targetBytes) {
+    return {
+      outputs: [{ name: file.name, blob: file, size: file.size, kind: "pdf" }],
+      stats: [
+        { label: "Result", value: "Document already fits within the target size", tone: "success" },
+        { label: "File size", value: formatBytes(file.size) },
+        { label: "Target", value: formatBytes(targetBytes) },
+      ],
+      message: `This document (${formatBytes(file.size)}) is already smaller than your ${formatBytes(targetBytes)} target — no splitting needed.`,
+    };
+  }
+
+  const outputs: OutputFile[] = [];
+  let partDoc = await PDFDocument.create();
+  let partPageCount = 0;
+  let partIndex = 1;
+
+  const flushPart = async () => {
+    if (partPageCount === 0) return;
+    const bytes = await partDoc.save({ useObjectStreams: true });
+    const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
+    outputs.push({
+      name: `${baseName(file.name)}-part-${partIndex}.pdf`,
+      blob,
+      size: blob.size,
+      kind: "pdf",
+    });
+    partIndex++;
+    partDoc = await PDFDocument.create();
+    partPageCount = 0;
+  };
+
+  for (let i = 0; i < totalPages; i++) {
+    // We build a fresh candidate doc with the new page to check size.
+    const testDoc = await PDFDocument.create();
+    if (partPageCount > 0) {
+      // Re-add current part pages.
+      const currentBytes = await partDoc.save({ useObjectStreams: true });
+      const currentSrc = await PDFDocument.load(currentBytes, { updateMetadata: false });
+      const copied = await testDoc.copyPages(currentSrc, currentSrc.getPageIndices());
+      copied.forEach((p) => testDoc.addPage(p));
+    }
+    const [newPage] = await testDoc.copyPages(src, [i]);
+    testDoc.addPage(newPage!);
+
+    const testBytes = (await testDoc.save({ useObjectStreams: true })).length;
+
+    if (testBytes > targetBytes && partPageCount > 0) {
+      // Flush current part before adding this page.
+      await flushPart();
+      // Start a new part with just this page.
+      const [freshPage] = await partDoc.copyPages(src, [i]);
+      partDoc.addPage(freshPage!);
+      partPageCount = 1;
+    } else {
+      // Accept the test doc as our current part.
+      partDoc = testDoc;
+      partPageCount++;
+    }
+
+    ctx.onProgress((i + 1) / totalPages, `Processing page ${i + 1} of ${totalPages}`);
+  }
+
+  // Flush the last part.
+  await flushPart();
+
+  const largestPart = Math.max(...outputs.map((o) => o.size));
+  const allMeetTarget = outputs.every((o) => o.size <= targetBytes);
+
+  return {
+    outputs,
+    partial: !allMeetTarget,
+    stats: [
+      { label: "Original file", value: formatBytes(file.size) },
+      { label: "Target per part", value: formatBytes(targetBytes) },
+      { label: "Parts created", value: String(outputs.length), tone: "success" },
+      { label: "Largest part", value: formatBytes(largestPart), tone: allMeetTarget ? "success" : "warning" },
+    ],
+    message: allMeetTarget
+      ? `Split into ${outputs.length} parts. Every part is at or below ${formatBytes(targetBytes)}.`
+      : `Split into ${outputs.length} parts. Some parts may be slightly above the target due to PDF serialisation overhead. The values shown are the actual measured sizes.`,
+  };
+};
+
+/* ------------------------------------------------------- Add Header & Footer */
+
+/**
+ * Adds configurable header and/or footer text to every page of a PDF.
+ *
+ * Dynamic tokens supported (safe string replacement only — no eval):
+ *   {page}  → current page number (respects startPage option)
+ *   {date}  → today's date in locale format
+ *
+ * Never uses eval() or new Function().
+ */
+const addHeaderFooter: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const { StandardFonts, rgb } = await import("pdf-lib");
+  const doc = await loadPdfDoc(file);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+
+  const headerText = str(ctx.options["headerText"], "").trim();
+  const footerText = str(ctx.options["footerText"], "").trim();
+
+  if (!headerText && !footerText) {
+    throw new ToolError("Enter at least a header or footer text before processing.");
+  }
+
+  const headerPos = str(ctx.options["headerPosition"], "center");
+  const footerPos = str(ctx.options["footerPosition"], "center");
+  const fontSize = num(ctx.options["fontSize"], 10);
+  const startPage = Math.max(1, num(ctx.options["startPage"], 1));
+  const margin = 22; // points from the page edge
+
+  const today = new Date().toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
+  /** Safe token substitution — no dynamic code execution. */
+  function applyTokens(template: string, pageNumber: number): string {
+    return template
+      .replace(/\{page\}/g, String(pageNumber))
+      .replace(/\{date\}/g, today);
+  }
+
+  function calcX(
+    textStr: string,
+    position: string,
+    pageWidth: number
+  ): number {
+    const textWidth = font.widthOfTextAtSize(textStr, fontSize);
+    if (position === "left") return margin;
+    if (position === "right") return Math.max(margin, pageWidth - margin - textWidth);
+    // center
+    return Math.max(margin, (pageWidth - textWidth) / 2);
+  }
+
+  const pages = doc.getPages();
+  const pageCount = pages.length;
+
+  pages.forEach((page, idx) => {
+    const pageNumber = startPage + idx;
+    const { width: pW, height: pH } = page.getSize();
+
+    if (headerText) {
+      const resolved = applyTokens(headerText, pageNumber);
+      const x = calcX(resolved, headerPos, pW);
+      const y = pH - margin - fontSize; // near top of page
+      page.drawText(resolved, {
+        x,
+        y,
+        size: fontSize,
+        font,
+        color: rgb(0.15, 0.18, 0.25),
+      });
+    }
+
+    if (footerText) {
+      const resolved = applyTokens(footerText, pageNumber);
+      const x = calcX(resolved, footerPos, pW);
+      const y = margin; // near bottom of page
+      page.drawText(resolved, {
+        x,
+        y,
+        size: fontSize,
+        font,
+        color: rgb(0.15, 0.18, 0.25),
+      });
+    }
+  });
+
+  ctx.onProgress(1);
+  const out = await saveDoc(doc, `${baseName(file.name)}-headerfooter.pdf`);
+
+  const applied = [];
+  if (headerText) applied.push(`header "${headerText}"`);
+  if (footerText) applied.push(`footer "${footerText}"`);
+
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Pages processed", value: String(pageCount), tone: "success" as const },
+      ...(headerText ? [{ label: "Header", value: `"${headerText}" (${headerPos})` }] : []),
+      ...(footerText ? [{ label: "Footer", value: `"${footerText}" (${footerPos})` }] : []),
+      { label: "Font size", value: `${fontSize} pt` },
+      { label: "Start number", value: String(startPage) },
+    ],
+    message: `Applied ${applied.join(" and ")} to ${pageCount} page${pageCount === 1 ? "" : "s"}.`,
+  };
+};
+
 export const RUNNERS: Record<string, Runner> = {
+
   "edit-pdf": editPdf,
   "jpg-to-pdf": jpgToPdf,
   "pdf-to-jpg": renderRunner("image/jpeg"),
@@ -1883,6 +2253,9 @@ export const RUNNERS: Record<string, Runner> = {
   "document-scanner": documentScanner,
   "smart-pdf-analyzer": smartAnalyzer,
   "pdf-ocr": pdfOcr,
+  "redact-pdf": redactPdf,
+  "split-pdf-by-size": splitPdfBySize,
+  "add-header-footer-pdf": addHeaderFooter,
 };
 
 export type { RunResult };

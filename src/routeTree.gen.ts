@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AddHeaderFooterPdfRouteImport } from './routes/add-header-footer-pdf'
 import { Route as AddTextToPdfRouteImport } from './routes/add-text-to-pdf'
 import { Route as AgeCalculatorRouteImport } from './routes/age-calculator'
 import { Route as AnnotatePdfRouteImport } from './routes/annotate-pdf'
@@ -75,6 +76,7 @@ import { Route as QrCodeGeneratorRouteImport } from './routes/qr-code-generator'
 import { Route as QrGeneratorRouteImport } from './routes/qr-generator'
 import { Route as RandomPasswordGeneratorRouteImport } from './routes/random-password-generator'
 import { Route as RatioCalculatorRouteImport } from './routes/ratio-calculator'
+import { Route as RedactPdfRouteImport } from './routes/redact-pdf'
 import { Route as ReorderPdfPagesRouteImport } from './routes/reorder-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
 import { Route as SalesTaxCalculatorRouteImport } from './routes/sales-tax-calculator'
@@ -83,6 +85,7 @@ import { Route as SignPdfRouteImport } from './routes/sign-pdf'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SmartPdfAnalyzerRouteImport } from './routes/smart-pdf-analyzer'
 import { Route as SplitPdfRouteImport } from './routes/split-pdf'
+import { Route as SplitPdfBySizeRouteImport } from './routes/split-pdf-by-size'
 import { Route as StatisticsCalculatorRouteImport } from './routes/statistics-calculator'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TestRunnerRouteImport } from './routes/test-runner'
@@ -104,6 +107,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AddHeaderFooterPdfRoute = AddHeaderFooterPdfRouteImport.update({
+  id: '/add-header-footer-pdf',
+  path: '/add-header-footer-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AddTextToPdfRoute = AddTextToPdfRouteImport.update({
@@ -427,6 +435,11 @@ const RatioCalculatorRoute = RatioCalculatorRouteImport.update({
   path: '/ratio-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedactPdfRoute = RedactPdfRouteImport.update({
+  id: '/redact-pdf',
+  path: '/redact-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReorderPdfPagesRoute = ReorderPdfPagesRouteImport.update({
   id: '/reorder-pdf-pages',
   path: '/reorder-pdf-pages',
@@ -465,6 +478,11 @@ const SmartPdfAnalyzerRoute = SmartPdfAnalyzerRouteImport.update({
 const SplitPdfRoute = SplitPdfRouteImport.update({
   id: '/split-pdf',
   path: '/split-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplitPdfBySizeRoute = SplitPdfBySizeRouteImport.update({
+  id: '/split-pdf-by-size',
+  path: '/split-pdf-by-size',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StatisticsCalculatorRoute = StatisticsCalculatorRouteImport.update({
@@ -531,6 +549,7 @@ const WordToPdfRoute = WordToPdfRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-header-footer-pdf': typeof AddHeaderFooterPdfRoute
   '/add-text-to-pdf': typeof AddTextToPdfRoute
   '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
@@ -595,6 +614,7 @@ export interface FileRoutesByFullPath {
   '/qr-generator': typeof QrGeneratorRoute
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/ratio-calculator': typeof RatioCalculatorRoute
+  '/redact-pdf': typeof RedactPdfRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
@@ -603,6 +623,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
+  '/split-pdf-by-size': typeof SplitPdfBySizeRoute
   '/statistics-calculator': typeof StatisticsCalculatorRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
@@ -619,6 +640,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-header-footer-pdf': typeof AddHeaderFooterPdfRoute
   '/add-text-to-pdf': typeof AddTextToPdfRoute
   '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
@@ -683,6 +705,7 @@ export interface FileRoutesByTo {
   '/qr-generator': typeof QrGeneratorRoute
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/ratio-calculator': typeof RatioCalculatorRoute
+  '/redact-pdf': typeof RedactPdfRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
@@ -691,6 +714,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
+  '/split-pdf-by-size': typeof SplitPdfBySizeRoute
   '/statistics-calculator': typeof StatisticsCalculatorRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
@@ -708,6 +732,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-header-footer-pdf': typeof AddHeaderFooterPdfRoute
   '/add-text-to-pdf': typeof AddTextToPdfRoute
   '/age-calculator': typeof AgeCalculatorRoute
   '/annotate-pdf': typeof AnnotatePdfRoute
@@ -772,6 +797,7 @@ export interface FileRoutesById {
   '/qr-generator': typeof QrGeneratorRoute
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/ratio-calculator': typeof RatioCalculatorRoute
+  '/redact-pdf': typeof RedactPdfRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
@@ -780,6 +806,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/smart-pdf-analyzer': typeof SmartPdfAnalyzerRoute
   '/split-pdf': typeof SplitPdfRoute
+  '/split-pdf-by-size': typeof SplitPdfBySizeRoute
   '/statistics-calculator': typeof StatisticsCalculatorRoute
   '/terms': typeof TermsRoute
   '/test-runner': typeof TestRunnerRoute
@@ -798,6 +825,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/add-header-footer-pdf'
     | '/add-text-to-pdf'
     | '/age-calculator'
     | '/annotate-pdf'
@@ -862,6 +890,7 @@ export interface FileRouteTypes {
     | '/qr-generator'
     | '/random-password-generator'
     | '/ratio-calculator'
+    | '/redact-pdf'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
@@ -870,6 +899,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
+    | '/split-pdf-by-size'
     | '/statistics-calculator'
     | '/terms'
     | '/test-runner'
@@ -886,6 +916,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/add-header-footer-pdf'
     | '/add-text-to-pdf'
     | '/age-calculator'
     | '/annotate-pdf'
@@ -950,6 +981,7 @@ export interface FileRouteTypes {
     | '/qr-generator'
     | '/random-password-generator'
     | '/ratio-calculator'
+    | '/redact-pdf'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
@@ -958,6 +990,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
+    | '/split-pdf-by-size'
     | '/statistics-calculator'
     | '/terms'
     | '/test-runner'
@@ -974,6 +1007,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/add-header-footer-pdf'
     | '/add-text-to-pdf'
     | '/age-calculator'
     | '/annotate-pdf'
@@ -1038,6 +1072,7 @@ export interface FileRouteTypes {
     | '/qr-generator'
     | '/random-password-generator'
     | '/ratio-calculator'
+    | '/redact-pdf'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
@@ -1046,6 +1081,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/smart-pdf-analyzer'
     | '/split-pdf'
+    | '/split-pdf-by-size'
     | '/statistics-calculator'
     | '/terms'
     | '/test-runner'
@@ -1063,6 +1099,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AddHeaderFooterPdfRoute: typeof AddHeaderFooterPdfRoute
   AddTextToPdfRoute: typeof AddTextToPdfRoute
   AgeCalculatorRoute: typeof AgeCalculatorRoute
   AnnotatePdfRoute: typeof AnnotatePdfRoute
@@ -1127,6 +1164,7 @@ export interface RootRouteChildren {
   QrGeneratorRoute: typeof QrGeneratorRoute
   RandomPasswordGeneratorRoute: typeof RandomPasswordGeneratorRoute
   RatioCalculatorRoute: typeof RatioCalculatorRoute
+  RedactPdfRoute: typeof RedactPdfRoute
   ReorderPdfPagesRoute: typeof ReorderPdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
   SalesTaxCalculatorRoute: typeof SalesTaxCalculatorRoute
@@ -1135,6 +1173,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SmartPdfAnalyzerRoute: typeof SmartPdfAnalyzerRoute
   SplitPdfRoute: typeof SplitPdfRoute
+  SplitPdfBySizeRoute: typeof SplitPdfBySizeRoute
   StatisticsCalculatorRoute: typeof StatisticsCalculatorRoute
   TermsRoute: typeof TermsRoute
   TestRunnerRoute: typeof TestRunnerRoute
@@ -1163,6 +1202,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/add-header-footer-pdf': {
+      id: '/add-header-footer-pdf'
+      path: '/add-header-footer-pdf'
+      fullPath: '/add-header-footer-pdf'
+      preLoaderRoute: typeof AddHeaderFooterPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/add-text-to-pdf': {
@@ -1613,6 +1659,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RatioCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/redact-pdf': {
+      id: '/redact-pdf'
+      path: '/redact-pdf'
+      fullPath: '/redact-pdf'
+      preLoaderRoute: typeof RedactPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reorder-pdf-pages': {
       id: '/reorder-pdf-pages'
       path: '/reorder-pdf-pages'
@@ -1667,6 +1720,13 @@ declare module '@tanstack/react-router' {
       path: '/split-pdf'
       fullPath: '/split-pdf'
       preLoaderRoute: typeof SplitPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/split-pdf-by-size': {
+      id: '/split-pdf-by-size'
+      path: '/split-pdf-by-size'
+      fullPath: '/split-pdf-by-size'
+      preLoaderRoute: typeof SplitPdfBySizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/statistics-calculator': {
@@ -1759,6 +1819,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AddHeaderFooterPdfRoute: AddHeaderFooterPdfRoute,
   AddTextToPdfRoute: AddTextToPdfRoute,
   AgeCalculatorRoute: AgeCalculatorRoute,
   AnnotatePdfRoute: AnnotatePdfRoute,
@@ -1823,6 +1884,7 @@ const rootRouteChildren: RootRouteChildren = {
   QrGeneratorRoute: QrGeneratorRoute,
   RandomPasswordGeneratorRoute: RandomPasswordGeneratorRoute,
   RatioCalculatorRoute: RatioCalculatorRoute,
+  RedactPdfRoute: RedactPdfRoute,
   ReorderPdfPagesRoute: ReorderPdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
   SalesTaxCalculatorRoute: SalesTaxCalculatorRoute,
@@ -1831,6 +1893,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SmartPdfAnalyzerRoute: SmartPdfAnalyzerRoute,
   SplitPdfRoute: SplitPdfRoute,
+  SplitPdfBySizeRoute: SplitPdfBySizeRoute,
   StatisticsCalculatorRoute: StatisticsCalculatorRoute,
   TermsRoute: TermsRoute,
   TestRunnerRoute: TestRunnerRoute,
