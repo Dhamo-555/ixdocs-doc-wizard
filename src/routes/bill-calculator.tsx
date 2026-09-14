@@ -179,7 +179,7 @@ function BillCalculatorPage() {
             aria-label="Breadcrumb"
             className="mb-4 flex items-center gap-1.5 text-xs text-muted-foreground"
           >
-            <Link to="/calculators" className="hover:text-foreground">
+            <Link to="/" className="hover:text-foreground">
               Calculators
             </Link>
             <ChevronRight className="size-3.5 text-muted-foreground/60" />
@@ -426,10 +426,7 @@ function BillCalculatorPage() {
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-bold text-foreground">Related Calculators</h2>
-              <Link
-                to="/calculators"
-                className="text-xs font-semibold text-emerald-600 hover:underline"
-              >
+              <Link to="/" className="text-xs font-semibold text-emerald-600 hover:underline">
                 View all
               </Link>
             </div>

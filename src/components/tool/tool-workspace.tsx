@@ -46,6 +46,7 @@ import {
 import { triggerBrowserDownload, sanitizeDownloadFilename } from "@/lib/download";
 import { PdfEditorWorkspace } from "@/components/tool/pdf-editor-workspace";
 import { QrCodeWorkspace } from "@/components/tool/qr-code-workspace";
+import { VerificationReminder } from "@/components/ui/verification-reminder";
 import { loadMonetagInPagePush, MONETAG_CONFIG } from "@/lib/monetag";
 
 /* ------------------------------------------------------------ shared cards & ad slots */
@@ -974,6 +975,22 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
               ) : null}
             </div>
           ) : null}
+
+          <div className="mt-4">
+            <VerificationReminder
+              variant={
+                [
+                  "pdf-ocr",
+                  "passport-photo",
+                  "sign-pdf",
+                  "watermark-pdf",
+                  "password-protect-pdf",
+                ].includes(tool.slug)
+                  ? "special"
+                  : "pdf"
+              }
+            />
+          </div>
 
           <div className="mt-6 flex flex-col gap-2 sm:flex-row">
             <Button variant="outline" className="min-h-12 w-full sm:w-auto" onClick={reset}>

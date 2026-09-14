@@ -5,7 +5,7 @@ import { LogoMark } from "@/components/site/logo";
 import { Button } from "@/components/ui/button";
 
 const CALC_NAV = [
-  { label: "All Calculators", to: "/calculators" },
+  { label: "All Calculators", to: "/" },
   { label: "Basic", to: "/basic-calculator" },
   { label: "Unit Converter", to: "/unit-converter" },
   { label: "Date & Age", to: "/date-calculator" },
@@ -22,7 +22,7 @@ export function CalcHeader() {
       <div className="container-page grid h-16 grid-cols-[auto_1fr_auto] items-center gap-3">
         {/* Branding */}
         <Link
-          to="/calculators"
+          to="/"
           className="group flex items-center gap-2.5"
           aria-label="IXDocs Calculator home"
         >
@@ -75,7 +75,7 @@ export function CalcHeader() {
             size="sm"
             className="hidden sm:inline-flex bg-emerald-600 hover:bg-emerald-700 text-white"
           >
-            <Link to="/calculators">Explore All</Link>
+            <Link to="/">Explore All</Link>
           </Button>
 
           {/* Mobile hamburger button */}
@@ -96,13 +96,13 @@ export function CalcHeader() {
         <div className="border-t border-border bg-background px-4 py-4 lg:hidden">
           <div className="flex flex-col gap-1">
             <Link
-              to="/calculators"
+              to="/"
               onClick={() => setOpen(false)}
               className="rounded-lg px-3 py-2 text-sm font-semibold text-foreground hover:bg-surface"
             >
               All Calculators
             </Link>
-            {CALC_NAV.filter((i) => i.to !== "/calculators").map((item) => (
+            {CALC_NAV.filter((i) => i.to !== "/").map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

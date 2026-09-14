@@ -37,6 +37,7 @@ import {
 } from "@/lib/pdf-engine";
 import { RUNNERS } from "@/lib/tool-runners";
 import { triggerPdfDownload } from "@/lib/download";
+import { VerificationReminder } from "@/components/ui/verification-reminder";
 
 export type EditorTool =
   "select" | "addText" | "removeText" | "image" | "pen" | "highlighter" | "rectangle" | "line";
@@ -1488,6 +1489,12 @@ export function PdfEditorWorkspace({ file, onReset }: PdfEditorWorkspaceProps) {
           </Button>
         </div>
       </div>
+
+      {downloadSuccess ? (
+        <div className="flex justify-end pt-1">
+          <VerificationReminder variant="pdf" align="right" />
+        </div>
+      ) : null}
 
       {/* EXPORT ACTION STATUS */}
       {exportError ? (

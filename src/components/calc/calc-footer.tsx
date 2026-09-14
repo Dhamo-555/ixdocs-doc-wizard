@@ -142,7 +142,7 @@ export function CalcFooter() {
               IXDocs PDF Tools
             </a>
             <span>·</span>
-            <Link to="/calculators" className="hover:text-foreground">
+            <Link to="/" className="hover:text-foreground">
               All 32 Calculators
             </Link>
           </div>

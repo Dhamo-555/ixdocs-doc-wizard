@@ -11,6 +11,7 @@ import {
 import type { CalculatorMeta } from "@/lib/calculators";
 import { getRelatedCalculators } from "@/lib/calculators";
 import { CalcCard } from "./calc-card";
+import { VerificationReminder } from "@/components/ui/verification-reminder";
 
 export interface CalcPageLayoutProps {
   calc: CalculatorMeta;
@@ -31,7 +32,7 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
             aria-label="Breadcrumb"
             className="mb-4 flex items-center gap-1.5 text-xs text-muted-foreground"
           >
-            <Link to="/calculators" className="hover:text-foreground">
+            <Link to="/" className="hover:text-foreground">
               Calculators
             </Link>
             <ChevronRight className="size-3.5 text-muted-foreground/60" />
@@ -72,6 +73,10 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
           {/* The interactive tool workspace */}
           <div className="rounded-3xl border border-border bg-card p-4 shadow-sm sm:p-8">
             {children}
+          </div>
+
+          <div className="mt-3 flex justify-end px-2 sm:px-4">
+            <VerificationReminder variant="calc" align="right" />
           </div>
 
           {/* Educational Content & Formula Section */}
@@ -170,10 +175,7 @@ export function CalcPageLayout({ calc, children }: CalcPageLayoutProps) {
               <section>
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="text-lg font-bold text-foreground">Related Calculators</h2>
-                  <Link
-                    to="/calculators"
-                    className="text-xs font-semibold text-emerald-600 hover:underline"
-                  >
+                  <Link to="/" className="text-xs font-semibold text-emerald-600 hover:underline">
                     View all
                   </Link>
                 </div>

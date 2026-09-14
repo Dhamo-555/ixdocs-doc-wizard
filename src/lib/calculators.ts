@@ -110,28 +110,54 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "division",
       "online calculator",
     ],
-    formula: "Standard infix arithmetic notation (BODMAS / PEMDAS precedence)",
+    formula: "Standard Infix Arithmetic: Expression = a op b (evaluating × and ÷ before + and −)",
     explanation:
-      "This basic calculator performs everyday mathematical calculations using standard operator precedence. All operations are evaluated instantly in your browser using IEEE floating-point precision.",
+      "Basic Calculator provides a fast, dependable online tool for everyday arithmetic, personal budgeting, quick invoice checks, and homework calculations directly in your web browser. It supports all fundamental mathematical operations including addition, subtraction, multiplication, division, percentages, and parenthetical sub-expressions. Whether you are balancing household finances, tallying receipt totals, or verifying classroom math exercises, this utility delivers responsive, instant results.\n\nThe calculator implements standard operator precedence rules (commonly known as BODMAS or PEMDAS), ensuring multiplication and division evaluate prior to addition and subtraction unless parentheses dictate otherwise. Parentheses can be nested freely, allowing you to chain multi-step commercial purchases, calculate net costs, or split itemized bills without manual memory registers. Important inputs include numeric digits, operational symbols, and grouping brackets. Limitations include focusing strictly on elementary arithmetic rather than complex algebraic solving or calculus.\n\nEvery calculation is executed locally on your computer or mobile device using modern client-side JavaScript math parsers. Your inputs, numerical values, and calculations are never transmitted over the internet or logged on any external server, guaranteeing complete privacy for personal financial totals and confidential bookkeeping. The clean, tactile user interface includes backspace correction, full clear functions, and keyboard input support for frictionless desktop and mobile operation.",
     howItWorks: [
       "Enter numbers using your keyboard or on-screen buttons.",
       "Select an arithmetic operator (+, −, ×, ÷).",
       "Press '=' or Enter to calculate the final result.",
       "Use 'C' to clear the display or '⌫' to backspace.",
     ],
+    example: {
+      title: "Example: Calculating a multi-item purchase with discounts",
+      description:
+        "You purchase 4 notebooks at $5.50 each and 2 pens at $2.25 each, then receive an overall $3.00 store discount: (4 × 5.50) + (2 × 2.25) − 3.00 = 22.00 + 4.50 − 3.00 = $23.50.",
+      steps: [
+        "Enter (4 * 5.50) to calculate notebook subtotal ($22.00).",
+        "Add + (2 * 2.25) for the pen subtotal ($4.50).",
+        "Subtract - 3.00 for the promotional store coupon.",
+        "Press = to evaluate the total payable balance of $23.50.",
+      ],
+    },
     faqs: [
       {
-        question: "Does this calculator support keyboard input?",
+        question: "Does this basic calculator follow standard order of operations?",
         answer:
-          "Yes, you can use your computer's number keys, numpad, operator keys (+, -, *, /), and Enter key to perform calculations seamlessly.",
+          "Yes. The calculator strictly respects BODMAS/PEMDAS precedence. Multiplications and divisions are evaluated before additions and subtractions unless grouped with parentheses.",
       },
       {
-        question: "Does it preserve calculation history?",
+        question: "Can I use parentheses for complex nested math problems?",
         answer:
-          "Yes, recent calculations are displayed in your session history directly on this page.",
+          "Yes. You can open and close parentheses to control the calculation flow, and nested brackets evaluate from the innermost pair outward.",
+      },
+      {
+        question: "How does the percentage button work in basic arithmetic?",
+        answer:
+          "The percentage button converts the entered value to its hundredth equivalent (e.g. 50% = 0.50), making it easy to calculate markups and discounts in line.",
+      },
+      {
+        question: "Can I use my physical computer keyboard to enter numbers?",
+        answer:
+          "Yes. Number keys, standard operators (+, -, *, /), Enter for equals, and Backspace/Escape are fully mapped for rapid keyboard entry.",
+      },
+      {
+        question: "Are my calculations recorded or sent to any remote server?",
+        answer:
+          "No. All arithmetic executes entirely in local browser memory. No figures, financial totals, or keystrokes are transmitted across the network.",
       },
     ],
-    relatedSlugs: ["percentage-calculator", "discount-calculator", "tip-calculator"],
+    relatedSlugs: ["scientific-calculator", "percentage-calculator", "discount-calculator"],
   },
   {
     id: "percentage-calculator",
@@ -216,20 +242,52 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "percent off calculator",
       "shopping discount",
     ],
-    formula: "Final Price = Original Price × (1 - Discount / 100)",
+    formula: "Final Price = Original Price × (1 − Discount1/100) × (1 − Discount2/100) + Tax",
     explanation:
-      "Determine exactly how much you pay and save during retail sales. Supports secondary stacked discounts (e.g. 25% off + additional 10% coupon) and local sales tax estimation.",
+      "Discount Calculator allows shoppers, retail managers, and small business owners to compute sale prices, total monetary savings, and final checkout costs in seconds directly inside your browser. Whether you are browsing seasonal clearance racks, applying promotional coupons, or evaluating stacked merchant offers, this tool removes the guesswork from retail discounts. It is particularly useful for Black Friday sales, end-of-season clearances, and promotional retail comparisons.\n\nThe calculator supports both single percentage markdowns and multi-tiered stacked discounts—such as an extra 15% off an already discounted 30% sale price. It also incorporates optional sales tax calculations so you know the exact out-of-pocket amount required at the register before standing in line. Essential inputs include the original retail price, primary discount percentage, optional secondary coupon rate, and applicable local sales tax rate. Note that this calculator evaluates percentage or flat deductions, but does not account for complex retail thresholds like 'buy-one-get-one-half-off' combinations.\n\nBecause calculation algorithms run client-side on your device, all computations update in real time with zero network latency. No shopping habits, product amounts, or financial details leave your browser. This tool helps you compare competing discounts, confirm register accuracy on store receipts, and determine whether promotional bundles offer genuine financial value.",
     howItWorks: [
       "Enter the original sticker price.",
       "Enter the primary discount percentage.",
       "Optionally enter extra coupon discounts or local sales tax.",
       "See final cost and your exact total savings.",
     ],
+    example: {
+      title: "Example: Calculating a winter jacket on clearance",
+      description:
+        "A winter jacket originally priced at $180 is discounted by 35%, plus an extra 10% coupon code is applied at checkout with 7% local sales tax. Primary discount: $180 × 0.65 = $117.00. Secondary coupon: $117.00 × 0.90 = $105.30. Sales tax: $105.30 × 1.07 = $112.67. Total savings = $74.70.",
+      steps: [
+        "Enter 180 in Original Price.",
+        "Enter 35 in Primary Discount (%).",
+        "Enter 10 in Extra Discount (%).",
+        "Enter 7 in Sales Tax (%) to view the final payable total ($112.67).",
+      ],
+    },
     faqs: [
       {
-        question: "How do stacked discounts work?",
+        question: "How do stacked discounts differ from adding percentages together?",
         answer:
-          "Secondary discounts are applied to the already-discounted price, not the original MSRP.",
+          "Stacked discounts apply sequentially rather than additively. A 30% discount followed by an extra 20% discount is applied to the already-reduced price, resulting in an effective 44% total discount, not 50%.",
+      },
+      {
+        question: "Is sales tax calculated before or after the discount is applied?",
+        answer:
+          "In most retail jurisdictions, sales tax is calculated on the post-discounted final selling price. This calculator applies tax to the discounted net amount.",
+      },
+      {
+        question:
+          "Can I find the original price if I only know the sale price and discount percentage?",
+        answer:
+          "Yes. Divide the sale price by (1 − discount rate). For example, a $75 item at 25% off had an original price of $75 / 0.75 = $100.",
+      },
+      {
+        question: "Can I calculate fixed dollar discounts instead of percentages?",
+        answer:
+          "Yes. You can compare flat dollar rebates against percentage markdowns to determine which promotional offer saves more money.",
+      },
+      {
+        question: "Is my shopping or pricing information stored anywhere?",
+        answer:
+          "No. IXDocs operates on a private, client-side architecture. All calculations execute locally in your web browser.",
       },
     ],
     relatedSlugs: ["percentage-calculator", "sales-tax-calculator", "tip-calculator"],
@@ -306,21 +364,55 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
     category: "everyday",
     icon: ReceiptText,
     keywords: ["sales tax calculator", "reverse tax calculator", "tax rate", "gross to net price"],
-    formula: "Tax = Price × (Rate / 100); Net = Total / (1 + Rate / 100)",
+    formula:
+      "Tax = Price × (Rate / 100); Total = Price + Tax; Net from Gross = Gross / (1 + Rate / 100)",
     explanation:
-      "Compute sales tax additions or reverse out VAT/GST from a final grand total to verify invoice and receipt breakdowns.",
+      "Sales Tax Calculator provides an accurate, instant way to compute tax amounts, total gross checkout costs, or reverse-calculate net prices from tax-inclusive totals directly in your web browser. It is designed for consumers tracking purchase budgets, freelancers preparing client invoices, and online sellers verifying tax obligations across municipal jurisdictions. Whether you need to figure out how much tax will be added at checkout or extract underlying pre-tax costs from an all-inclusive receipt, this tool simplifies everyday tax math.\n\nThe calculator features dual-mode operation: Forward Tax Mode adds state, provincial, or local sales tax percentages to a pre-tax subtotal, while Reverse Tax (VAT/GST) Mode extracts the underlying pre-tax price and embedded tax portion from a gross total receipt. Key inputs include the base monetary value, the applicable tax rate percentage, and the calculation mode. Limitations include computing single-rate flat tax percentages rather than progressive tax brackets or location-specific automated zip-code lookup.\n\nAll tax mathematical equations are computed locally inside your browser memory using exact financial decimal rounding. No invoices, receipt figures, or private transaction values are uploaded to external databases. This makes it an invaluable utility for cross-border commerce calculations, business expense reports, and consumer price comparisons.",
     howItWorks: [
       "Select Forward (add tax) or Reverse (find pre-tax price) mode.",
       "Enter the price and applicable tax rate percentage.",
       "Get instant breakdown of net price, tax amount, and gross total.",
     ],
+    example: {
+      title: "Example: Adding local sales tax to an electronics invoice",
+      description:
+        "You purchase computer equipment for $850.00 in a district with a 7.25% combined state and municipal sales tax. Sales tax = $850.00 × 0.0725 = $61.63. Total invoice payable = $850.00 + $61.63 = $911.63.",
+      steps: [
+        "Select 'Add Tax' mode.",
+        "Enter 850 in the Amount field.",
+        "Enter 7.25 in the Tax Rate (%) field.",
+        "View the breakdown: $61.63 tax and $911.63 total gross cost.",
+      ],
+    },
     faqs: [
       {
-        question: "Can I use this for VAT or GST?",
-        answer: "Yes, the arithmetic for VAT, GST, and sales tax is identical.",
+        question: "What is the difference between sales tax and Value Added Tax (VAT)?",
+        answer:
+          "Sales tax is typically added at the final point of retail purchase, while VAT is assessed incrementally at each production stage and often included directly in sticker prices.",
+      },
+      {
+        question:
+          "How do I extract the pre-tax price from a total receipt that already includes tax?",
+        answer:
+          "Switch to 'Reverse Tax' mode and enter your receipt total. The formula divides the total by (1 + tax rate / 100) to isolate the original pre-tax amount.",
+      },
+      {
+        question: "Does this calculator support compound or tiered municipal taxes?",
+        answer:
+          "Enter the combined effective tax rate (e.g., 6% state + 1.5% county = 7.5%) to calculate the total tax payable in a single pass.",
+      },
+      {
+        question: "How does rounding affect small cents calculations?",
+        answer:
+          "Financial calculations round to two decimal places (standard half-up rounding), matching standard retail point-of-sale accounting practices.",
+      },
+      {
+        question: "Are any sales figures or invoice values transmitted over the network?",
+        answer:
+          "No. All financial calculations occur strictly client-side on your local device without any server storage or data tracking.",
       },
     ],
-    relatedSlugs: ["percentage-calculator", "discount-calculator", "bill-calculator"],
+    relatedSlugs: ["discount-calculator", "percentage-calculator", "tip-calculator"],
   },
 
   // ── 2. Finance ──────────────────────────────────────────────────────────────
@@ -342,22 +434,54 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "investment growth",
       "apy calculator",
     ],
-    formula: "Compound: A = P × (1 + r/n)^(n×t); Simple: A = P × (1 + r×t)",
+    formula:
+      "Simple: A = P(1 + rt); Compound: A = P(1 + r/n)^(nt); Effective Annual Rate: EAR = (1 + r/n)^n − 1",
     explanation:
-      "Calculate interest growth across daily, monthly, quarterly, or annual compounding frequencies with live APY calculations.",
+      "Interest Calculator empowers savers, investors, and borrowers to project asset accumulation, loan interest accrual, and investment growth under both simple and compound interest models directly in your browser. Whether you are forecasting long-term returns on an index fund, comparing high-yield savings accounts, or assessing the carrying cost of a personal loan, this tool provides clear financial projections.\n\nThe calculator supports multiple compounding intervals including annually, semi-annually, quarterly, monthly, and daily. You can contrast simple linear interest against exponential compounding to understand how reinvested earnings accelerate portfolio growth over multi-year horizons. Important inputs include principal capital, nominal interest rate, investment duration in years, and compounding frequency. A key limitation is assuming constant interest rates across the entire term, without accounting for market volatility or income tax deductions.\n\nAll financial projections compute client-side using standard compound interest algorithms. Your confidential financial figures, savings targets, and personal balances are never transmitted to external cloud systems or stored on servers. This ensures private financial modeling for retirement planning, emergency fund growth, and debt cost analysis.",
     howItWorks: [
       "Enter principal amount, annual interest rate, and duration in years.",
       "Choose compound or simple interest model.",
       "Review the projected final balance and total interest earned.",
     ],
+    example: {
+      title: "Example: Comparing 5-year savings growth with monthly compounding",
+      description:
+        "Investing $10,000 at a 6% annual interest rate compounded monthly for 5 years: A = 10,000 × (1 + 0.06/12)^(12 × 5) = 10,000 × (1.005)^60 = $13,488.50. Total interest earned = $3,488.50.",
+      steps: [
+        "Enter 10000 in Principal Amount.",
+        "Enter 6 in Annual Interest Rate (%).",
+        "Enter 5 in Time Period (Years).",
+        "Select 'Monthly (12/yr)' as the Compounding Frequency to view the $13,488.50 final balance.",
+      ],
+    },
     faqs: [
       {
-        question: "How does compounding frequency affect returns?",
+        question: "What is the primary difference between simple and compound interest?",
         answer:
-          "More frequent compounding (e.g. daily vs annually) yields slightly higher effective annual returns.",
+          "Simple interest is paid solely on the initial principal. Compound interest pays interest on both the initial principal and previously accumulated interest, yielding exponential growth.",
+      },
+      {
+        question: "How does compounding frequency impact total investment return?",
+        answer:
+          "More frequent compounding (e.g., daily or monthly vs. annually) generates slightly higher returns because accrued interest begins earning interest sooner.",
+      },
+      {
+        question: "What is Annual Percentage Yield (APY) or Effective Annual Rate (EAR)?",
+        answer:
+          "APY reflects the actual annualized rate of return taking compounding frequency into account, whereas nominal rate ignores compounding effects.",
+      },
+      {
+        question: "Does this calculator account for ongoing monthly contributions?",
+        answer:
+          "This tool calculates single lump-sum compound and simple interest. For recurring deposits, visit our dedicated Investment or Savings tools.",
+      },
+      {
+        question: "Is my personal financial information kept confidential?",
+        answer:
+          "Yes. All computations execute locally in your web browser. IXDocs never transmits or logs your investment figures or account balances.",
       },
     ],
-    relatedSlugs: ["compound-interest-calculator", "loan-calculator", "emi-calculator"],
+    relatedSlugs: ["loan-calculator", "mortgage-calculator", "investment-calculator"],
   },
   {
     id: "compound-interest-calculator",
@@ -643,21 +767,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "simplify fractions",
       "mixed numbers",
     ],
-    formula: "a/b ± c/d = (ad ± bc) / bd; (a/b) × (c/d) = ac / bd; (a/b) ÷ (c/d) = ad / bc",
+    formula: "a/b ± c/d = (ad ± bc)/bd; (a/b) × (c/d) = ac/bd; (a/b) ÷ (c/d) = ad/bc",
     explanation:
-      "Performs exact rational arithmetic, automatically reducing answers to lowest terms and converting improper fractions to mixed numbers.",
+      "Fraction Calculator performs arithmetic operations on proper fractions, improper fractions, mixed numbers, and integers with step-by-step simplification directly in your web browser. Designed for students, educators, woodworkers, chefs adjusting recipe yields, and engineers working with imperial blueprints, this tool eliminates manual common denominator searches. It handles addition, subtraction, multiplication, and division effortlessly while presenting results in reduced terms.\n\nThe tool automatically determines the Greatest Common Divisor (GCD) and Least Common Denominator (LCD), presenting your final output as a simplified proper fraction, an equivalent mixed number, and an exact decimal representation. Key inputs include numerator and denominator values for both operands along with the chosen mathematical operator. Limitations include working with rational numbers rather than irrational constants or algebraic variable equations.\n\nAll rational fraction calculations execute client-side in browser memory without sending requests to external web servers. Your homework exercises, recipe measurements, and fabrication dimensions remain entirely private. The calculator provides immediate visual feedback, making it an indispensable educational resource for mastering fractions and checking work accuracy.",
     howItWorks: [
       "Enter numerator and denominator for both fractions.",
       "Choose the arithmetic operation (+, −, ×, ÷).",
       "Read the simplified answer, mixed fraction, decimal value, and step-by-step solution.",
     ],
+    example: {
+      title: "Example: Adding mixed fractions with different denominators",
+      description:
+        "Adding 1 3/4 + 2 2/3: Convert to improper fractions: 7/4 + 8/3. Find LCD (12): (21/12) + (32/12) = 53/12. Convert back to mixed fraction: 4 5/12 (approx. 4.4167).",
+      steps: [
+        "Enter 1 and 3/4 for the first fraction operand.",
+        "Select the '+' addition operator.",
+        "Enter 2 and 2/3 for the second fraction operand.",
+        "Click Calculate to review 4 5/12, improper fraction 53/12, and decimal 4.4167.",
+      ],
+    },
     faqs: [
       {
-        question: "How do you simplify a fraction?",
-        answer: "Divide both numerator and denominator by their greatest common divisor (GCD).",
+        question: "How do you add fractions with different denominators?",
+        answer:
+          "Convert fractions to share a common denominator by finding the Least Common Denominator (LCD), adjust numerators proportionally, add numerators, and reduce to simplest form.",
+      },
+      {
+        question: "How does the calculator simplify improper fractions into mixed numbers?",
+        answer:
+          "It divides the numerator by the denominator. The quotient becomes the whole integer, and the remainder becomes the new numerator over the original denominator.",
+      },
+      {
+        question: "Can I enter whole integers or negative numbers?",
+        answer:
+          "Yes. Whole numbers can be entered directly (or with denominator 1), and negative signs in numerators or denominators are handled correctly.",
+      },
+      {
+        question: "What happens when dividing one fraction by another?",
+        answer:
+          "The calculator multiplies the first fraction by the reciprocal (inverted value) of the second fraction: (a/b) ÷ (c/d) = (a/b) × (d/c).",
+      },
+      {
+        question: "Are my fraction calculations saved or shared?",
+        answer:
+          "No. All fraction simplifications and conversions take place locally inside your browser without any network telemetry.",
       },
     ],
-    relatedSlugs: ["ratio-calculator", "percentage-calculator", "basic-calculator"],
+    relatedSlugs: ["ratio-calculator", "percentage-calculator", "scientific-calculator"],
   },
   {
     id: "ratio-calculator",
@@ -676,21 +832,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "aspect ratio",
       "equivalent ratio",
     ],
-    formula: "A / B = C / D ⟹ A × D = B × C",
+    formula:
+      "Ratio Equality: A : B = C : D => A × D = B × C; Simplification: A/gcd(A,B) : B/gcd(A,B)",
     explanation:
-      "Simplifies two-term ratios using the greatest common divisor and solves any missing proportion variable using cross-multiplication.",
+      "Ratio Calculator solves proportions, scales multi-part ratios, simplifies complex numerical proportions to lowest integer terms, and finds missing values in proportional equations directly in your web browser. It is tailored for digital photographers adjusting aspect ratios, model makers scaling engineering prototypes, chemical lab technicians mixing reagent concentrations, and culinary professionals resizing recipes.\n\nThe calculator provides two primary modes: Solving Missing Values (A : B = C : X) using cross-multiplication, and Ratio Simplification, which reduces arbitrary integer or decimal ratios to their cleanest whole-number proportion using greatest common divisor factorization. Essential inputs include the known ratio terms and the variable term to be solved or simplified. Limitations include operating on static linear proportions rather than logarithmic or non-linear scaling relationships.\n\nAll calculations process client-side on your local hardware using instant JavaScript logic. None of your proprietary chemical formulas, blueprint dimensions, or photography aspect ratios are transmitted to remote servers. This provides a private, secure workflow for technical scaling, educational geometry, and commercial design projects.",
     howItWorks: [
       "To simplify: enter A and B to find their reduced ratio.",
       "To solve proportion: enter any three values in A:B = C:D to calculate the fourth.",
     ],
+    example: {
+      title: "Example: Scaling a screen aspect ratio for video production",
+      description:
+        "You have a 16:9 widescreen video and need to calculate the corresponding height for an ultra-wide 3840-pixel display: 16 / 9 = 3840 / X => X = (9 × 3840) / 16 = 2160 pixels (4K UHD).",
+      steps: [
+        "Select 'Solve for X' mode.",
+        "Set A = 16 and B = 9.",
+        "Set C = 3840 and designate D as X.",
+        "Click Calculate to solve X = 2160.",
+      ],
+    },
     faqs: [
       {
-        question: "How do you solve a proportion?",
+        question: "How do you solve a missing value in a proportional ratio?",
         answer:
-          "Cross-multiply the opposite terms (A × D = B × C) and divide by the known term to isolate the unknown.",
+          "Use cross-multiplication: in the formula A:B = C:D, the product of the extremes equals the product of the means (A × D = B × C). Divide by the known counterpart to isolate X.",
+      },
+      {
+        question: "Can this calculator simplify ratios containing decimal values?",
+        answer:
+          "Yes. Decimal terms are converted to integers by scaling by powers of 10, then reduced using their Greatest Common Divisor.",
+      },
+      {
+        question: "What is an aspect ratio in photography and video?",
+        answer:
+          "An aspect ratio is the proportional relationship between display width and height, such as 16:9 for modern video or 4:3 for classic displays.",
+      },
+      {
+        question: "Can I scale a recipe up or down using this ratio tool?",
+        answer:
+          "Yes. Determine the base ratio of key ingredients to portion sizes, then input your target serving count to find exact scaled quantities.",
+      },
+      {
+        question: "Does the ratio calculator track my inputs?",
+        answer:
+          "No. All ratio math runs entirely in browser memory. No entries, measurements, or scaling ratios leave your machine.",
       },
     ],
-    relatedSlugs: ["fraction-calculator", "percentage-calculator", "average-calculator"],
+    relatedSlugs: ["fraction-calculator", "percentage-calculator", "unit-converter"],
   },
   {
     id: "average-calculator",
@@ -710,21 +898,52 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "weighted average",
       "range calculator",
     ],
-    formula: "Mean = Sum of numbers / Count of numbers",
+    formula:
+      "Mean = Σx / n; Median = Middle value of sorted set; Mode = Most frequent value(s); Range = Max − Min",
     explanation:
-      "Analyze datasets for measures of central tendency: arithmetic mean (average), median (middle value), mode (most frequent), range, and sum.",
+      "Average Calculator provides comprehensive central tendency analysis for numeric data sets directly in your web browser. Rather than providing only a simple arithmetic mean, this tool computes the mean, median, mode, geometric mean, range, minimum, maximum, and total sum simultaneously from any comma-, space-, or newline-delimited sequence of numbers. It serves students analyzing lab experiments, business analysts evaluating sales performance, and teachers grading tests.\n\nThe calculator distinguishes between symmetric distributions and skewed data sets. For example, while arithmetic mean can be heavily distorted by extreme outliers, median reveals the true midpoint of the distribution. Key inputs include your raw list of numerical values, entered flexibly using commas, spaces, or line breaks. Limitations include focusing on summary statistics for ungrouped discrete numbers rather than continuous probability distributions.\n\nBecause computations execute client-side in your browser, your proprietary data sets, salary surveys, grade rosters, and commercial metrics remain completely confidential. No figures are ever uploaded to cloud servers or indexed by analytics scripts. The tool instantly parses hundreds of values, formatting results cleanly for presentations and spreadsheets.",
     howItWorks: [
       "Paste or type numbers separated by commas, spaces, or new lines.",
       "View instant calculations for mean, median, mode, min, max, and sum.",
     ],
+    example: {
+      title: "Example: Finding central tendency of student exam grades",
+      description:
+        "Data set of 7 test scores: 65, 78, 84, 84, 88, 92, 98. Sum = 589. Mean = 589 / 7 = 84.14. Median (middle sorted value) = 84. Mode (most frequent) = 84. Range = 98 − 65 = 33.",
+      steps: [
+        "Paste or type the score sequence: 65, 78, 84, 84, 88, 92, 98 into the input box.",
+        "Click Calculate.",
+        "Review Mean (84.14), Median (84), Mode (84), and Range (33).",
+      ],
+    },
     faqs: [
       {
-        question: "What is the difference between mean and median?",
+        question: "When should I use the median instead of the arithmetic mean?",
         answer:
-          "The mean is the arithmetic average of all values. The median is the middle number when all values are arranged in order.",
+          "Use median when your data set contains significant outliers or is skewed (such as real estate prices or household incomes), as extreme values distort the mean.",
+      },
+      {
+        question: "Can a data set have more than one mode?",
+        answer:
+          "Yes. A data set can be bimodal (two modes) or multimodal (multiple modes) if two or more distinct values share the highest frequency.",
+      },
+      {
+        question: "What is the geometric mean and when is it appropriate?",
+        answer:
+          "The geometric mean multiplies all n values and takes the nth root. It is widely used in finance to calculate compound annualized investment growth rates.",
+      },
+      {
+        question: "How many numbers can I analyze simultaneously?",
+        answer:
+          "The calculator efficiently processes hundreds of numbers instantaneously in your browser without lag or server timeouts.",
+      },
+      {
+        question: "Is my uploaded data set stored or transmitted anywhere?",
+        answer:
+          "No. All statistical parsing executes locally inside your web browser. No figures are logged, transmitted, or stored externally.",
       },
     ],
-    relatedSlugs: ["statistics-calculator", "gpa-calculator", "percentage-calculator"],
+    relatedSlugs: ["statistics-calculator", "percentage-calculator", "basic-calculator"],
   },
   {
     id: "statistics-calculator",
@@ -743,21 +962,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "interquartile range",
       "sample std dev",
     ],
-    formula: "s = √[Σ(x - x̄)² / (n - 1)]; σ = √[Σ(x - μ)² / N]",
+    formula:
+      "Variance: s² = Σ(x − x̄)² / (n − 1); Std Dev: s = √s²; Pop Std Dev: σ = √[Σ(x − μ)² / N]; SEM = s / √n",
     explanation:
-      "Comprehensive descriptive statistics solver. Automatically handles both sample (n - 1) and population (N) statistical variance and standard deviation.",
+      "Statistics Calculator computes essential descriptive statistical dispersion metrics directly in your web browser. It calculates sample standard deviation, population standard deviation, variance, standard error of the mean (SEM), sum of squares, and quartile breakdowns for any numeric dataset. It is an indispensable tool for academic researchers validating experimental trials, quality assurance engineers monitoring manufacturing tolerances, and data analysts verifying distribution normality.\n\nThe calculator clearly differentiates between sample statistics (dividing by n − 1 using Bessel's correction to prevent sample bias) and population parameters (dividing by N). This distinction is critical for experimental science and statistical hypothesis testing. Key inputs include your raw numeric dataset and the selection of sample vs. population framing. Limitations include focusing on descriptive univariate statistics rather than multivariate regression or ANOVA.\n\nAll data parsing, sum of squares computation, and root extraction occur client-side in browser memory. Sensitive medical research numbers, laboratory measurements, and confidential production logs never leave your device. The calculator delivers instant, verified statistical figures suitable for peer review, lab reports, and industrial quality control.",
     howItWorks: [
       "Enter a comma or space-separated list of numeric values.",
       "Get complete statistical summary including standard deviation, variance, quartiles, and IQR.",
     ],
+    example: {
+      title: "Example: Computing sample standard deviation of production batch weights",
+      description:
+        "Five part weights measured in grams: 10.2, 10.5, 9.8, 10.1, 10.4. Mean = 10.2 g. Deviations squared sum to 0.30. Sample variance s² = 0.30 / (5 − 1) = 0.0750. Sample standard deviation s = √0.0750 ≈ 0.2739 g.",
+      steps: [
+        "Enter dataset: 10.2, 10.5, 9.8, 10.1, 10.4.",
+        "Select 'Sample' mode (Bessel corrected n − 1).",
+        "Click Calculate.",
+        "Review sample standard deviation (0.2739 g), variance (0.0750), and mean (10.2000 g).",
+      ],
+    },
     faqs: [
       {
-        question: "When should I use sample vs population standard deviation?",
+        question: "Why does sample standard deviation divide by (n − 1) instead of n?",
         answer:
-          "Use sample standard deviation (s) when your data represents a sample of a larger population. Use population standard deviation (σ) when you have measured the entire population.",
+          "Dividing by n − 1 (Bessel's correction) corrects downward bias when estimating population variability from a finite random sample.",
+      },
+      {
+        question: "What does standard deviation indicate about a dataset?",
+        answer:
+          "Standard deviation quantifies how spread out values are from the average. In a normal distribution, approximately 68% of data falls within ±1 standard deviation of the mean.",
+      },
+      {
+        question: "What is the difference between variance and standard deviation?",
+        answer:
+          "Variance measures squared dispersion in squared units, while standard deviation is the square root of variance, expressed in the original units of measurement.",
+      },
+      {
+        question: "How does the calculator handle negative numbers or decimal values?",
+        answer:
+          "Negative values and high-precision floating-point numbers are fully supported and squared appropriately during variance accumulation.",
+      },
+      {
+        question: "Are my research data points transmitted to an external server?",
+        answer:
+          "No. The statistical algorithms run 100% locally in your browser memory, keeping your clinical or proprietary datasets completely private.",
       },
     ],
-    relatedSlugs: ["average-calculator", "gpa-calculator", "basic-calculator"],
+    relatedSlugs: ["average-calculator", "scientific-calculator", "basic-calculator"],
   },
   {
     id: "gpa-calculator",
@@ -846,27 +1097,54 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "log calculator",
       "math calculator",
     ],
-    formula: "Standard infix notation with operator precedence (PEMDAS/BODMAS)",
+    formula:
+      "Trig: sin(θ), cos(θ), tan(θ); Logarithms: log₁₀(x), ln(x); Exponentials: e^x, x^y; Powers & Roots: √x, ∛x",
     explanation:
-      "Evaluates complex mathematical expressions including trigonometric, exponential, logarithmic, and power functions with client-side accuracy.",
+      "Scientific Calculator provides an advanced computational workspace for trigonometry, logarithms, exponential powers, factorials, and roots directly in your web browser. Engineered for engineering students, physicists, lab technicians, and high school STEM learners, it handles both elementary arithmetic and complex transcendental functions without requiring physical handheld scientific hardware.\n\nThe calculator features seamless switching between degrees and radians for trigonometric calculations, essential for geometry, physics motion problems, and calculus. It includes constants like Pi (π) and Euler's number (e), inverse trigonometry (arcsin, arccos, arctan), natural and base-10 logarithms, and power operations. Key inputs include numeric values, mathematical function keys, angle unit toggles, and memory registers. Limitations include focusing on standard scientific scalar evaluations rather than symbolic calculus derivatives or matrix algebra.\n\nEvery mathematical operation runs locally via standard client-side JavaScript Math functions. No homework problems, engineering measurements, or research calculations are sent to external web servers. The responsive design adapts cleanly to mobile touchscreens and desktop keyboards for rapid, private calculations anywhere.",
     howItWorks: [
       "Type or click numbers, scientific functions (sin, cos, log, etc.), and operators.",
       "Toggle between DEG (degrees) and RAD (radians) for trigonometry.",
       "Use parentheses to group operations and '=' or Enter to evaluate.",
     ],
+    example: {
+      title: "Example: Solving right-triangle hypotenuse using trigonometry",
+      description:
+        "Find the opposite side of a right triangle with angle θ = 30° and hypotenuse = 50 m: Opposite = Hypotenuse × sin(θ) = 50 × sin(30°) = 50 × 0.5 = 25 m.",
+      steps: [
+        "Ensure the angle mode is set to 'DEG' (Degrees).",
+        "Enter 30 and press the 'sin' button (returns 0.5).",
+        "Press '×' and enter 50.",
+        "Press '=' to view the final result: 25.",
+      ],
+    },
     faqs: [
       {
-        question: "Does this scientific calculator run in degrees or radians?",
+        question: "How do I toggle between Degrees and Radians?",
         answer:
-          "You can toggle between Degree (DEG) and Radian (RAD) modes at any time using the mode button in the top left of the display.",
+          "Use the DEG/RAD toggle button at the top of the calculator. Ensure correct mode selection before computing trigonometric functions to prevent incorrect angle results.",
       },
       {
-        question: "Does it support order of operations?",
+        question: "What is the difference between log and ln?",
         answer:
-          "Yes, all expressions follow standard mathematical operator precedence (PEMDAS/BODMAS) with full parenthesis support.",
+          "'log' represents the common logarithm (base 10), while 'ln' represents the natural logarithm (base e ≈ 2.71828), commonly used in continuous growth and decay models.",
+      },
+      {
+        question: "Can I calculate factorials of large numbers?",
+        answer:
+          "Yes. The calculator computes factorials (n!) for non-negative integers up to standard JavaScript safe float limits.",
+      },
+      {
+        question: "Does the calculator support inverse trigonometric functions?",
+        answer:
+          "Yes. Toggle the inverse function mode to access asin, acos, and atan to calculate angles from known side ratios.",
+      },
+      {
+        question: "Are my scientific formulas or calculations tracked?",
+        answer:
+          "No. All calculations run strictly client-side on your local device. No data is stored, tracked, or transmitted across the web.",
       },
     ],
-    relatedSlugs: ["basic-calculator", "fraction-calculator", "percentage-calculator"],
+    relatedSlugs: ["basic-calculator", "fraction-calculator", "statistics-calculator"],
   },
 
   // ── 4. Health ───────────────────────────────────────────────────────────────
@@ -956,22 +1234,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "weight loss calories",
     ],
     formula:
-      "BMR (Mifflin-St Jeor): 10W + 6.25H - 5A (+5 for men, -161 for women); TDEE = BMR × Activity",
+      "Mifflin-St Jeor BMR: Men = 10W + 6.25H − 5A + 5; Women = 10W + 6.25H − 5A − 161; TDEE = BMR × Activity Factor",
     explanation:
-      "Calculates Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE) to deliver precise daily calorie targets for mild loss, standard loss, or muscle gain.",
+      "Calorie Calculator estimates your daily Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE) directly inside your web browser. Utilizing the clinically validated Mifflin-St Jeor equation, this tool helps fitness enthusiasts, athletes, and individuals managing health goals determine baseline caloric needs for weight maintenance, healthy fat loss, or lean muscle gain.\n\nThe tool calculates your baseline metabolism based on biological sex, age, height, and weight, then scales that figure against your typical daily physical activity level (from sedentary desk work to intense athletic training). It provides target daily caloric targets for mild weight loss (0.5 lb/week), standard weight loss (1 lb/week), and caloric surpluses for muscle building. Key inputs include gender, age, weight, height, and weekly activity multiplier. A primary limitation is that mathematical estimates cannot replace personalized clinical nutrition advice or account for thyroid metabolic disorders.\n\nAll biometric calculations are evaluated entirely client-side. Your age, body weight, height, and personal health targets remain completely private on your personal device and are never transmitted to external cloud systems or health data brokers.",
     howItWorks: [
       "Select biological gender and enter age, weight, and height.",
       "Choose your typical weekly physical activity level.",
       "Review your maintenance calories and recommended intake goals.",
     ],
+    example: {
+      title: "Example: Calculating maintenance and fat-loss calories for a 30-year-old male",
+      description:
+        "Male, age 30, weight 80 kg, height 180 cm, moderately active (exercise 3-5 days/wk). BMR = (10 × 80) + (6.25 × 180) − (5 × 30) + 5 = 1,780 kcal. TDEE = 1,780 × 1.55 = 2,759 kcal/day maintenance. Fat loss target (500 kcal deficit) = 2,259 kcal/day.",
+      steps: [
+        "Select Gender: Male.",
+        "Enter Age: 30, Weight: 80 kg, Height: 180 cm.",
+        "Select Activity Level: Moderately Active (1.55).",
+        "Click Calculate to view 2,759 kcal maintenance and 2,259 kcal fat loss target.",
+      ],
+    },
     faqs: [
       {
-        question: "How many calories are in one pound of fat?",
+        question: "What is the difference between BMR and TDEE?",
         answer:
-          "Approximately 3,500 calories. A daily deficit of 500 calories typically leads to about 1 pound of fat loss per week.",
+          "BMR (Basal Metabolic Rate) is the minimum energy your body burns at complete rest for vital organ function. TDEE (Total Daily Energy Expenditure) accounts for BMR plus daily movement, work, and structured exercise.",
+      },
+      {
+        question: "How large should my calorie deficit be for sustainable weight loss?",
+        answer:
+          "A moderate deficit of 300 to 500 calories per day typically yields a sustainable weight loss rate of 0.5 to 1 pound (0.25 to 0.5 kg) per week without excessive hunger or lean muscle loss.",
+      },
+      {
+        question: "Which formula does this calorie calculator use?",
+        answer:
+          "It uses the Mifflin-St Jeor formula, widely recognized in clinical dietetics as one of the most accurate predictive equations for BMR.",
+      },
+      {
+        question: "Can I enter measurements in imperial units (pounds and inches)?",
+        answer:
+          "Yes. The calculator includes toggles for both Metric (kg/cm) and Imperial (lbs/inches) measurement units.",
+      },
+      {
+        question: "Is my personal weight or health data saved anywhere?",
+        answer:
+          "No. IXDocs has a strict privacy-first architecture. All health metrics compute locally in your browser and are never uploaded or saved.",
       },
     ],
-    relatedSlugs: ["bmi-calculator", "unit-converter", "average-calculator"],
+    relatedSlugs: ["bmi-calculator", "ideal-weight-calculator", "body-fat-calculator"],
   },
 
   // ── 5. Time & Date ──────────────────────────────────────────────────────────
@@ -994,21 +1303,52 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "date difference",
     ],
     formula:
-      "Interval = Target Date - Start Date (accounting for leap years and calendar month variations)",
+      "Duration: Days = EndDate − StartDate; New Date = BaseDate ± (Years, Months, Weeks, Days)",
     explanation:
-      "Measure calendar time between any two dates in years, months, weeks, and total days, or project future milestones by adding days.",
+      "Date Calculator provides versatile calendar computation for planning events, calculating business project timelines, legal notice deadlines, and human age verification directly in your web browser. It features dual operational modes: calculating the exact elapsed time between two calendar dates (in total days, weeks, months, and years) and projecting a future or past date by adding or subtracting calendar units.\n\nThe tool correctly handles Gregorian calendar anomalies including leap years, varying month lengths (28, 29, 30, or 31 days), and daylight saving shifts. Whether you are counting down to a milestone wedding, verifying legal statutory limitation periods, tracking visa stay durations, or planning sprint deliverables, this calculator eliminates manual calendar counting. Key inputs include starting date, target date, or the specific offset interval to add or subtract. A notable limitation is focusing on solar calendar dates without factoring localized statutory public bank holidays unless business-day filtering is applied.\n\nAll date computations execute locally on your device using JavaScript standard Date APIs. No personal schedules, anniversary dates, or corporate project deadlines are transmitted over the internet or logged on servers.",
     howItWorks: [
       "Choose to calculate difference between dates, or add/subtract days from a base date.",
       "Select your start date and target parameters.",
     ],
+    example: {
+      title: "Example: Calculating elapsed duration between project kickoff and product launch",
+      description:
+        "Project kickoff on March 15, 2026, and product launch on November 20, 2026: The duration is exactly 250 calendar days, which equals 35 weeks and 5 days (or 8 months and 5 days).",
+      steps: [
+        "Select 'Days Between Dates' mode.",
+        "Set Start Date: March 15, 2026.",
+        "Set End Date: November 20, 2026.",
+        "Click Calculate to review 250 total days, 35 weeks 5 days, and month breakdown.",
+      ],
+    },
     faqs: [
       {
-        question: "Does this calculator account for leap years?",
+        question: "Does the date calculator account for leap years?",
         answer:
-          "Yes, all Gregorian calendar leap year variations (including century rules) are evaluated accurately.",
+          "Yes. The calendar engine fully accounts for leap days in February across all past and future leap years in the Gregorian calendar.",
+      },
+      {
+        question: "Can I choose whether to include the end date in the total day count?",
+        answer:
+          "Yes. You can toggle between excluding or including the end date depending on whether your contract counts elapsed nights or inclusive calendar days.",
+      },
+      {
+        question: "How does the calculator handle adding months to a date like January 31?",
+        answer:
+          "When adding a month to January 31, standard calendar logic snaps to the final valid day of the target month (February 28 or 29) to prevent invalid month rollovers.",
+      },
+      {
+        question: "Can I calculate business working days excluding weekends?",
+        answer:
+          "Yes. You can inspect total calendar days alongside working day approximations that exclude Saturday and Sunday.",
+      },
+      {
+        question: "Are any of my calendar dates stored or tracked?",
+        answer:
+          "No. All date computations run locally in your web browser. No dates, notes, or schedules are transmitted to any server.",
       },
     ],
-    relatedSlugs: ["age-calculator", "time-duration-calculator", "time-calculator"],
+    relatedSlugs: ["time-duration-calculator", "time-calculator", "timezone-converter"],
   },
   {
     id: "age-calculator",
@@ -1093,19 +1433,50 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "work hours calculator",
       "time difference",
     ],
-    formula: "Duration = End Time - Start Time (adding 24 hours if crossing midnight)",
+    formula:
+      "Duration = (EndHour × 3600 + EndMin × 60 + EndSec) − (StartHour × 3600 + StartMin × 60 + StartSec)",
     explanation:
-      "Compute precise elapsed time between any two clock times. Handles overnight spans seamlessly and outputs hours, minutes, and decimal payroll hours.",
+      "Time Duration Calculator calculates the exact span of hours, minutes, and seconds between two timestamps directly in your web browser. Designed for hourly freelancers logging client billable hours, pilots tracking flight logs, athletes recording split workout times, and shift workers verifying payroll timesheets, this tool provides error-free duration breakdowns.\n\nThe calculator supports both 12-hour AM/PM and 24-hour military time formats, cleanly handling overnight shifts that wrap past midnight. It presents results in multiple synchronized units—including total hours, fractional decimal hours for billing (e.g., 7.50 hours), total minutes, and exact seconds. Key inputs include the beginning timestamp, ending timestamp, and an optional overnight wrap flag. Limitations include calculating elapsed wall-clock duration between two points in time rather than tracking live stopwatch lap splits.\n\nEvery time computation runs client-side in your browser memory. Your confidential work shifts, payroll figures, flight logs, and private daily routines are never sent to external servers or logged in cloud databases. This ensures complete privacy and rapid calculation for all your timekeeping needs.",
     howItWorks: [
       "Enter starting clock time (hours, minutes, seconds).",
       "Enter ending clock time.",
       "View elapsed time in clock format, total minutes, and decimal hours.",
     ],
+    example: {
+      title: "Example: Calculating an overnight nursing shift duration",
+      description:
+        "Shift starts at 9:30 PM (21:30) and ends at 6:15 AM (06:15) the following morning. Total elapsed time = 8 hours and 45 minutes (8.75 decimal billable hours, or 525 total minutes).",
+      steps: [
+        "Enter Start Time: 09:30 PM (or 21:30).",
+        "Enter End Time: 06:15 AM (or 06:15).",
+        "Click Calculate Duration.",
+        "Review the result: 8 hours, 45 minutes (8.75 decimal hours for invoicing).",
+      ],
+    },
     faqs: [
       {
-        question: "Does it support night shifts that cross midnight?",
+        question: "How does the calculator handle shifts that cross past midnight?",
         answer:
-          "Yes, if the end time is earlier than the start time, it automatically assumes an overnight transition.",
+          "When end time is earlier than start time, the algorithm automatically adds 24 hours to the end time to calculate the overnight duration seamlessly.",
+      },
+      {
+        question: "What are decimal hours and why are they used on timesheets?",
+        answer:
+          "Decimal hours convert minutes into a fraction of an hour (e.g., 45 minutes = 0.75 hours). Payroll systems multiply decimal hours by hourly pay rates to compute wages.",
+      },
+      {
+        question: "Can I enter timestamps using military 24-hour format?",
+        answer: "Yes. Both 12-hour AM/PM and 24-hour military time notations are fully supported.",
+      },
+      {
+        question: "Can I deduct lunch breaks or unpaid rest periods?",
+        answer:
+          "Yes. Subtract your break duration from the total elapsed result to determine net billable working hours.",
+      },
+      {
+        question: "Is my shift or timesheet data uploaded to any server?",
+        answer:
+          "No. All time calculations process locally on your machine. IXDocs never transmits or stores your schedule records.",
       },
     ],
     relatedSlugs: ["time-calculator", "date-calculator", "timezone-converter"],
@@ -1121,21 +1492,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
     category: "datetime",
     icon: Clock,
     keywords: ["time calculator", "add time", "subtract hours", "time addition", "time sum"],
-    formula: "New Time = Base Time ± (Hours × 3600 + Minutes × 60 + Seconds)",
+    formula: "T_total = Σ(Hours × 3600 + Minutes × 60 + Seconds) => Converted back to H:M:S",
     explanation:
-      "Easily add or subtract hours and minutes to find future arrival times, schedule deadlines, or aggregate total project hours.",
+      "Time Calculator simplifies adding, subtracting, and aggregating multiple segments of hours, minutes, and seconds directly in your web browser. It is indispensable for audio and video editors calculating total podcast runtimes, marathon runners totaling split intervals, construction contractors summing labor logs, and musicians assembling concert setlists.\n\nUnlike standard decimal calculators where adding 0.45 and 0.45 yields 0.90 instead of 1 hour and 30 minutes, this tool uses sexagesimal (base-60) arithmetic. It automatically carries over 60 seconds into a minute and 60 minutes into an hour. Key inputs include individual time segments with designated hour, minute, and second fields, alongside addition or subtraction operational controls. Limitations include working with elapsed time durations rather than geo-referenced timezone offsets.\n\nAll time calculations process instantly within your browser using client-side JavaScript. None of your media production logs, payroll timesheets, or training regimens are uploaded or logged on any external cloud server, guaranteeing fast, completely private timekeeping calculations on any device.",
     howItWorks: [
       "Enter your starting time.",
       "Choose whether to add or subtract.",
       "Enter the hours, minutes, and seconds to adjust.",
     ],
+    example: {
+      title: "Example: Summing video clips for a YouTube documentary",
+      description:
+        "Summing three video clips: Clip 1 (14 min 35 sec), Clip 2 (28 min 45 sec), and Clip 3 (19 min 50 sec). Total seconds = 875 + 1725 + 1190 = 3,790 seconds = 1 hour, 3 minutes, and 10 seconds.",
+      steps: [
+        "Enter 14m 35s in Time 1.",
+        "Add Time 2: 28m 45s.",
+        "Add Time 3: 19m 50s.",
+        "Click Calculate to view the combined runtime: 01:03:10.",
+      ],
+    },
     faqs: [
       {
-        question: "Can I use 24-hour military time?",
-        answer: "Yes, both 12-hour (AM/PM) and 24-hour formats are displayed simultaneously.",
+        question: "Why can't I just use a standard decimal calculator for time?",
+        answer:
+          "Time uses base-60 (60 seconds in a minute, 60 minutes in an hour). A decimal calculator uses base-10, so 0.30 hours would be incorrectly added as 30% of 100 instead of 30 minutes (50% of an hour).",
+      },
+      {
+        question: "Can I subtract a break time from a total work duration?",
+        answer:
+          "Yes. Switch the operator to subtraction (-) to deduct pause periods, lunch hours, or commercial breaks from a master duration.",
+      },
+      {
+        question: "Does the calculator support days if total time exceeds 24 hours?",
+        answer:
+          "Yes. Times exceeding 24 hours are displayed both as total accumulated hours (e.g., 52 hours) and broken down into days, hours, and minutes.",
+      },
+      {
+        question: "Can I copy and paste time codes directly into the tool?",
+        answer:
+          "Yes. You can paste standard HH:MM:SS format strings into the input fields for rapid aggregation.",
+      },
+      {
+        question: "Is my time log data private?",
+        answer:
+          "Yes. All computations take place 100% locally in your web browser. No timesheet data leaves your machine.",
       },
     ],
-    relatedSlugs: ["time-duration-calculator", "timezone-converter", "date-calculator"],
+    relatedSlugs: ["time-duration-calculator", "date-calculator", "timezone-converter"],
   },
   {
     id: "timezone-converter",
@@ -1155,19 +1558,51 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "est to ist",
       "time difference",
     ],
-    formula: "Target Local Time = UTC Time + Target Timezone Offset (including active DST)",
+    formula:
+      "UTC Time = Local Time − Offset; Target Time = UTC Time + Target Offset (Adjusted for DST rules)",
     explanation:
-      "Convert meeting times and timestamps between global regions with full IANA database support and automatic Daylight Saving Time handling.",
+      "Timezone Converter provides fast, reliable time conversions across global international time zones directly in your web browser. Designed for remote distributed teams scheduling video conferences, international travelers planning flight itineraries, financial traders tracking global exchange openings, and webinar hosts coordinating worldwide attendees, this tool prevents missed appointments and cross-border scheduling confusion.\n\nThe converter dynamically adjusts for Daylight Saving Time (DST) changes, standard GMT/UTC offsets, and regional half-hour or 45-minute offsets (such as India Standard Time or Australian Central Western Time). Key inputs include your origin city or timezone, the date and timestamp to convert, and one or more target destination time zones. Limitations include converting established civil time zones rather than calculating astronomical local solar time.\n\nBecause time conversions execute client-side using modern browser Intl and ECMAScript DateTimeFormat engines, conversions update instantaneously. Your meeting schedules, travel dates, and partner locations remain completely confidential and are never transmitted to third-party scheduling platforms or remote logging servers.",
     howItWorks: [
       "Select your source timezone and choose a date and time.",
       "Select the destination timezone.",
       "View the converted time, UTC offset, and time difference.",
     ],
+    example: {
+      title: "Example: Coordinating an international team call between New York and London",
+      description:
+        "Converting a 10:00 AM meeting in New York (Eastern Daylight Time, UTC−4) to London (British Summer Time, UTC+1). Difference is +5 hours: 10:00 AM EDT corresponds to 3:00 PM BST in London on the same day.",
+      steps: [
+        "Select Origin Timezone: America/New_York (EDT).",
+        "Set Time: 10:00 AM.",
+        "Select Target Timezone: Europe/London (BST).",
+        "View Converted Time: 3:00 PM on the same date.",
+      ],
+    },
     faqs: [
       {
-        question: "Does it automatically account for Daylight Saving Time?",
+        question: "How does the converter handle Daylight Saving Time (DST) shifts?",
         answer:
-          "Yes, the browser's native internationalization engine automatically applies historical and active DST rules.",
+          "The converter utilizes official IANA time zone databases embedded in modern browsers, automatically accounting for local spring forward and fall back transitions.",
+      },
+      {
+        question: "Does this tool support non-hourly time zones like India or Nepal?",
+        answer:
+          "Yes. Fractional time zones such as IST (UTC+5:30), Nepal (UTC+5:45), and Newfoundland (UTC−3:30) are fully supported with accurate minute offsets.",
+      },
+      {
+        question: "Can I convert a single time into multiple time zones at once?",
+        answer:
+          "Yes. You can compare several international cities side by side to find overlapping business hours across multiple continents.",
+      },
+      {
+        question: "What does UTC stand for?",
+        answer:
+          "UTC stands for Coordinated Universal Time, the high-precision atomic time standard used as the universal baseline for civil time zones worldwide.",
+      },
+      {
+        question: "Are my meeting schedules or location queries logged?",
+        answer:
+          "No. All timezone calculations are handled locally in your browser. No itinerary or schedule information is shared with servers.",
       },
     ],
     relatedSlugs: ["time-duration-calculator", "time-calculator", "date-calculator"],
@@ -1193,21 +1628,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "temperature converter",
     ],
     formula:
-      "Converted Value = Input × Conversion Factor (or dedicated scale formula for temperature)",
+      "Converted Value = (Input × BaseFactor) / TargetFactor (with special offset for Temperature)",
     explanation:
-      "Convert measurement units seamlessly between metric and imperial systems for length, mass, temperature, speed, volume, and area.",
+      "Unit Converter delivers fast, accurate conversions across major engineering, scientific, and commercial measurement categories directly in your web browser. Whether you are converting lengths (meters to feet, inches to centimeters), weights (kilograms to pounds, ounces to grams), temperatures (Celsius to Fahrenheit and Kelvin), volumes, speeds, or areas, this tool eliminates manual multiplication errors.\n\nThe tool covers both the International System of Units (metric SI) and US Customary / Imperial systems. It is tailored for students solving physics problem sets, international travelers reading road signs, architects converting metric blueprints, and cooks adapting overseas recipes. Key inputs include the source magnitude, source measurement unit, and desired target unit. Limitations include focusing on standard physical unit conversions rather than dynamic currency exchange rates that fluctuate with financial markets.\n\nAll conversion factors are processed client-side using high-precision floating point math. None of your proprietary engineering dimensions, manufacturing measurements, or personal recipes are uploaded to external web servers, ensuring a private, frictionless conversion tool on mobile and desktop devices.",
     howItWorks: [
       "Select a measurement category.",
       "Enter the magnitude and choose the source and target units.",
       "Read the converted value instantly with two-way conversion.",
     ],
+    example: {
+      title: "Example: Converting travel luggage weight from kilograms to pounds",
+      description:
+        "An international airline specifies a 23 kg baggage limit. Convert to pounds: 23 kg × 2.20462 = 50.71 lbs. You know your luggage must remain under 50.7 pounds.",
+      steps: [
+        "Select Category: Weight & Mass.",
+        "Set From Unit: Kilograms (kg).",
+        "Set To Unit: Pounds (lbs).",
+        "Enter 23 to view 50.7063 lbs instantly.",
+      ],
+    },
     faqs: [
       {
-        question: "How accurate are the conversions?",
-        answer: "Conversions use international standards defined by the BIPM and NIST.",
+        question: "How do you convert Celsius to Fahrenheit?",
+        answer:
+          "Multiply the Celsius temperature by 9/5 (or 1.8) and add 32: °F = (°C × 1.8) + 32. For example, 20°C = (20 × 1.8) + 32 = 68°F.",
+      },
+      {
+        question: "What is the difference between US and Imperial liquid measurements?",
+        answer:
+          "US fluid gallons (3.785 liters) and fluid ounces differ from UK Imperial gallons (4.546 liters). This converter specifies standard US and metric units clearly.",
+      },
+      {
+        question: "Can I convert compound units like kilometers per hour to miles per hour?",
+        answer:
+          "Yes. Speed categories include km/h, mph, meters per second, and knots for maritime and aviation conversions.",
+      },
+      {
+        question: "How many decimal places does the conversion provide?",
+        answer:
+          "The tool displays up to 6 significant decimal places for scientific precision, rounding cleanly where appropriate.",
+      },
+      {
+        question: "Are my conversion inputs tracked or recorded?",
+        answer:
+          "No. Every calculation executes locally on your device in real time without any telemetry or cloud logging.",
       },
     ],
-    relatedSlugs: ["data-storage-calculator", "fuel-cost-calculator", "basic-calculator"],
+    relatedSlugs: ["data-storage-calculator", "ratio-calculator", "fuel-cost-calculator"],
   },
   {
     id: "data-storage-calculator",
@@ -1226,21 +1693,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "transfer speed",
       "bytes converter",
     ],
-    formula: "Bytes = Value × Base^Exponent (Base 1024 for binary KiB/GiB, 1000 for decimal KB/GB)",
+    formula:
+      "Decimal (SI): 1 GB = 1,000 MB = 10^9 bytes; Binary (IEC): 1 GiB = 1,024 MiB = 2^30 bytes",
     explanation:
-      "Convert digital storage capacities across all standard orders of magnitude and calculate estimated download or upload times given internet connection speeds.",
+      "Data Storage Calculator converts digital data capacities between binary (base-2, IEC standard) and decimal (base-10, SI standard) measurement units directly in your web browser. Designed for IT systems engineers sizing cloud storage buckets, software developers planning database partitions, PC gamers checking SSD capacities, and digital media producers estimating hard drive requirements for 4K video footage, this tool clarifies confusing storage specs.\n\nThe calculator explains why a newly purchased 1 Terabyte hard drive shows as only approximately 931 Gibibytes (GiB) when formatted in Windows. It seamlessly translates between bits, bytes, Kilobytes (KB), Megabytes (MB), Gigabytes (GB), Terabytes (TB), Petabytes (PB), and their binary counterparts (KiB, MiB, GiB, TiB). Key inputs include the numeric data quantity, source storage unit, and target output unit. Limitations include measuring theoretical uncompressed data capacity rather than predicting variable file compression or filesystem allocation block overhead.\n\nAll conversion calculations run locally via client-side JavaScript. None of your server disk configurations, cloud backup numbers, or database file sizes are transmitted to remote servers. This ensures private, instantaneous infrastructure planning for system administrators and tech enthusiasts alike.",
     howItWorks: [
       "Enter a data size and select its unit (MB, GB, TB, etc.).",
       "Optionally enter your internet speed in Mbps to calculate download time.",
     ],
+    example: {
+      title: "Example: Understanding why a 1 TB hard drive appears as 931 GiB in Windows",
+      description:
+        "Drive manufacturers advertise 1 TB in SI units: 1,000,000,000,000 bytes. Operating systems like Windows report binary Gibibytes (GiB): 1,000,000,000,000 / (1024^3) = 931.32 GiB. The drive is fully intact; the difference is base-10 vs. base-2 measurement.",
+      steps: [
+        "Enter 1 in the value field.",
+        "Set Source Unit: Terabyte (TB - Decimal 10^12).",
+        "Set Target Unit: Gibibyte (GiB - Binary 2^30).",
+        "View the result: 931.32 GiB.",
+      ],
+    },
     faqs: [
       {
-        question: "What is the difference between 1000 and 1024 bytes in a KB?",
+        question: "What is the difference between a Gigabyte (GB) and a Gibibyte (GiB)?",
         answer:
-          "Operating systems (like Windows) typically use binary (1 KB = 1,024 bytes), while storage hardware manufacturers often quote decimal (1 KB = 1,000 bytes).",
+          "A Gigabyte (GB) uses decimal notation (10^9 = 1,000,000,000 bytes). A Gibibyte (GiB) uses binary notation (2^30 = 1,073,741,824 bytes). Windows displays binary values labeled as 'GB'.",
+      },
+      {
+        question: "How do bits differ from bytes in network speeds and storage?",
+        answer:
+          "1 Byte equals 8 bits. Internet connection speeds are typically quoted in megabits per second (Mbps), while file downloads are measured in megabytes (MB). Divide Mbps by 8 to get download speed in MB/s.",
+      },
+      {
+        question: "How many Megabytes are in a Gigabyte?",
+        answer:
+          "In decimal SI units, there are 1,000 Megabytes in a Gigabyte. In binary IEC units, there are 1,024 Mebibytes in a Gibibyte.",
+      },
+      {
+        question: "Can I estimate how many photos or songs fit on an SD card?",
+        answer:
+          "Yes. Divide your card's total capacity in MB by the average file size (e.g., 5 MB per MP3 song or 12 MB per RAW photo) to estimate capacity.",
+      },
+      {
+        question: "Are my storage capacity queries recorded anywhere?",
+        answer:
+          "No. All conversions execute client-side in browser memory without sending any data over the internet.",
       },
     ],
-    relatedSlugs: ["unit-converter", "fuel-cost-calculator", "time-calculator"],
+    relatedSlugs: ["unit-converter", "scientific-calculator", "basic-calculator"],
   },
   {
     id: "fuel-cost-calculator",
@@ -1259,19 +1758,51 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "mileage calculator",
       "split gas cost",
     ],
-    formula: "Fuel Needed = Distance / Mileage; Total Cost = Fuel Needed × Price Per Unit",
+    formula: "Fuel Needed = Distance / Efficiency; Trip Cost = Fuel Needed × Price Per Unit",
     explanation:
-      "Plan road trip travel expenses by calculating exact fuel requirements based on vehicle fuel efficiency (L/100km, km/L, or MPG) and local gas prices.",
+      "Fuel Cost Calculator estimates total gasoline or diesel expenses, required fuel volume, and per-passenger travel costs for road trips and daily commutes directly in your web browser. Designed for holiday road travelers planning cross-country vacation budgets, gig-economy rideshare drivers tracking operating expenses, and corporate employees submitting mileage reimbursement claims, this tool provides clear travel cost estimates.\n\nThe calculator supports both metric (kilometers, liters per 100 km, or km/L) and US customary / imperial units (miles, miles per gallon - MPG). You can also factor in split costs among multiple travel passengers to easily determine everyone's fair contribution for weekend road trips. Key inputs include total route distance, vehicle fuel economy rating, fuel price per gallon or liter, and number of passengers splitting the expense. Limitations include computing steady-state fuel consumption without factoring severe traffic congestion, aggressive mountain climbing, or cargo weight variations.\n\nAll trip cost calculations execute locally on your device. Your travel destinations, driving distances, and personal budget estimates remain completely private and are never shared with advertisers, navigation providers, or external servers.",
     howItWorks: [
       "Enter trip distance and your vehicle's fuel efficiency.",
       "Enter fuel price per liter or gallon.",
       "Specify number of passengers to split the cost.",
     ],
+    example: {
+      title: "Example: Planning a 450-mile road trip split between 3 passengers",
+      description:
+        "Driving 450 miles in an SUV averaging 25 MPG, with gasoline priced at $3.50 per gallon: Fuel required = 450 / 25 = 18 gallons. Total trip fuel cost = 18 × $3.50 = $63.00. Splitting equally among 3 passengers = $21.00 per person.",
+      steps: [
+        "Enter Distance: 450 miles.",
+        "Enter Fuel Efficiency: 25 MPG.",
+        "Enter Fuel Price: $3.50 per gallon.",
+        "Enter Passengers: 3.",
+        "Click Calculate to view $63.00 total cost ($21.00 per passenger).",
+      ],
+    },
     faqs: [
       {
-        question: "How do I calculate MPG or L/100km?",
+        question: "How do I calculate my vehicle's actual fuel efficiency (MPG or L/100km)?",
         answer:
-          "Divide miles driven by gallons used for MPG, or divide liters used by kilometers driven multiplied by 100 for L/100km.",
+          "Fill your tank completely and record odometer mileage. Drive normally, fill up again, and note gallons/liters added. Divide distance driven by fuel added to find true MPG.",
+      },
+      {
+        question: "How does driving speed affect highway fuel economy?",
+        answer:
+          "Aerodynamic drag increases exponentially at higher speeds. Driving at 75 mph typically burns 10% to 15% more fuel than cruising at 60 mph.",
+      },
+      {
+        question: "Can I enter liters per 100 km instead of miles per gallon?",
+        answer:
+          "Yes. Toggle to Metric mode to enter distance in kilometers, fuel efficiency in L/100km or km/L, and fuel price per liter.",
+      },
+      {
+        question: "Does this calculator account for toll roads or vehicle depreciation?",
+        answer:
+          "This tool calculates direct fuel consumption costs. For complete business mileage tax deductions, consult standard IRS or local statutory mileage allowances.",
+      },
+      {
+        question: "Are my driving routes or travel plans stored anywhere?",
+        answer:
+          "No. IXDocs operates client-side with zero data tracking. Your road trip distances and costs are never saved or sent to servers.",
       },
     ],
     relatedSlugs: ["unit-converter", "tip-calculator", "basic-calculator"],
@@ -1296,21 +1827,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "text analyzer",
       "word count tool",
     ],
-    formula: "Words = sequence of non-whitespace tokens; Reading Time ≈ Words / 200 wpm",
+    formula:
+      "Words = Count(Tokens bounded by whitespace); Reading Time = Words / 200 wpm; Speaking Time = Words / 130 wpm",
     explanation:
-      "Fast, privacy-friendly text analysis that counts words, characters (with and without spaces), sentences, paragraphs, and reading times locally in your browser.",
+      "Word Counter provides real-time text analysis, character counts, reading time estimates, and sentence structure metrics directly inside your web browser. Designed for essayists adhering to academic paper guidelines, novelists tracking daily manuscript targets, social media managers drafting character-capped posts for Twitter/X and LinkedIn, and copywriters optimizing landing page headlines, this tool gives instant editorial clarity.\n\nAs you type or paste text, the tool updates word count, character count (with and without spaces), sentence count, paragraph count, and estimated reading and speaking durations. Estimated reading time is calculated at an average speed of 200 words per minute, while public speech delivery is estimated at 130 words per minute. Key inputs include raw text pasted or typed into the editor. Limitations include counting space-delimited linguistic tokens rather than performing advanced grammatical syntax parsing or semantic plagiarism checking.\n\nCrucially, all text analysis is performed locally in your browser memory using client-side JavaScript string parsers. Your confidential book chapters, private journal entries, academic dissertations, and corporate communications are never transmitted over the internet or logged on any external server.",
     howItWorks: [
       "Paste or type your text into the editor.",
       "Real-time metrics update immediately as you type.",
     ],
+    example: {
+      title: "Example: Checking an executive speech length against a 5-minute time limit",
+      description:
+        "An executive speech draft contains 650 words: At a standard speaking pace of 130 words per minute, speaking time = 650 / 130 = 5.0 minutes. Reading silently at 200 wpm takes 3.25 minutes. Total characters with spaces = 4,120.",
+      steps: [
+        "Paste the speech draft into the text area.",
+        "Review the statistics bar immediately: 650 words, 4,120 characters.",
+        "Verify Speaking Time: 5 minutes 0 seconds.",
+        "Verify Reading Time: 3 minutes 15 seconds.",
+      ],
+    },
     faqs: [
       {
-        question: "Is my text uploaded or stored anywhere?",
+        question: "How does the word counter handle hyphenated words or punctuation?",
         answer:
-          "No. All text processing runs 100% in your browser memory. Nothing is sent to our servers.",
+          "Hyphenated terms (such as 'state-of-the-art') are generally counted as single words, while standard punctuation marks are stripped from word tokens.",
+      },
+      {
+        question: "What reading speed is used for reading time calculations?",
+        answer:
+          "Reading time is based on an average adult silent reading speed of 200 to 250 words per minute. Speaking time is estimated at a conversational pace of 130 wpm.",
+      },
+      {
+        question: "Are there character limits for common social media platforms?",
+        answer:
+          "Yes. Twitter/X allows 280 characters for standard accounts, LinkedIn posts allow 3,000 characters, and Instagram captions allow 2,200 characters.",
+      },
+      {
+        question: "Can I paste very long documents like book manuscripts?",
+        answer:
+          "Yes. The client-side parser easily handles tens of thousands of words in real time without browser lag.",
+      },
+      {
+        question: "Is my pasted document or private writing saved or uploaded?",
+        answer:
+          "No. All text parsing runs entirely client-side on your local machine. No text is ever uploaded, cached, or transmitted across the internet.",
       },
     ],
-    relatedSlugs: ["basic-calculator", "password-generator", "qr-generator"],
+    relatedSlugs: ["basic-calculator", "data-storage-calculator", "unit-converter"],
   },
 
   // ── 8. Security ─────────────────────────────────────────────────────────────
@@ -1332,22 +1895,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "password strength",
       "crypto random",
     ],
-    formula: "Entropy (bits) = Length × log2(Character Pool Size)",
+    formula: "Entropy = L × log₂(N) bits; Selection = CSPRNG(crypto.getRandomValues)",
     explanation:
-      "Generates random passwords using the browser's cryptographically secure pseudo-random number generator (crypto.getRandomValues).",
+      "Password Generator creates cryptographically secure, high-entropy passwords tailored to custom security requirements directly in your web browser. Utilizing your device's native Cryptographically Secure Pseudorandom Number Generator (CSPRNG via window.crypto.getRandomValues), this tool helps protect your web accounts, email services, banking portals, and server infrastructure from brute-force attacks and dictionary cracking.\n\nThe generator offers granular controls to include or exclude uppercase letters, lowercase characters, numeric digits, and special symbols. It also allows you to exclude ambiguous characters (such as 0, O, 1, l, and I) to prevent transcription mistakes when copying credentials manually onto mobile screens. Key inputs include desired password length, character set checkboxes, and ambiguous character toggles. A fundamental limitation is that generating a secure credential is only step one; safeguarding it requires a reputable password manager rather than unencrypted text files.\n\nAll entropy generation and character selection occur strictly client-side on your local machine. No generated passwords, configuration settings, or cryptographic seeds are ever sent across the network or logged on cloud servers. This ensures your newly minted master passwords and credentials remain solely in your control.",
     howItWorks: [
       "Select password length (8–64 characters).",
       "Toggle uppercase, lowercase, numbers, and symbols.",
       "Click Generate and copy your password securely.",
     ],
+    example: {
+      title: "Example: Generating an ultra-secure 16-character credential",
+      description:
+        "Generating a 16-character password using uppercase (26), lowercase (26), digits (10), and special symbols (32): Total pool size N = 94. Entropy = 16 × log₂(94) = 104.9 bits of entropy, which would take billions of years to crack by modern brute-force clusters.",
+      steps: [
+        "Set length slider to 16 characters.",
+        "Check Uppercase, Lowercase, Numbers, and Symbols.",
+        "Click Generate Password.",
+        "Click the Copy button to place the credential securely on your clipboard.",
+      ],
+    },
     faqs: [
       {
-        question: "Are generated passwords logged or saved?",
+        question: "What makes a password cryptographically secure?",
         answer:
-          "Never. Generation uses window.crypto locally on your device. We have no servers observing your passwords.",
+          "A secure password combines high entropy (length of 14+ characters across diverse character pools) with true randomness generated by a CSPRNG rather than predictable pseudo-random seeds.",
+      },
+      {
+        question: "What are ambiguous characters and why exclude them?",
+        answer:
+          "Ambiguous characters look virtually identical in certain screen fonts (such as capital 'O' and zero '0', or lowercase 'l' and uppercase 'I'). Excluding them prevents frustrating login errors.",
+      },
+      {
+        question: "What is password entropy?",
+        answer:
+          "Entropy measures the theoretical unpredictability of a password in bits. A score above 80 bits is considered strong against modern automated offline password cracking attacks.",
+      },
+      {
+        question: "Can anyone on the internet see the password I just generated?",
+        answer:
+          "No. The password is created inside your device's browser memory using native hardware entropy APIs. No data is transmitted across the internet.",
+      },
+      {
+        question: "How should I store my generated passwords safely?",
+        answer:
+          "Store complex passwords in an encrypted password manager or hardware security key rather than saving them in plaintext files or sticky notes.",
       },
     ],
-    relatedSlugs: ["random-password-generator", "qr-generator", "word-counter"],
+    relatedSlugs: ["random-password-generator", "qr-generator", "barcode-generator"],
   },
   {
     id: "random-password-generator",
@@ -1365,21 +1959,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "wifi password",
       "strong password generator",
     ],
-    formula: "Cryptographic entropy using window.crypto.getRandomValues()",
+    formula:
+      "Security: S = Pool^Length; Entropy: H = Length × log₂(Pool Size) using Web Cryptography API",
     explanation:
-      "Instant, reliable password generation optimized for quick copy-paste workflows and maximum entropy.",
+      "Random Password Generator provides instant, one-click creation of strong, randomized credentials to defend your digital identity against credential stuffing, dictionary attacks, and automated brute-force attempts directly in your web browser. Designed for IT administrators provisioning temporary user logins, security professionals hardening server access, and everyday users safeguarding social media and financial accounts, this tool ensures genuine cryptographic randomness.\n\nUnlike rudimentary web scripts that rely on predictable Math.random() functions, this generator leverages the browser's hardware-backed Web Cryptography API (crypto.getRandomValues). It provides configurable length presets (from 8 to 64 characters) and custom rules to include symbols, numbers, capital letters, and avoid easily misread characters. Key inputs include password length sliders, character subset toggles, and instant re-roll buttons. Limitations include generating individual random strings rather than managing automated multi-factor authentication or account provisioning pipelines.\n\nAll random generation takes place locally inside your browser sandbox. Passwords are never sent across the internet, recorded in telemetry logs, or stored in cookies. You receive instantaneous, military-strength passwords with complete cryptographic privacy directly on your personal device.",
     howItWorks: [
       "Choose a quick preset (Simple, Strong, Ultra, or PIN).",
       "Copy your generated secret in one click.",
     ],
+    example: {
+      title: "Example: Generating a 20-character database root credential",
+      description:
+        "Generating a 20-character credential with all character sets active: Pool = 94 characters. Total possible combinations = 94^20 ≈ 2.9 × 10^39. Entropy = 131 bits, offering virtually unbreakable protection against offline dictionary attacks.",
+      steps: [
+        "Select Length: 20 characters.",
+        "Ensure all character sets (A-Z, a-z, 0-9, Symbols) are selected.",
+        "Click Generate.",
+        "Copy the generated credential directly to your secure password manager.",
+      ],
+    },
     faqs: [
       {
-        question: "What makes a password cryptographically secure?",
+        question: "How does crypto.getRandomValues differ from standard Math.random()?",
         answer:
-          "High entropy and unbiased random number generation via hardware-backed system RNG (Web Cryptography API).",
+          "Math.random() is pseudo-random and mathematically predictable, making it vulnerable to pattern analysis. crypto.getRandomValues pulls entropy from the operating system kernel, ensuring cryptographic unpredictability.",
+      },
+      {
+        question: "How long should a strong password be in 2026?",
+        answer:
+          "Security experts recommend a minimum of 14 to 16 characters for general accounts, and 20 or more characters for sensitive administrative or financial accounts.",
+      },
+      {
+        question: "Is it safe to generate passwords on a public website?",
+        answer:
+          "On IXDocs, yes. The generation code runs 100% locally in your client browser. Disconnecting your internet connection before generating will confirm that no server interaction occurs.",
+      },
+      {
+        question: "Can I generate memorable passphrases instead of random characters?",
+        answer:
+          "This tool focuses on randomized high-entropy character strings. For multi-word passphrases, check out our related security utilities.",
+      },
+      {
+        question: "Does IXDocs keep a copy of generated passwords?",
+        answer:
+          "No. IXDocs has no server-side storage, user databases, or session tracking. Once you close or refresh the page, the generated password is gone from memory.",
       },
     ],
-    relatedSlugs: ["password-generator", "qr-generator", "word-counter"],
+    relatedSlugs: ["password-generator", "qr-generator", "barcode-generator"],
   },
 
   // ── 9. QR & Barcode ─────────────────────────────────────────────────────────
@@ -1395,22 +2021,54 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
     icon: QrCode,
     popular: true,
     keywords: ["qr generator", "qr code maker", "free qr code", "download qr code", "wifi qr code"],
-    formula: "ISO/IEC 18004 QR barcode standard with Reed-Solomon error correction",
+    formula:
+      "QR Encoding: Data Payload => Reed-Solomon Error Correction (L: 7%, M: 15%, Q: 25%, H: 30%) => 2D Matrix Modules",
     explanation:
-      "Generate high-resolution QR codes completely in your browser. Supports links, plaintext, WiFi credentials, vCards, and emails.",
+      "QR Generator creates custom, high-resolution Quick Response (QR) matrix barcodes directly inside your web browser. Perfect for small businesses printing contactless table menus, event organizers sharing Wi-Fi credentials, marketers linking product packaging to landing pages, and individuals sharing contact vCards, this tool generates clean, instantly scannable codes.\n\nThe generator supports multiple payload formats including URLs, plain text messages, email addresses, phone numbers, and Wi-Fi network configurations. It incorporates adjustable Reed-Solomon error correction levels (Low, Medium, Quartile, High). High error correction allows codes to remain scannable even if up to 30% of the graphic is smudged, torn, or overlaid with a central brand logo. Key inputs include payload text, error correction level, matrix size, and download format (PNG/SVG). A key limitation is that standard static QR codes embed fixed data payloads that cannot be redirected after printing without using a dynamic URL shortener.\n\nAll QR code matrix rendering takes place locally on your computer or smartphone using client-side canvas and vector rendering engines. None of your proprietary website URLs, Wi-Fi network passwords, or private contact details are sent to external tracking servers or URL-shortening redirectors. You can download crisp, production-ready vector graphics without tracking redirects.",
     howItWorks: [
       "Select content type and enter your URL or text.",
       "Customize size and error correction level.",
       "Download high-resolution PNG or vector SVG.",
     ],
+    example: {
+      title: "Example: Creating an offline Wi-Fi access QR code for a coffee shop",
+      description:
+        "Generate a formatted Wi-Fi string: WIFI:S:CoffeeLounge;T:WPA;P:FreshBeans2026;; with High (H) error correction. Customers scan the code to join the network automatically without typing the password.",
+      steps: [
+        "Select Wi-Fi or Text mode.",
+        "Enter network credentials or website URL.",
+        "Select Error Correction Level: 'High (30%)'.",
+        "Download the resulting QR code as a high-resolution PNG or vector SVG.",
+      ],
+    },
     faqs: [
       {
-        question: "Do these QR codes ever expire?",
+        question: "Do these QR codes expire or have scan limits?",
         answer:
-          "No. These are direct static QR codes. They encode your data directly and never expire.",
+          "No. These are static QR codes that encode your raw text or URL directly into the matrix pattern. They never expire and have zero scan limits.",
+      },
+      {
+        question: "What is the best error correction level to select?",
+        answer:
+          "Use 'Medium' (15%) for clean digital screens. Use 'High' (30%) if you plan to print on outdoor banners or place a logo in the center of the code.",
+      },
+      {
+        question: "Can I download the QR code as a scalable vector graphic (SVG)?",
+        answer:
+          "Yes. SVG vector format allows unlimited scaling for large promotional print materials without any pixelation or loss of sharpness.",
+      },
+      {
+        question: "Are my scanned links routed through a tracking redirector?",
+        answer:
+          "No. Unlike commercial dynamic QR services, IXDocs generates direct static codes without intermediary tracking domains or redirect hops.",
+      },
+      {
+        question: "Is my Wi-Fi password or URL sent to your servers?",
+        answer:
+          "No. All QR matrix computation happens strictly in your browser using local client-side JavaScript. Nothing is uploaded or stored.",
       },
     ],
-    relatedSlugs: ["barcode-generator", "word-counter", "password-generator"],
+    relatedSlugs: ["barcode-generator", "password-generator", "random-password-generator"],
   },
   {
     id: "barcode-generator",
@@ -1431,27 +2089,53 @@ const RAW_CALCULATORS: CalculatorMeta[] = [
       "product barcode",
     ],
     formula:
-      "Standard 1D symbologies with automated checksum computation (JsBarcode client engine)",
+      "Code 128 / EAN-13: Start Pattern + Encoded Data Words + Modulo Checksum + Stop Pattern",
     explanation:
-      "Generate retail, inventory, and packaging barcodes in your browser. Supports Code 128, EAN-13, UPC-A, EAN-8, and Code 39 with printable label views.",
+      "Barcode Generator produces standard, high-density linear 1D barcodes directly in your web browser. Engineered for small warehouse managers organizing inventory, retail shops generating EAN/UPC product labels, e-commerce merchants packaging shipments, and office managers tracking asset tags, this tool provides instant scannable barcode graphics.\n\nThe tool supports major global symbologies including Code 128 (high-density alphanumeric coding ideal for logistics and shipping), EAN-13 / UPC-A (standard global point-of-sale retail barcodes), and Code 39. It automatically computes required modulo checksum verification digits to guarantee that handheld laser and optical scanners read the barcode accurately. Key inputs include the raw alphanumeric or numeric data string, chosen barcode symbology, bar width scaling, and human-readable text toggles. Limitations include generating 1D linear codes with finite character density rather than high-capacity 2D matrix formats like QR codes.\n\nAll barcode rendering executes client-side using HTML5 canvas and SVG vector graphics. Your proprietary inventory SKU numbers, internal tracking serials, and retail product codes are never transmitted to external databases or stored on web servers. You can export crisp, print-ready barcodes for direct thermal or laser printing.",
     howItWorks: [
       "Enter your barcode numbers or alphanumeric code.",
       "Select the desired barcode symbology (e.g. Code 128 or EAN-13).",
       "Download as PNG, vector SVG, or print directly to label sheets.",
     ],
+    example: {
+      title: "Example: Generating a Code 128 shipping barcode for inventory asset tracking",
+      description:
+        "Encoding internal asset tag 'INV-2026-X89' using Code 128: The generator calculates start characters, encodes alphanumeric ASCII pairs, appends the modulo-103 checksum, and renders clean parallel bars with human-readable text underneath.",
+      steps: [
+        "Select Symbology: Code 128.",
+        "Enter Value: INV-2026-X89.",
+        "Ensure 'Show human-readable text' is checked.",
+        "Download high-resolution image ready for thermal label printing.",
+      ],
+    },
     faqs: [
       {
-        question: "Which barcode format should I use for retail?",
+        question: "Which barcode format should I choose for general inventory?",
         answer:
-          "Use UPC-A for products sold in the United States and Canada, or EAN-13 for international retail products worldwide.",
+          "Code 128 is the most versatile format for internal inventory, logistics, and asset tracking because it encodes both uppercase letters, lowercase letters, and numbers compactly.",
       },
       {
-        question: "Which format is best for warehouse inventory?",
+        question: "Can I use these barcodes for commercial retail products in supermarkets?",
         answer:
-          "Code 128 is the industry standard for internal inventory, shipping labels, and asset tracking.",
+          "Commercial retail checkout scanners require registered GS1 EAN-13 or UPC barcodes. If you own an authorized GS1 barcode number, you can generate the scannable graphic here.",
+      },
+      {
+        question: "What is the purpose of the checksum digit?",
+        answer:
+          "The checksum digit is a mathematically calculated verification value that enables barcode scanners to detect read errors or damaged lines before transmitting data.",
+      },
+      {
+        question: "What resolution should I use for printing on thermal label printers?",
+        answer:
+          "Download vector SVG or high-DPI PNG format to ensure clean, crisp line edges that prevent laser scanner misreads on standard 203 DPI or 300 DPI thermal label printers.",
+      },
+      {
+        question: "Are my internal inventory SKU numbers logged or shared?",
+        answer:
+          "No. All barcode generation takes place locally on your computer inside your web browser. No SKU or serial numbers are ever sent over the network.",
       },
     ],
-    relatedSlugs: ["qr-generator", "bill-calculator", "unit-converter"],
+    relatedSlugs: ["qr-generator", "password-generator", "unit-converter"],
   },
 
   // ── 10. Billing ─────────────────────────────────────────────────────────────

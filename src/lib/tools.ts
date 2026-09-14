@@ -1574,7 +1574,7 @@ const ALL_TOOLS: Tool[] = [
     name: "Compress PDF to Target Size",
     metaTitle: "Compress PDF to 100 KB, 200 KB or 500 KB | IXDocs",
     metaDescription:
-      "Compress a PDF towards an exact target size such as 100 KB, 200 KB, 500 KB or a custom limit. IXDocs reports the real result honestly.",
+      "Compress a PDF towards a chosen maximum size limit such as 100 KB, 200 KB, 500 KB or a custom limit. IXDocs reports the real result honestly.",
     short: "Hit an upload limit like 200 KB or 1 MB.",
     intro:
       "Many application forms demand a maximum file size. IXDocs searches compression settings to get as close to your target as possible and tells you the true result — including when the target is not reachable.",
@@ -1642,7 +1642,7 @@ const ALL_TOOLS: Tool[] = [
       },
     ],
     about:
-      "Compress PDF to Target Size allows you to compress your PDF documents to an exact target file size—such as 100 KB, 200 KB, 500 KB, or 1 MB—directly in your web browser. This specialized tool solves the common frustration of uploading documents to government portals, job application boards, visa application systems, and university admissions websites that enforce strict upper file size limits.\n\nInstead of guessing generic compression percentages, you simply enter your required maximum file size in kilobytes or select a popular preset. The intelligent client-side optimization algorithm performs iterative compression passes, dynamically adjusting image resolution, color subsampling, and stream compression to meet your specified size ceiling while maintaining the highest possible legibility for text and scanned imagery.\n\nBecause the entire multi-pass compression analysis runs locally inside your browser memory using WebAssembly and client-side canvas engines, your personal documents—such as passports, tax filings, and diplomas—are never transmitted over the internet. You achieve the exact file size required for successful portal submissions without sacrificing privacy or paying for premium subscriptions.",
+      "Compress PDF to Target Size helps reduce your PDF to a chosen maximum size limit—such as 100 KB, 200 KB, 500 KB, or 1 MB—directly in your browser. This specialized tool solves the common frustration of uploading documents to government portals, job application boards, visa application systems, and university admissions websites that enforce strict upper file size limits.\n\nInstead of guessing generic compression percentages, you simply enter your required maximum file size in kilobytes or select a popular preset. The intelligent client-side optimization algorithm performs iterative compression passes, dynamically adjusting image resolution, color subsampling, and stream compression to meet your specified size ceiling while maintaining the highest possible legibility for text and scanned imagery. If a document carries too much detail to reach an aggressive ceiling without becoming illegible, the tool reports the closest achievable size honestly.\n\nBecause the entire multi-pass compression analysis runs locally inside your browser memory using WebAssembly and client-side canvas engines, your personal documents—such as passports, tax filings, and diplomas—are never transmitted over the internet. You can prepare documents for portal upload limits with confidence, complete privacy, and zero subscriptions.",
     related: [
       "compress-pdf",
       "application-pdf-optimizer",
@@ -2257,7 +2257,7 @@ const ALL_TOOLS: Tool[] = [
       "Create a QR code from any text or URL. Generate it instantly in your browser and download it as an image.",
     category: "Convert",
     icon: QrCode,
-    ready: true,
+    ready: false,
     accept: "",
     acceptLabel: "Text or URL",
     multiple: false,

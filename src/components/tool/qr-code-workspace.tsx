@@ -3,6 +3,7 @@ import { Download, QrCode, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { VerificationReminder } from "@/components/ui/verification-reminder";
 import { triggerBrowserDownload } from "@/lib/download";
 
 /**
@@ -37,7 +38,7 @@ export function QrCodeWorkspace() {
         width: 400,
         margin: 4,
         color: {
-          dark: "#111827",  // Near-black modules
+          dark: "#111827", // Near-black modules
           light: "#ffffff", // White background
         },
         errorCorrectionLevel: "M", // Medium – good for normal URLs
@@ -176,24 +177,27 @@ export function QrCodeWorkspace() {
 
       {/* Action buttons */}
       {generated ? (
-        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Button
-            id="qr-download-btn"
-            onClick={downloadPng}
-            className="min-h-11 w-full sm:w-auto"
-          >
-            <Download className="size-4" aria-hidden="true" />
-            Download PNG
-          </Button>
-          <Button
-            id="qr-reset-btn"
-            variant="outline"
-            onClick={reset}
-            className="min-h-11 w-full sm:w-auto"
-          >
-            <RotateCcw className="size-4" aria-hidden="true" />
-            Clear
-          </Button>
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center w-full">
+            <Button
+              id="qr-download-btn"
+              onClick={downloadPng}
+              className="min-h-11 w-full sm:w-auto"
+            >
+              <Download className="size-4" aria-hidden="true" />
+              Download PNG
+            </Button>
+            <Button
+              id="qr-reset-btn"
+              variant="outline"
+              onClick={reset}
+              className="min-h-11 w-full sm:w-auto"
+            >
+              <RotateCcw className="size-4" aria-hidden="true" />
+              Clear
+            </Button>
+          </div>
+          <VerificationReminder variant="pdf" align="center" className="mt-1" />
         </div>
       ) : null}
 
