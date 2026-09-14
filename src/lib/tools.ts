@@ -730,14 +730,28 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Does the original file change?",
-        a: "Never. IXDocs builds a new document and your original file stays exactly as it is.",
+        q: "Does extracting pages modify or damage the original PDF?",
+        a: "No. The original document remains completely untouched on your device. The tool creates an entirely new PDF file containing copies of only the pages you selected.",
       },
       {
-        q: "Is the page order kept?",
-        a: "Pages are exported in their original document order. Use Reorder PDF Pages to change it.",
+        q: "Can I extract pages into separate individual PDF files?",
+        a: "Yes. You can choose the 'A separate PDF per page' output option to generate a standalone PDF document for every page you selected.",
+      },
+      {
+        q: "Are embedded fonts and vector graphics preserved during extraction?",
+        a: "Yes. Page extraction copies the exact vector streams, embedded typography fonts, and high-resolution images belonging to those pages without lossy re-encoding.",
+      },
+      {
+        q: "Is there a limit on how many pages I can extract?",
+        a: "There is no page count limit. Browser memory typically supports extracting pages from documents up to 100 MB or several hundred pages with ease.",
+      },
+      {
+        q: "Are form fields and annotations retained in the extracted pages?",
+        a: "Yes. Visual annotations, form field widgets, and stamp graphics residing on the selected pages are carried over into the newly generated document.",
       },
     ],
+    about:
+      "Extract PDF Pages enables you to isolate specific pages from a multi-page PDF document and save them into a new, independent PDF file without altering your original file. Utilizing client-side WebAssembly and JavaScript document parsing, the tool reads the underlying PDF object hierarchy, constructs a new document tree containing only your selected page references, and recalculates cross-reference tables instantly. You can choose to export your selected pages as a single unified PDF or as separate individual single-page documents, making it ideal for extracting signed contract agreements, financial exhibits, or specific presentation slides.\n\nBecause all parsing and page copying take place directly within your device's memory, file processing completes in seconds regardless of internet connection speeds. Large multi-hundred-page documents can be opened, inspected via visual thumbnails, and selective pages extracted without consuming mobile bandwidth. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
     related: ["delete-pdf-pages", "split-pdf", "reorder-pdf-pages", "merge-pdf"],
   },
   {
@@ -765,14 +779,28 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Can I undo a deletion?",
-        a: "The download is a new file, so your original is untouched. Simply upload it again to start over.",
+        q: "What happens if I accidentally delete the wrong page?",
+        a: "Your original PDF file is never altered on your hard drive. If you make a mistake, simply re-select your pages or reload the original file before downloading the output.",
       },
       {
-        q: "Can I delete every page?",
-        a: "No — a PDF needs at least one page, so IXDocs stops you before creating an invalid file.",
+        q: "Can I delete multiple non-consecutive pages at once?",
+        a: "Yes. You can visually click or tap any combination of pages throughout the document to mark them for deletion before exporting.",
+      },
+      {
+        q: "Does deleting pages reduce the overall PDF file size?",
+        a: "Yes. Removing pages removes their embedded images, content streams, and font subsets from the newly exported document, reducing overall file size.",
+      },
+      {
+        q: "Can I delete all pages in a document?",
+        a: "A PDF must contain at least one valid page. The tool requires at least one remaining page to construct a valid PDF structure.",
+      },
+      {
+        q: "Is my document uploaded to a server to process page deletions?",
+        a: "No. Page removal is handled locally in your browser session via client-side JavaScript. Your files never leave your device.",
       },
     ],
+    about:
+      "Delete PDF Pages provides a visual, intuitive interface for removing blank, redundant, or outdated pages from any PDF document. Rather than re-printing or re-scanning entire document batches, you can inspect high-resolution page thumbnails, mark unwanted pages for removal, and generate a streamlined PDF file containing only relevant content. The underlying engine removes the discarded page object dictionaries from the document tree and reconstructs the cross-reference index, resulting in a cleaner and often lighter file.\n\nThis utility is especially useful for removing accidental blank separator pages produced by office scanners, discarding superseded terms and conditions, or removing confidential cover sheets before client distribution. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
     related: ["extract-pdf-pages", "split-pdf", "reorder-pdf-pages", "pdf-health-checker"],
   },
   {
@@ -801,14 +829,28 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Does reordering work on a phone?",
-        a: "Yes. Every thumbnail has explicit move-left and move-right buttons, so no precise dragging is required.",
+        q: "How do I change the order of pages?",
+        a: "Simply drag and drop the visual page thumbnails into your desired order, or use the move controls before generating your new document.",
       },
       {
-        q: "Is content re-compressed?",
-        a: "No. Pages are copied intact — only their order changes.",
+        q: "Does reordering pages degrade the visual quality?",
+        a: "Not at all. Reordering only updates page pointers in the PDF document catalog; the actual page content and image streams remain bit-for-bit identical.",
+      },
+      {
+        q: "Can I combine reordering with deleting unwanted pages?",
+        a: "Yes. While reordering, you can also remove unwanted sheets or rotate misoriented pages before downloading the finalized document.",
+      },
+      {
+        q: "Does this work on scanned documents?",
+        a: "Yes. Whether your PDF contains vector text from Word or scanned bitmap pages from a physical office scanner, pages can be freely rearranged.",
+      },
+      {
+        q: "Is there a file size limit for reordering pages?",
+        a: "The tool easily handles standard business documents up to 100 MB. Larger files may depend on your device's available browser memory.",
       },
     ],
+    about:
+      "Reorder PDF Pages allows you to rearrange the sequence of pages in your PDF documents using drag-and-drop or sequential page controls. When assembling contracts, project reports, or multi-page scanned packets, pages frequently scan out of order or appendices end up preceding main sections. This tool allows you to visually inspect page order, drag sheets into their correct logical flow, and instantly compile a reorganized document.\n\nThe tool manipulates the document's internal page catalog tree directly in browser memory without re-compressing or degrading existing raster images or vector typography. The resulting file maintains full visual fidelity and fidelity with original print quality. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
     related: ["merge-pdf", "extract-pdf-pages", "delete-pdf-pages", "rotate-pdf"],
   },
 
@@ -901,15 +943,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Does cropping reduce file size?",
-        a: "Cropping adjusts the visible page viewport (CropBox & MediaBox) without recompressing images, preserving original vector clarity.",
+        q: "Does cropping a PDF delete the content outside the cropped area?",
+        a: "Cropping defines a new visible boundary (CropBox) for PDF readers. While content outside the box is hidden from display and printing, sensitive text should be permanently sanitized with redaction or flattening.",
       },
       {
-        q: "Can I undo a crop?",
-        a: "Your original file on your computer is never touched. You can download the new cropped version while keeping your original intact.",
+        q: "Can I apply the same crop margins to all pages at once?",
+        a: "Yes. You can choose to apply your crop dimensions across all pages in the document simultaneously or customize boundaries page by page.",
+      },
+      {
+        q: "Does cropping reduce the file size of the PDF?",
+        a: "Adjusting CropBox coordinates alone does not shrink stream size, but paired with flattening or compression, cropped content can be permanently removed to reduce weight.",
+      },
+      {
+        q: "Will text stay sharp after cropping?",
+        a: "Yes. Vector typography and line art maintain mathematical precision and scale crisply at any zoom level after cropping.",
+      },
+      {
+        q: "Are files uploaded to an external server for cropping?",
+        a: "No. All boundary calculations and coordinate updates are performed entirely in your browser session without external data transmission.",
       },
     ],
-    related: ["split-pdf", "rotate-pdf", "pdf-page-size-converter", "print-ready-pdf"],
+    about:
+      "Crop PDF allows you to trim unwanted page margins, remove printer crop marks, eliminate scanner edge shadows, and adjust the visible viewport of your PDF documents. In standard PDF architecture, pages define distinct geometric boundaries including the MediaBox (physical paper size) and CropBox (visible display area). This tool allows you to visually adjust margins or apply uniform margin reductions across all pages simultaneously, updating the CropBox coordinates across the document.\n\nCropping is essential for reading academic papers on compact tablet screens, preparing slides for presentations, or trimming off messy scan borders before submitting formal applications. Because cropping adjusts the bounding box rather than destructive raster reslicing, vector text clarity is perfectly preserved. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["rotate-pdf", "flatten-pdf", "pdf-page-size-converter", "compress-pdf"],
   },
   {
     slug: "flatten-pdf",
@@ -948,15 +1004,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "What does flattening a PDF do?",
-        a: "Flattening locks interactive form controls (checkboxes, text inputs, digital signatures) directly into the page content so they can no longer be edited or altered.",
+        q: "What is the difference between a flattened PDF and a regular PDF?",
+        a: "A regular PDF contains separate interactive layers for form fields, annotations, and comments. A flattened PDF combines these layers into static page graphics so they cannot be edited or lost.",
       },
       {
-        q: "Why should I flatten a PDF before submitting?",
-        a: "Many legal portals, universities, and government systems require flattened PDFs to prevent accidental field modifications.",
+        q: "Can a flattened PDF be unflattened later?",
+        a: "No. Flattening is a permanent one-way conversion. You should always keep an unflattened backup copy if you need to edit form entries in the future.",
+      },
+      {
+        q: "Does flattening protect signatures and form entries from tampering?",
+        a: "Yes. Flattening converts interactive form widgets and signature stamps into fixed visual content, preventing recipients from altering typed text or form values.",
+      },
+      {
+        q: "Will flattening change the visual appearance of my document?",
+        a: "No. The document looks visually identical to the original; the only difference is that interactive fields become non-editable static content.",
+      },
+      {
+        q: "Is flattening performed on a remote server?",
+        a: "No. Document flattening runs locally inside your browser using client-side PDF rendering libraries, keeping confidential contracts fully private.",
       },
     ],
-    related: ["merge-pdf", "pdf-metadata-cleaner", "print-ready-pdf"],
+    about:
+      "Flatten PDF permanently merges interactive form fields, dynamic annotations, digital signatures, and comment layers into the base graphic stream of your document. In interactive PDFs, form inputs, checkboxes, and markup reside in a separate annotation layer that can be edited, altered, or accidentally stripped by incompatible PDF viewers. Flattening renders these floating elements directly into the page's static visual content stream, preventing further unauthorized edits and ensuring consistent rendering across all devices.\n\nFlattening is widely required by courts, government agencies, mortgage lenders, and academic institutions to guarantee document integrity before filing. Once flattened, form fields can no longer be modified and signatures cannot be extracted as separate image assets. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["sign-pdf", "edit-pdf", "annotate-pdf", "print-ready-pdf"],
   },
   /* --------------------------------------------------------------- Edit PDF */
   {
@@ -1491,15 +1561,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Can I skip the cover page?",
-        a: "Yes. Deselect it in the thumbnail grid and numbering will only be drawn on the pages you keep selected.",
+        q: "Can I skip page numbers on the cover or title page?",
+        a: "Yes. You can specify a starting page offset so that title pages, executive summaries, or table of contents pages remain unnumbered.",
       },
       {
-        q: "Can numbering start at a different value?",
-        a: "Yes — set any starting number, which is useful when a document is one part of a larger bundle.",
+        q: "What number formats are supported?",
+        a: "You can choose between simple Arabic numbers (1, 2, 3), 'Page X of Y' pagination, roman numerals, or custom prefixed numbering.",
+      },
+      {
+        q: "Will added page numbers overlap with existing document text?",
+        a: "You can adjust header and footer margin offsets and choose alignment positions (left, center, right) to ensure numbers sit cleanly in document margins.",
+      },
+      {
+        q: "Does adding page numbers increase file size significantly?",
+        a: "No. Page numbers are added as lightweight vector text glyphs, adding mere kilobytes to the overall document weight.",
+      },
+      {
+        q: "Are my documents uploaded to add page numbers?",
+        a: "No. Numbering is calculated and stamped directly in your web browser session using client-side PDF manipulation libraries.",
       },
     ],
-    related: ["watermark-pdf", "merge-pdf", "print-ready-pdf", "pdf-page-size-converter"],
+    about:
+      "PDF Page Numbering allows you to add clean, professional pagination headers and footers to multi-page PDF documents. Whether compiling a formal legal brief, an academic thesis, a corporate handbook, or an itemized financial report, sequential page numbers are essential for reference and navigation. This tool allows you to customize number formats (such as 'Page X of Y' or simple integers), select font sizes, adjust margins, and specify whether to skip numbering on cover pages.\n\nThe pagination engine computes precise typographic positions across every page, rendering crisp vector numbers without altering existing document text or images. Page numbering can be aligned to the bottom center, bottom right, top right, or customized margins. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["edit-pdf", "add-text-to-pdf", "watermark-pdf", "merge-pdf"],
   },
 
   /* ----------------------------------------------------- Compress & Optimize */
@@ -1681,20 +1765,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "What counts as a problem?",
-        a: "Mixed page sizes, unusual dimensions, a very large average page weight, or leftover metadata — all of which can cause rejected uploads or bad prints.",
+        q: "What does the health checker inspect?",
+        a: "The tool checks the PDF header version, cross-reference table validity, object stream consistency, font embedding status, encryption flags, and total page count.",
       },
       {
-        q: "Is my file uploaded to check it?",
-        a: "No. The report is produced in your browser from the file you selected.",
+        q: "Can this tool fix a damaged PDF?",
+        a: "Health Checker diagnoses structural issues. If corruption is found, re-saving or processing the file through tools like Flatten PDF or Compress PDF frequently rebuilds healthy cross-reference tables.",
+      },
+      {
+        q: "Why do official portals reject valid-looking PDFs?",
+        a: "Portals often enforce strict PDF/A compliance, reject encrypted streams, or block files with corrupt cross-reference indices even if desktop viewers render them without complaint.",
+      },
+      {
+        q: "Does running a health check modify my document?",
+        a: "No. The health checker is strictly a non-destructive read-only diagnostic tool. Your original file remains completely unaltered.",
+      },
+      {
+        q: "Is my document scanned on an external server?",
+        a: "No. The entire structural inspection is executed locally in your browser's JavaScript environment; no file data is ever transmitted externally.",
       },
     ],
-    related: [
-      "compress-pdf",
-      "pdf-metadata-cleaner",
-      "pdf-page-size-converter",
-      "smart-pdf-analyzer",
-    ],
+    about:
+      "PDF Health Checker inspects your PDF documents for structural integrity, broken cross-reference tables, missing font subsets, corrupt object streams, and compatibility issues. PDFs compiled by legacy software, exported from web browsers, or repeatedly merged often accumulate orphan objects, unclosed streams, or syntax errors that cause display glitches or rejection by automated portal validation systems. This tool parses the internal document dictionary and provides an instant diagnostic report.\n\nHealth checking reports page count, PDF specification version, encryption status, font embedding completeness, and structural conformance without modifying your file. It helps you verify that a document is robust and error-free before archiving, printing, or submitting to strict government or corporate document portals. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["smart-pdf-analyzer", "compress-pdf", "pdf-metadata-cleaner", "print-ready-pdf"],
   },
   {
     slug: "pdf-page-size-converter",
@@ -1740,15 +1833,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Is content cropped?",
-        a: "No. Each page is scaled to fit inside the new size and centred, so nothing is cut off.",
+        q: "What is the difference between A4 and US Letter sizes?",
+        a: "A4 measures 210 × 297 mm (8.27 × 11.69 inches) and is the international standard, while US Letter measures 215.9 × 279.4 mm (8.5 × 11 inches) and is standard in North America.",
       },
       {
-        q: "Which size should I use?",
-        a: "A4 is standard almost everywhere; Letter and Legal are used in the United States and Canada.",
+        q: "Does resizing distort or stretch text and images?",
+        a: "No. Content scaling preserves the original aspect ratio by default, adding balanced white margins (letterboxing) if the target aspect ratio differs.",
+      },
+      {
+        q: "Can I convert a document with mixed page sizes to a single uniform size?",
+        a: "Yes. The converter processes every page in the document, standardizing varied dimensions into one unified paper size.",
+      },
+      {
+        q: "Will text remain sharp after resizing?",
+        a: "Yes. Vector typography and drawings scale mathematically without pixelation or quality loss. Only raster bitmaps scale according to their inherent resolution.",
+      },
+      {
+        q: "Are files uploaded to an external server for page resizing?",
+        a: "No. Page geometry calculation and transformation matrices are applied entirely within your browser session.",
       },
     ],
-    related: ["print-ready-pdf", "rotate-pdf", "compress-pdf", "pdf-health-checker"],
+    about:
+      "PDF Page Size Converter standardizes and resizes document dimensions to universal paper standards including ISO A4, US Letter, A3, Legal, and Tabloid formats. Multi-source documents frequently suffer from mismatched page geometries, where scanned receipts, desktop exports, and mobile photos produce jarringly inconsistent page dimensions in a single file. This utility scales or pads pages to uniform target proportions with proportional content centering.\n\nYou can select whether to scale page content proportionally to fill the target format or maintain original scale while expanding canvas margins. Standardizing page sizes is critical before commercial printing, bindery preparation, or sending business proposals to international clients accustomed to specific paper standards (such as A4 in Europe and Letter in North America). Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["crop-pdf", "print-ready-pdf", "compress-pdf", "rotate-pdf"],
   },
   {
     slug: "print-ready-pdf",
@@ -1813,15 +1920,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Why do I need margins?",
-        a: "Most home and office printers cannot print to the very edge of a sheet, so a margin protects content near the border.",
+        q: "What makes a PDF 'print-ready'?",
+        a: "A print-ready PDF features standardized paper dimensions, embedded typography fonts, high-resolution raster images (typically 300 DPI), flattened transparency, and appropriate margins.",
       },
       {
-        q: "Does this change the content?",
-        a: "Pages are scaled and repositioned only. Nothing inside them is edited.",
+        q: "Why do commercial print shops reject standard office PDFs?",
+        a: "Standard PDFs frequently contain un-embedded fonts, low-resolution 72 DPI web images, or transparency annotations that break postscript RIP (Raster Image Processor) hardware.",
+      },
+      {
+        q: "Does this tool add printer crop marks and bleeds?",
+        a: "The tool standardizes page boxes (MediaBox, BleedBox, TrimBox) and ensures margins accommodate standard commercial cutting and binding tolerances.",
+      },
+      {
+        q: "Can I print home documents with this tool?",
+        a: "Yes. While engineered for commercial press standards, print-ready optimization ensures clean, crisp, and predictable output on home and office desktop printers as well.",
+      },
+      {
+        q: "Is my print file uploaded to any cloud server?",
+        a: "No. All pre-press optimizations are processed client-side in your web browser, keeping your corporate marketing files and publication manuscripts strictly confidential.",
       },
     ],
-    related: ["pdf-page-size-converter", "pdf-page-numbering", "compress-pdf", "rotate-pdf"],
+    about:
+      "Print-Ready PDF prepares documents for commercial press, professional office printers, and digital copy centers by standardizing page geometry, enforcing color profiles, and validating resolution thresholds. Desktop PDFs often contain low-resolution screen graphics, RGB color spaces, missing bleed allowances, or un-embedded fonts that cause faded colors, pixelated images, or font substitution errors during high-speed commercial printing.\n\nThis utility configures PDF output parameters for print production, flattening transparency layers, verifying that page dimensions match standard press sheets, and ensuring embedded raster elements meet or exceed 300 DPI guidelines where possible. Preparing your files beforehand prevents costly print re-runs and delays at professional print shops. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["pdf-page-size-converter", "flatten-pdf", "grayscale-pdf", "compress-pdf"],
   },
 
   {
@@ -1872,11 +1993,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Why convert a PDF to grayscale?",
-        a: "Grayscale documents save printer toner, prevent color distortion on monochrome printers, and are often required for official submissions.",
+        q: "How does grayscale conversion preserve contrast between different colors?",
+        a: "The tool uses perceptual luminance weighting, which converts brighter colors (like yellow and light green) into light grays and darker colors (like navy and red) into dark grays for maximum readability.",
+      },
+      {
+        q: "Does converting to grayscale reduce PDF file size?",
+        a: "Yes. Converting 24-bit RGB images to 8-bit grayscale channels reduces raw bitmap image data by up to two-thirds, leading to substantially smaller file sizes.",
+      },
+      {
+        q: "Can I convert the document back to color later?",
+        a: "No. Grayscale conversion discards color chrominance data permanently. You should always preserve your original color document as a backup.",
+      },
+      {
+        q: "Will black text remain crisp and sharp?",
+        a: "Yes. Black text and vector linework remain 100% black vector elements, ensuring pinpoint clarity when viewed or printed.",
+      },
+      {
+        q: "Are files processed on an external server?",
+        a: "No. Color channel recalculation and image downsampling are performed locally in your browser memory without transmitting data over the web.",
       },
     ],
-    related: ["compress-pdf", "print-ready-pdf", "pdf-health-checker"],
+    about:
+      "Grayscale PDF converts full-color PDF documents into clean, uniform monochrome or 8-bit grayscale documents. Converting color PDFs to grayscale is essential for reducing file size, preparing documents for black-and-white laser printing, cutting commercial printing toner costs, and meeting government archive or court submission rules that mandate monochrome filings.\n\nThe conversion engine iterates through document raster images and vector color dictionaries, applying standard luminance weighting (0.299 Red + 0.587 Green + 0.114 Blue) to preserve perceptual contrast and legibility between differing color shades. Color text headings, charts, and photographs transition into smooth, readable tones rather than muddy black blocks. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["compress-pdf", "print-ready-pdf", "compress-pdf-to-target-size", "flatten-pdf"],
   },
   /* ---------------------------------------------------------------- Privacy */
   {
@@ -1906,15 +2045,29 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "What exactly is removed?",
-        a: "Title, author, subject, keywords, creator, producer and the creation and modification dates, where those fields exist.",
+        q: "What hidden metadata is stored inside a typical PDF?",
+        a: "PDFs routinely store author names, company affiliations, computer usernames, software version details, creation and modification timestamps, and full file directory paths.",
       },
       {
-        q: "Does this anonymise the document?",
-        a: "It removes document-level metadata only. Names and details written inside the visible page content remain.",
+        q: "Does cleaning metadata alter visible text or formatting?",
+        a: "No. Only invisible document properties and metadata dictionaries are sanitized. All visible text, tables, fonts, and graphics remain unchanged.",
+      },
+      {
+        q: "Why is removing PDF metadata important before public sharing?",
+        a: "Removing metadata prevents confidential data leaks, such as revealing internal draft reviewers, proprietary software stacks, or client identity details in legal and commercial filings.",
+      },
+      {
+        q: "Can stripped metadata be recovered?",
+        a: "No. Once metadata streams are deleted and the cross-reference table is rebuilt, the purged metadata cannot be retrieved from the exported file.",
+      },
+      {
+        q: "Does this tool upload my sensitive documents to a server?",
+        a: "No. Metadata stripping runs entirely client-side in your browser session. Your documents are never uploaded, logged, or inspected by IXDocs servers.",
       },
     ],
-    related: ["pdf-health-checker", "password-protect-pdf", "watermark-pdf", "compress-pdf"],
+    about:
+      "PDF Metadata Cleaner sanitizes hidden metadata, document properties, author names, creation timestamps, editing software versions, and embedded XML packets (XMP) from your PDF files. Whenever you export a document from Microsoft Word, Adobe InDesign, Google Docs, or desktop scanners, extensive background metadata is embedded automatically. This hidden information can inadvertently reveal author identities, internal file paths, organization names, previous revision histories, and GPS capture data.\n\nThis privacy tool strips document information dictionaries (Title, Author, Subject, Keywords, Creator, Producer) and clears XMP metadata streams while leaving visible page text, images, and formatting completely intact. Sanitizing metadata is a critical compliance practice for legal counsel, journalists, government contractors, and enterprise professionals sharing documents publicly. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
+    related: ["flatten-pdf", "pdf-health-checker", "smart-pdf-analyzer", "sign-pdf"],
   },
 
   /* --------------------------------------------------------------- Advanced */
@@ -2055,19 +2208,33 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "Will my application be accepted?",
-        a: "IXDocs cannot promise that. It makes the file match the size and format rules you enter; acceptance is always decided by the organisation.",
+        q: "Why do application portals reject PDF uploads so frequently?",
+        a: "Portals enforce hard file-size caps (often 1 MB or 2 MB), disallow encrypted streams, or fail on corrupted cross-reference tables generated by unoptimized mobile scanner apps.",
       },
       {
-        q: "What if the limit is impossible?",
-        a: "You get the closest achievable file plus a plain explanation, never a fake success.",
+        q: "How does this tool optimize PDFs for job and university portals?",
+        a: "It downsamples embedded photo scans to balanced portal resolutions, strips redundant metadata, applies Flate compression, and checks formatting so files stay well under upload limits.",
+      },
+      {
+        q: "Will my resume and certificates remain clear enough for recruiters to read?",
+        a: "Yes. Text is preserved as sharp vector typography, and image downsampling is tuned to keep diplomas, certificates, and ID photos legible without digital artifacting.",
+      },
+      {
+        q: "Can I target a specific file size threshold?",
+        a: "Yes. You can select standard portal presets (like 500 KB, 1 MB, or 2 MB) or pair this tool with Compress PDF to Target Size for exact byte constraints.",
+      },
+      {
+        q: "Is my application or resume uploaded to a remote server?",
+        a: "No. The entire optimization process executes locally on your device in your web browser, ensuring complete confidentiality for personal credentials and identity documents.",
       },
     ],
+    about:
+      "Application PDF Optimizer tailors multi-page documents to meet the stringent upload specifications mandated by job recruitment portals, university admissions, visa applications, and government filing systems. These portals frequently reject uploads that exceed strict size limits (such as 500 KB, 1 MB, or 2 MB), contain unsupported PDF/A flags, or possess inconsistent page orientations and excessive DPI resolutions.\n\nThis utility bundles downsampling, stream deflating, font subsetting, and margin checks into a streamlined optimization workflow specifically tuned for portal submissions. It intelligently balances photograph clarity with file compactness so that headshots, diplomas, transcripts, and signatures remain sharp while easily passing automated portal file-size filters. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
     related: [
       "compress-pdf-to-target-size",
-      "passport-photo",
+      "compress-pdf",
       "pdf-health-checker",
-      "pdf-page-size-converter",
+      "passport-photo",
     ],
   },
   {
@@ -2250,14 +2417,28 @@ Your files are processed directly in your browser and are not uploaded to an IXD
     ],
     faqs: [
       {
-        q: "How do you detect a scanned page?",
-        a: "A page with images but almost no extractable text characters is reported as likely scanned.",
+        q: "What metrics does Smart PDF Analyzer evaluate?",
+        a: "The analyzer evaluates text searchability, raster image distribution, estimated font weight, page dimension consistency, encryption flags, metadata baggage, and structural validity.",
       },
       {
-        q: "Does it summarise the content?",
-        a: "No. Everything reported is measured from the file — IXDocs will not generate a summary it cannot verify.",
+        q: "How do I know if my PDF contains searchable text or just a flat scan?",
+        a: "The analyzer inspects content streams for character glyphs. If no text objects are detected, it alerts you that the file is an image scan and recommends PDF OCR.",
+      },
+      {
+        q: "Does the analyzer tell me why my PDF is so large?",
+        a: "Yes. It identifies the primary contributors to file weight, highlighting whether bloated raster photographs, full font packages, or uncompressed streams are responsible.",
+      },
+      {
+        q: "Does running an analysis modify my document?",
+        a: "No. Smart PDF Analyzer is a purely non-destructive diagnostic tool. It inspects internal structure and generates insights without altering your file.",
+      },
+      {
+        q: "Are my confidential document contents uploaded or read by IXDocs?",
+        a: "No. Analysis is executed 100% locally within your browser using client-side JavaScript. Your text and images are never transmitted to any server.",
       },
     ],
+    about:
+      "Smart PDF Analyzer performs an automated, multi-dimensional assessment of your PDF document to diagnose optimization opportunities, security flags, structural health, and readability metrics. Modern document workflows require understanding whether a file contains searchable text or unindexed scans, what percentage of file size is consumed by embedded images, whether fonts are properly embedded, and whether page geometry is consistent.\n\nThe analyzer inspects the document structure in real time, reporting page counts, image resolutions, encryption status, font types, metadata footprints, and OCR searchability status. Based on the diagnostic findings, the tool recommends exact remediation steps—such as OCR for non-searchable scans, compression for oversized images, or metadata cleaning for privacy compliance. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
     related: ["pdf-health-checker", "pdf-ocr", "compress-pdf", "pdf-metadata-cleaner"],
   },
   {

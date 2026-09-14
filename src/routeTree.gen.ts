@@ -56,6 +56,7 @@ import { Route as PasswordProtectPdfRouteImport } from './routes/password-protec
 import { Route as PdfCompressionRouteImport } from './routes/pdf-compression'
 import { Route as PdfCompressionGuideRouteImport } from './routes/pdf-compression-guide'
 import { Route as PdfConversionRouteImport } from './routes/pdf-conversion'
+import { Route as PdfConversionGuideRouteImport } from './routes/pdf-conversion-guide'
 import { Route as PdfEditingRouteImport } from './routes/pdf-editing'
 import { Route as PdfHealthCheckerRouteImport } from './routes/pdf-health-checker'
 import { Route as PdfManagementRouteImport } from './routes/pdf-management'
@@ -331,6 +332,11 @@ const PdfConversionRoute = PdfConversionRouteImport.update({
   path: '/pdf-conversion',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PdfConversionGuideRoute = PdfConversionGuideRouteImport.update({
+  id: '/pdf-conversion-guide',
+  path: '/pdf-conversion-guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PdfEditingRoute = PdfEditingRouteImport.update({
   id: '/pdf-editing',
   path: '/pdf-editing',
@@ -570,6 +576,7 @@ export interface FileRoutesByFullPath {
   '/pdf-compression': typeof PdfCompressionRoute
   '/pdf-compression-guide': typeof PdfCompressionGuideRoute
   '/pdf-conversion': typeof PdfConversionRoute
+  '/pdf-conversion-guide': typeof PdfConversionGuideRoute
   '/pdf-editing': typeof PdfEditingRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
   '/pdf-management': typeof PdfManagementRoute
@@ -657,6 +664,7 @@ export interface FileRoutesByTo {
   '/pdf-compression': typeof PdfCompressionRoute
   '/pdf-compression-guide': typeof PdfCompressionGuideRoute
   '/pdf-conversion': typeof PdfConversionRoute
+  '/pdf-conversion-guide': typeof PdfConversionGuideRoute
   '/pdf-editing': typeof PdfEditingRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
   '/pdf-management': typeof PdfManagementRoute
@@ -745,6 +753,7 @@ export interface FileRoutesById {
   '/pdf-compression': typeof PdfCompressionRoute
   '/pdf-compression-guide': typeof PdfCompressionGuideRoute
   '/pdf-conversion': typeof PdfConversionRoute
+  '/pdf-conversion-guide': typeof PdfConversionGuideRoute
   '/pdf-editing': typeof PdfEditingRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
   '/pdf-management': typeof PdfManagementRoute
@@ -834,6 +843,7 @@ export interface FileRouteTypes {
     | '/pdf-compression'
     | '/pdf-compression-guide'
     | '/pdf-conversion'
+    | '/pdf-conversion-guide'
     | '/pdf-editing'
     | '/pdf-health-checker'
     | '/pdf-management'
@@ -921,6 +931,7 @@ export interface FileRouteTypes {
     | '/pdf-compression'
     | '/pdf-compression-guide'
     | '/pdf-conversion'
+    | '/pdf-conversion-guide'
     | '/pdf-editing'
     | '/pdf-health-checker'
     | '/pdf-management'
@@ -1008,6 +1019,7 @@ export interface FileRouteTypes {
     | '/pdf-compression'
     | '/pdf-compression-guide'
     | '/pdf-conversion'
+    | '/pdf-conversion-guide'
     | '/pdf-editing'
     | '/pdf-health-checker'
     | '/pdf-management'
@@ -1096,6 +1108,7 @@ export interface RootRouteChildren {
   PdfCompressionRoute: typeof PdfCompressionRoute
   PdfCompressionGuideRoute: typeof PdfCompressionGuideRoute
   PdfConversionRoute: typeof PdfConversionRoute
+  PdfConversionGuideRoute: typeof PdfConversionGuideRoute
   PdfEditingRoute: typeof PdfEditingRoute
   PdfHealthCheckerRoute: typeof PdfHealthCheckerRoute
   PdfManagementRoute: typeof PdfManagementRoute
@@ -1467,6 +1480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PdfConversionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pdf-conversion-guide': {
+      id: '/pdf-conversion-guide'
+      path: '/pdf-conversion-guide'
+      fullPath: '/pdf-conversion-guide'
+      preLoaderRoute: typeof PdfConversionGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pdf-editing': {
       id: '/pdf-editing'
       path: '/pdf-editing'
@@ -1784,6 +1804,7 @@ const rootRouteChildren: RootRouteChildren = {
   PdfCompressionRoute: PdfCompressionRoute,
   PdfCompressionGuideRoute: PdfCompressionGuideRoute,
   PdfConversionRoute: PdfConversionRoute,
+  PdfConversionGuideRoute: PdfConversionGuideRoute,
   PdfEditingRoute: PdfEditingRoute,
   PdfHealthCheckerRoute: PdfHealthCheckerRoute,
   PdfManagementRoute: PdfManagementRoute,

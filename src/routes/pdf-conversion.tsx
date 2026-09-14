@@ -139,6 +139,35 @@ function PdfConversionHub() {
         </div>
       </section>
 
+      {/* Educational Guide Callout */}
+      <section
+        aria-labelledby="authority-guide"
+        className="mt-12 rounded-2xl border border-border bg-surface p-6 sm:p-8"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+              Educational Resource
+            </span>
+            <h2 id="authority-guide" className="mt-1 text-xl font-bold">
+              The Complete Technical Guide to PDF Conversion & Image Quality
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Learn how PDF conversion and rasterization work under the hood. Understand raster vs
+              vector graphics, DPI resolution selection (72 vs 150 vs 300), and client-side OCR
+              character recognition.
+            </p>
+          </div>
+          <Link
+            to="/pdf-conversion-guide"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+          >
+            <span>Read Guide</span>
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
+
       {/* Supporting Guidance */}
       <section aria-labelledby="conversion-architecture" className="prose-ixdocs mt-12 max-w-3xl">
         <h2 id="conversion-architecture" className="text-2xl font-bold">
