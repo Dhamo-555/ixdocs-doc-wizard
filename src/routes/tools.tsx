@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, Sparkles, X } from "lucide-react";
 import { AdSlot, ToolCard } from "@/components/tool/tool-workspace";
 import { SmartToolCard } from "@/components/tool/smart-tool-card";
@@ -203,17 +203,39 @@ function ToolsPage() {
             const id = c.replace(/\W/g, "-");
             const Icon = CATEGORY_ICONS[c];
             const list = toolsByCategory(c);
+            const hubHref =
+              c === "Convert"
+                ? "/pdf-conversion"
+                : c === "Organize"
+                  ? "/pdf-management"
+                  : c === "Edit PDF"
+                    ? "/pdf-editing"
+                    : c === "Compress & Optimize"
+                      ? "/pdf-compression"
+                      : null;
             return (
               <section key={c} aria-labelledby={id}>
-                <h2 id={id} className="flex items-center gap-2 text-xl font-bold">
-                  <Icon
-                    className="size-5 shrink-0 text-primary"
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                  />
-                  <span className="min-w-0">{c}</span>
-                  <span className="text-sm font-medium text-muted-foreground">({list.length})</span>
-                </h2>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h2 id={id} className="flex items-center gap-2 text-xl font-bold">
+                    <Icon
+                      className="size-5 shrink-0 text-primary"
+                      strokeWidth={1.75}
+                      aria-hidden="true"
+                    />
+                    <span className="min-w-0">{c}</span>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      ({list.length})
+                    </span>
+                  </h2>
+                  {hubHref ? (
+                    <Link
+                      to={hubHref}
+                      className="text-xs font-semibold text-primary hover:underline sm:text-sm"
+                    >
+                      Explore {c.toLowerCase()} hub &rarr;
+                    </Link>
+                  ) : null}
+                </div>
                 <p className="mt-1 text-sm text-muted-foreground">{CATEGORY_BLURB[c]}</p>
                 <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                   {list.map((tool) => (

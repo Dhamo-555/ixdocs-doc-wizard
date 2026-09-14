@@ -53,7 +53,12 @@ import { Route as MortgageCalculatorRouteImport } from './routes/mortgage-calcul
 import { Route as PassportPhotoRouteImport } from './routes/passport-photo'
 import { Route as PasswordGeneratorRouteImport } from './routes/password-generator'
 import { Route as PasswordProtectPdfRouteImport } from './routes/password-protect-pdf'
+import { Route as PdfCompressionRouteImport } from './routes/pdf-compression'
+import { Route as PdfCompressionGuideRouteImport } from './routes/pdf-compression-guide'
+import { Route as PdfConversionRouteImport } from './routes/pdf-conversion'
+import { Route as PdfEditingRouteImport } from './routes/pdf-editing'
 import { Route as PdfHealthCheckerRouteImport } from './routes/pdf-health-checker'
+import { Route as PdfManagementRouteImport } from './routes/pdf-management'
 import { Route as PdfMetadataCleanerRouteImport } from './routes/pdf-metadata-cleaner'
 import { Route as PdfOcrRouteImport } from './routes/pdf-ocr'
 import { Route as PdfPageNumberingRouteImport } from './routes/pdf-page-numbering'
@@ -311,9 +316,34 @@ const PasswordProtectPdfRoute = PasswordProtectPdfRouteImport.update({
   path: '/password-protect-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PdfCompressionRoute = PdfCompressionRouteImport.update({
+  id: '/pdf-compression',
+  path: '/pdf-compression',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PdfCompressionGuideRoute = PdfCompressionGuideRouteImport.update({
+  id: '/pdf-compression-guide',
+  path: '/pdf-compression-guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PdfConversionRoute = PdfConversionRouteImport.update({
+  id: '/pdf-conversion',
+  path: '/pdf-conversion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PdfEditingRoute = PdfEditingRouteImport.update({
+  id: '/pdf-editing',
+  path: '/pdf-editing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PdfHealthCheckerRoute = PdfHealthCheckerRouteImport.update({
   id: '/pdf-health-checker',
   path: '/pdf-health-checker',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PdfManagementRoute = PdfManagementRouteImport.update({
+  id: '/pdf-management',
+  path: '/pdf-management',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PdfMetadataCleanerRoute = PdfMetadataCleanerRouteImport.update({
@@ -537,7 +567,12 @@ export interface FileRoutesByFullPath {
   '/passport-photo': typeof PassportPhotoRoute
   '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
+  '/pdf-compression': typeof PdfCompressionRoute
+  '/pdf-compression-guide': typeof PdfCompressionGuideRoute
+  '/pdf-conversion': typeof PdfConversionRoute
+  '/pdf-editing': typeof PdfEditingRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
+  '/pdf-management': typeof PdfManagementRoute
   '/pdf-metadata-cleaner': typeof PdfMetadataCleanerRoute
   '/pdf-ocr': typeof PdfOcrRoute
   '/pdf-page-numbering': typeof PdfPageNumberingRoute
@@ -619,7 +654,12 @@ export interface FileRoutesByTo {
   '/passport-photo': typeof PassportPhotoRoute
   '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
+  '/pdf-compression': typeof PdfCompressionRoute
+  '/pdf-compression-guide': typeof PdfCompressionGuideRoute
+  '/pdf-conversion': typeof PdfConversionRoute
+  '/pdf-editing': typeof PdfEditingRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
+  '/pdf-management': typeof PdfManagementRoute
   '/pdf-metadata-cleaner': typeof PdfMetadataCleanerRoute
   '/pdf-ocr': typeof PdfOcrRoute
   '/pdf-page-numbering': typeof PdfPageNumberingRoute
@@ -702,7 +742,12 @@ export interface FileRoutesById {
   '/passport-photo': typeof PassportPhotoRoute
   '/password-generator': typeof PasswordGeneratorRoute
   '/password-protect-pdf': typeof PasswordProtectPdfRoute
+  '/pdf-compression': typeof PdfCompressionRoute
+  '/pdf-compression-guide': typeof PdfCompressionGuideRoute
+  '/pdf-conversion': typeof PdfConversionRoute
+  '/pdf-editing': typeof PdfEditingRoute
   '/pdf-health-checker': typeof PdfHealthCheckerRoute
+  '/pdf-management': typeof PdfManagementRoute
   '/pdf-metadata-cleaner': typeof PdfMetadataCleanerRoute
   '/pdf-ocr': typeof PdfOcrRoute
   '/pdf-page-numbering': typeof PdfPageNumberingRoute
@@ -786,7 +831,12 @@ export interface FileRouteTypes {
     | '/passport-photo'
     | '/password-generator'
     | '/password-protect-pdf'
+    | '/pdf-compression'
+    | '/pdf-compression-guide'
+    | '/pdf-conversion'
+    | '/pdf-editing'
     | '/pdf-health-checker'
+    | '/pdf-management'
     | '/pdf-metadata-cleaner'
     | '/pdf-ocr'
     | '/pdf-page-numbering'
@@ -868,7 +918,12 @@ export interface FileRouteTypes {
     | '/passport-photo'
     | '/password-generator'
     | '/password-protect-pdf'
+    | '/pdf-compression'
+    | '/pdf-compression-guide'
+    | '/pdf-conversion'
+    | '/pdf-editing'
     | '/pdf-health-checker'
+    | '/pdf-management'
     | '/pdf-metadata-cleaner'
     | '/pdf-ocr'
     | '/pdf-page-numbering'
@@ -950,7 +1005,12 @@ export interface FileRouteTypes {
     | '/passport-photo'
     | '/password-generator'
     | '/password-protect-pdf'
+    | '/pdf-compression'
+    | '/pdf-compression-guide'
+    | '/pdf-conversion'
+    | '/pdf-editing'
     | '/pdf-health-checker'
+    | '/pdf-management'
     | '/pdf-metadata-cleaner'
     | '/pdf-ocr'
     | '/pdf-page-numbering'
@@ -1033,7 +1093,12 @@ export interface RootRouteChildren {
   PassportPhotoRoute: typeof PassportPhotoRoute
   PasswordGeneratorRoute: typeof PasswordGeneratorRoute
   PasswordProtectPdfRoute: typeof PasswordProtectPdfRoute
+  PdfCompressionRoute: typeof PdfCompressionRoute
+  PdfCompressionGuideRoute: typeof PdfCompressionGuideRoute
+  PdfConversionRoute: typeof PdfConversionRoute
+  PdfEditingRoute: typeof PdfEditingRoute
   PdfHealthCheckerRoute: typeof PdfHealthCheckerRoute
+  PdfManagementRoute: typeof PdfManagementRoute
   PdfMetadataCleanerRoute: typeof PdfMetadataCleanerRoute
   PdfOcrRoute: typeof PdfOcrRoute
   PdfPageNumberingRoute: typeof PdfPageNumberingRoute
@@ -1381,11 +1446,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PasswordProtectPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pdf-compression': {
+      id: '/pdf-compression'
+      path: '/pdf-compression'
+      fullPath: '/pdf-compression'
+      preLoaderRoute: typeof PdfCompressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pdf-compression-guide': {
+      id: '/pdf-compression-guide'
+      path: '/pdf-compression-guide'
+      fullPath: '/pdf-compression-guide'
+      preLoaderRoute: typeof PdfCompressionGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pdf-conversion': {
+      id: '/pdf-conversion'
+      path: '/pdf-conversion'
+      fullPath: '/pdf-conversion'
+      preLoaderRoute: typeof PdfConversionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pdf-editing': {
+      id: '/pdf-editing'
+      path: '/pdf-editing'
+      fullPath: '/pdf-editing'
+      preLoaderRoute: typeof PdfEditingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pdf-health-checker': {
       id: '/pdf-health-checker'
       path: '/pdf-health-checker'
       fullPath: '/pdf-health-checker'
       preLoaderRoute: typeof PdfHealthCheckerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pdf-management': {
+      id: '/pdf-management'
+      path: '/pdf-management'
+      fullPath: '/pdf-management'
+      preLoaderRoute: typeof PdfManagementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pdf-metadata-cleaner': {
@@ -1681,7 +1781,12 @@ const rootRouteChildren: RootRouteChildren = {
   PassportPhotoRoute: PassportPhotoRoute,
   PasswordGeneratorRoute: PasswordGeneratorRoute,
   PasswordProtectPdfRoute: PasswordProtectPdfRoute,
+  PdfCompressionRoute: PdfCompressionRoute,
+  PdfCompressionGuideRoute: PdfCompressionGuideRoute,
+  PdfConversionRoute: PdfConversionRoute,
+  PdfEditingRoute: PdfEditingRoute,
   PdfHealthCheckerRoute: PdfHealthCheckerRoute,
+  PdfManagementRoute: PdfManagementRoute,
   PdfMetadataCleanerRoute: PdfMetadataCleanerRoute,
   PdfOcrRoute: PdfOcrRoute,
   PdfPageNumberingRoute: PdfPageNumberingRoute,

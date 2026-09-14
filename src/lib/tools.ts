@@ -171,32 +171,31 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "How many images can I add?",
-        a: "There is no fixed limit, but very large batches depend on your device's memory because the PDF is built in your browser. Around 50 photos works comfortably on most phones.",
+        q: "How many images can I combine into one PDF?",
+        a: "There is no arbitrary limit, but memory depends on your device. Batches of 20 to 50 photos typically compile smoothly on standard computers and mobile phones.",
       },
       {
-        q: "Will image quality drop?",
-        a: "JPG and PNG images are embedded as-is, so no re-compression happens. WebP images are re-encoded to JPEG because PDF has no native WebP support.",
+        q: "Will my image quality degrade during conversion?",
+        a: "JPG and PNG files are embedded directly at original quality without additional compression. WebP images are converted to JPEG because the PDF specification does not support native WebP.",
       },
       {
-        q: "Can I combine multiple images into one PDF?",
-        a: "Yes — add as many images as you need and arrange them in the order you want. Each image becomes one page in the final document.",
+        q: "Can I rearrange the order of images before creating the PDF?",
+        a: "Yes. Use the visual preview grid to reorder images by dragging or clicking movement controls so pages appear in the exact sequence you want.",
       },
       {
-        q: "Can I control the page order before converting?",
-        a: "Yes. Use the drag handles or arrow controls to reorder images before generating the PDF. The final document follows the order shown.",
+        q: "What page sizes and margin options are supported?",
+        a: "You can choose from standard A4, US Letter, A3, Legal, or 'Fit to image' mode, with configurable margin widths to match your presentation needs.",
       },
       {
-        q: "What image formats are supported?",
-        a: "This tool accepts JPG, PNG, and WebP files. BMP and TIFF formats are not currently supported — convert those to JPG first.",
-      },
-      {
-        q: "Are my images uploaded to a server?",
-        a: "No. The PDF is assembled entirely in your browser. Your image files are never transmitted over the internet.",
+        q: "Are my photos uploaded to an external server?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Everything is assembled on your local device.",
       },
     ],
-    about:
-      "JPG to PDF lets you turn one or more photos or images into a properly formatted PDF document — directly in your browser, without uploading files to a server. This is useful when you need to submit scanned documents, share photos as a single attachment, or prepare image-based records for archiving.\n\nYou can add multiple images in one go, reorder them freely, and choose from several standard page sizes including A4 and Letter. Images are embedded at their original quality, so there is no additional compression applied to JPG or PNG files. WebP images are automatically converted to JPEG since the PDF format does not support WebP natively.\n\nCommon use cases: converting scanned receipts into a single PDF for expense claims, compiling product photos into a catalogue page, or preparing identity documents in PDF format for online submissions. Since everything runs locally, there is no account required and no data is shared with any server.",
+    about: `JPG to PDF converts one or more photos, digital scans, or web images into a clean, standardized PDF document directly in your browser. It is particularly useful when you need to submit image-based receipts for expense claims, assemble photos for official visa applications, or bundle photographic portfolios and design mockups into a single shareable file.
+
+You can add multiple JPG, PNG, or WebP images, reorder them to match your desired reading sequence, and choose standard page formats such as A4, US Letter, or auto-fit. Standard JPG and PNG files are embedded directly at their native resolution without re-compression, while WebP images are automatically re-encoded into JPEG format for full compatibility with all standard PDF readers.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. The entire document structure is compiled in client-side memory, allowing you to generate professional PDF packages quickly without creating an account or transmitting personal data over the internet. You can also customize page orientation and margins to ensure consistent visual presentation across all included pages.`,
     related: ["pdf-to-jpg", "pdf-to-png", "merge-pdf", "compress-pdf"],
     popular: true,
   },
@@ -248,29 +247,32 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "How does PDF to JPG work entirely in the browser?",
-        a: "IXDocs renders PDF pages onto an HTML5 canvas element directly in your browser using local client-side rendering technology. The canvas is exported as a JPEG image blob without sending your file to any server.",
-      },
-      {
         q: "What resolution setting should I choose for my images?",
-        a: "Use Screen (72 DPI) for quick emails and lightweight web previews, High (144 DPI) for crystal-clear screen viewing and tablet presentations, and Print (216 DPI) if you intend to print the exported pages on paper.",
+        a: "Select Screen (72 DPI) for lightweight web sharing and email, High (144 DPI) for clear presentations and reading on screens, and Print (216 DPI) when you need crisp paper reproduction.",
       },
       {
-        q: "Can I convert only specific pages rather than the entire document?",
-        a: "Yes. The interactive thumbnail selector allows you to pick individual pages or custom selections so you only download the specific pages you need.",
+        q: "Can I convert only specific pages instead of the whole document?",
+        a: "Yes. You can click on specific page thumbnails to convert and download only the exact pages you need.",
       },
       {
-        q: "How does the JPG quality slider affect file size?",
-        a: "The quality slider controls JPEG compression. Higher values (85–100%) preserve maximum image clarity and fine text edges, while lower values (50–70%) significantly reduce output file size.",
+        q: "How does the JPG quality slider affect the resulting images?",
+        a: "Higher quality settings (85–95%) preserve fine gradients and sharp details, while lower quality settings (50–70%) produce smaller file sizes suitable for fast web loading.",
       },
       {
-        q: "Are my uploaded PDFs or converted JPG images stored on any server?",
-        a: "No. IXDocs operates on a strict zero-upload architecture. Your documents remain in local browser memory and are never uploaded, stored, or indexed remotely.",
+        q: "Can I download all converted pages at once?",
+        a: "Yes. You can download individual converted pages one by one or export them together as a batch.",
+      },
+      {
+        q: "Are my PDF documents uploaded to a server during conversion?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Every page renders locally in browser memory.",
       },
     ],
-    about:
-      "PDF to JPG converts each page of your PDF document into an independent high-resolution JPEG image directly in your web browser. This is ideal when you need to embed slides into presentations, post document previews to social media channels, import page layouts into image editing software, or submit individual document page graphics to systems that reject PDF uploads.\n\nThe tool lets you choose between multiple display resolutions—72 DPI for web sharing, 144 DPI for standard display, and 216 DPI for sharp print reproduction—along with adjustable JPEG compression quality. You can select specific pages from the visual thumbnail preview or convert the complete document in a single step.\n\nAll rendering happens locally on your device using browser canvas rendering. Your document contents are never transmitted over the internet or stored on an external server, ensuring complete confidentiality for financial statements, legal contracts, and personal records. Because processing relies on client-side WebAssembly and canvas primitives, even multi-page documents convert swiftly without network latency, file upload caps, or registration barriers.",
-    related: ["pdf-to-png", "jpg-to-pdf", "pdf-ocr", "compress-pdf"],
+    about: `PDF to JPG converts individual pages of any PDF document into independent, high-resolution JPEG images directly inside your web browser. This tool is valuable when you need to embed PDF figures into slide decks, upload document previews to social media, share graphic designs with clients, or insert forms into web pages that do not support PDF viewing.
+
+The tool renders each page using browser-native canvas technology and gives you full control over rendering resolution (Screen at 72 DPI, High at 144 DPI, or Print at 216 DPI) and JPEG compression quality. You can export the entire document or select specific individual pages from an interactive thumbnail grid to convert only what you need.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Because rendering runs locally via WebAssembly, your confidential contracts, medical records, and financial statements are never transmitted across the network or stored in external databases. For documents with many pages, you can download images one by one or export them together as a complete image set.`,
+    related: ["jpg-to-pdf", "pdf-to-png", "pdf-ocr", "compress-pdf"],
     popular: true,
   },
   {
@@ -473,28 +475,31 @@ const ALL_TOOLS: Tool[] = [
     faqs: [
       {
         q: "What is the difference between PDF to Text and PDF OCR?",
-        a: "PDF to Text extracts digital text that is already embedded in the PDF document. PDF OCR uses optical character recognition to read text from scanned page images where no digital text layer exists.",
+        a: "PDF to Text extracts existing digital text streams already embedded in native PDFs. PDF OCR uses optical character recognition to read and extract text from flat scanned images and camera photos.",
       },
       {
-        q: "Can I extract text into formatted Markdown with page headings?",
-        a: "Yes. You can select 'Markdown with Headings (.md)' to automatically insert structured page markers and section divisions.",
+        q: "Why does my scanned PDF show zero extracted words?",
+        a: "Scanned documents and smartphone photos store page images rather than digital character strings. Because there is no embedded text stream, you should use our PDF OCR tool to recognize the words.",
       },
       {
-        q: "Why does a scanned PDF return empty text in this tool?",
-        a: "Scanned PDFs consist of images rather than digital text characters. If your document produces empty text, use the PDF OCR tool to recognize the characters first.",
+        q: "Can I copy extracted text directly to my clipboard?",
+        a: "Yes. The tool features a quick 'Copy to clipboard' button alongside a preview window, as well as an option to download a plain .txt file.",
       },
       {
         q: "Can I extract text from multi-page documents all at once?",
-        a: "Yes. The tool processes every page in the document and compiles the complete text stream into one downloadable file.",
+        a: "Yes. The extractor processes all pages in your document, placing clear page markers between sheets to preserve document structure.",
       },
       {
         q: "Is my document text transmitted to a server during extraction?",
-        a: "No. Text extraction runs entirely on your device via client-side JavaScript. No document content is ever sent over the internet.",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Extraction runs entirely in your local browser session.",
       },
     ],
-    about:
-      "PDF to Text extracts clean, raw text content from your PDF documents directly in your browser without altering the original file or requiring heavy desktop software. It is ideal for extracting tabular data, transcribing reports, pulling quotes from academic research papers, importing contract text into word processors, or preparing document text for linguistic and machine learning analysis.\n\nThe tool parses embedded text streams across all pages or custom page selections, preserving natural paragraph breaks and reading order while stripping away background graphics, formatting overhead, and non-essential layout code. You can inspect the extracted text in a real-time preview window, copy selections to your clipboard with a single click, or download the full text as a plain TXT document.\n\nUnlike traditional cloud converters that require uploading confidential files to remote servers, IXDocs processes every byte locally using browser-native JavaScript and WebAssembly parsers. Your confidential reports, client contracts, and academic drafts are never uploaded, shared, or indexed by third-party search engines. Enjoy lightning-fast text extraction with zero privacy risks and zero usage limits.",
-    related: ["smart-pdf-analyzer", "pdf-health-checker", "compress-pdf"],
+    about: `PDF to Text extracts plain, readable text from digital PDF documents directly inside your web browser. It is ideal for copying text out of locked or formatted documents, extracting tabular figures for spreadsheets, importing contract terms into word processors, or pulling citations from academic research papers.
+
+The tool extracts digital text streams across all pages or custom page selections, preserving natural line breaks and reading order while stripping away background graphics, font encodings, and layout overhead. You can review the extracted text in a real-time preview box, copy excerpts to your clipboard with one click, or export the full text as a plain TXT file for further editing.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Please note that this tool extracts existing vector text streams embedded in native PDFs. If your PDF is a flat scan or photograph of paper without embedded text, use our PDF OCR tool instead to recognize the text optically. Everything runs client-side with zero data transmission.`,
+    related: ["pdf-ocr", "smart-pdf-analyzer", "pdf-health-checker", "compress-pdf"],
   },
   /* --------------------------------------------------------------- Organize */
   {
@@ -522,33 +527,32 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Is the page order preserved?",
-        a: "Yes. Files are appended in the order shown in the list, with every page kept intact.",
+        q: "Is the original page order and layout preserved?",
+        a: "Yes. Each document's internal page sequence, margins, fonts, and dimensions are preserved. You can arrange the overall order of the combined files before generating the final document.",
       },
       {
-        q: "Can I merge a password-protected PDF?",
-        a: "Encrypted PDFs must be unlocked first — the browser cannot read their pages while they are protected.",
+        q: "Can I merge password-protected PDFs?",
+        a: "No. Encrypted or password-protected PDF files must be unlocked prior to merging because browser-based assemblers cannot read protected file streams without credentials.",
       },
       {
-        q: "Can I combine multiple PDFs into one file?",
-        a: "Yes — add as many PDF files as you need. There is no fixed limit on the number of files, though very large batches may be slower on lower-powered devices because merging happens in your browser.",
+        q: "Is there a limit on how many PDFs I can combine?",
+        a: "There is no fixed limit on the number of files, but total processing capacity depends on your device's available memory since merging executes locally in your browser.",
       },
       {
-        q: "Can I control the order of merged pages?",
-        a: "Yes. Use the drag handles or the up/down arrow buttons to rearrange files before merging. The resulting PDF follows the order shown in the list.",
+        q: "Does merging PDFs reduce document quality?",
+        a: "No. Merging combines existing PDF page streams losslessly without rasterizing vector text or re-compressing embedded photographs.",
       },
       {
-        q: "Is merging done in the browser or on a server?",
-        a: "Entirely in the browser. Your PDF files are never sent to a server — the combined document is assembled locally on your device using pdf-lib.",
-      },
-      {
-        q: "Do I need an account to merge PDFs?",
-        a: "No account, registration, or email address is required. Add your files and download the merged result immediately.",
+        q: "Are my documents uploaded to a server during merging?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Your documents never leave your device.",
       },
     ],
-    about:
-      "Merge PDF combines multiple separate PDF documents into a single, ordered file — without uploading your documents to a server. The entire process runs inside your browser using a library called pdf-lib, which means your content stays on your device throughout.\n\nThis is useful for a wide range of everyday tasks: combining chapters exported from different applications, assembling monthly reports into one archive, joining scanned pages from different sessions, or consolidating contracts and attachments before sending.\n\nYou can add as many files as you need and reorder them before merging. All pages from each document are preserved in full — the merge only joins them sequentially without altering content, images, or fonts. If a document is password-protected, it needs to be unlocked first, since the browser cannot access the pages of an encrypted PDF.\n\nNo account is required, and there are no usage limits. The result downloads directly to your device.",
-    related: ["split-pdf", "reorder-pdf-pages", "extract-pdf-pages", "delete-pdf-pages"],
+    about: `Merge PDF combines multiple separate PDF documents into a single, ordered file directly in your browser. This tool is ideal for compiling monthly financial statements, assembling multi-part contract packages, combining academic project chapters, or organizing scanned receipts into a unified portfolio for easy sharing and printing.
+
+You can upload multiple PDF files simultaneously, review their order in an interactive list, and drag or nudge documents into your preferred reading sequence before merging. The engine preserves existing page orientations, margins, vector text fonts, and embedded images across all merged sheets without re-compressing or degrading original document quality.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Note that password-protected or encrypted PDFs cannot be merged directly; you must remove document security before combining files. Furthermore, because merging operates directly in client memory, processing capacity depends on your device's available RAM. Once assembled, your unified PDF is generated and downloaded instantly without watermarks or file retention.`,
+    related: ["split-pdf", "reorder-pdf-pages", "extract-pdf-pages", "compress-pdf"],
     popular: true,
   },
   {
@@ -596,32 +600,31 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "How do I write ranges?",
-        a: "Use comma-separated ranges such as 1-3, 5, 9-12. Each range becomes its own PDF.",
+        q: "How do I specify custom page ranges?",
+        a: "Enter page numbers and ranges separated by commas, such as '1-4, 7, 9-12'. The tool creates new PDF documents containing precisely those selected pages.",
       },
       {
-        q: "Does splitting change quality?",
-        a: "No. Pages are copied without re-encoding, so the content is identical to the original.",
+        q: "Does splitting a PDF reduce its visual quality?",
+        a: "No. Splitting extracts the original page objects directly without re-rendering or re-compressing images, ensuring identical visual fidelity.",
       },
       {
-        q: "Can I extract selected pages rather than splitting by range?",
-        a: "For selecting specific pages visually, try the Extract PDF Pages tool. Split PDF is better suited for range-based division or splitting every page into its own file.",
+        q: "Can I split every page into its own individual file?",
+        a: "Yes. Choose the 'Split each page' mode to turn every page of your document into a standalone, single-page PDF file.",
       },
       {
-        q: "Can I split a PDF into multiple separate files?",
-        a: 'Yes. Choose "One file per page" to get a separate download for each page, or define custom ranges to group pages into specific files.',
+        q: "Can I split encrypted or password-protected PDFs?",
+        a: "The PDF must be unlocked before splitting. If a document has an owner or user password, unlock it before loading it into the split tool.",
       },
       {
-        q: "Can I choose specific page ranges?",
-        a: "Yes. Enter ranges as comma-separated values such as 1-3, 5, 8-10. Each range produces one output file, and single page numbers also work.",
-      },
-      {
-        q: "Is my PDF uploaded to a server when I split it?",
-        a: "No. The split operation runs entirely in your browser. Your document is never sent to a remote server.",
+        q: "Are my files uploaded to a remote server when split?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing.",
       },
     ],
-    about:
-      "Split PDF divides a single document into two or more smaller files based on the page ranges you specify. It also supports splitting every page into its own individual file — useful when you need to distribute pages separately or process them one at a time.\n\nThe tool runs entirely in your browser, so your document stays on your device throughout the process. Pages are copied from the original without any re-encoding, which means the resulting files are identical in quality to the source.\n\nCommon use cases: extracting a specific chapter from a long report, separating an invoice attachment from a multi-page contract, breaking a combined scan into individual records, or isolating a few pages to share without exposing the full document.\n\nTo specify ranges, enter them as comma-separated values in the format 1-3, 5, 8-10. Each range becomes one output PDF. If you prefer to select pages visually, the Extract PDF Pages tool may be a better fit for that workflow.",
+    about: `Split PDF divides a single document into smaller, standalone PDF files based on the exact page ranges you specify. It is designed for extracting specific sections of a lengthy contract, pulling individual chapters from an ebook, separating distinct invoices from a bulk billing scan, or removing unneeded cover pages and appendices before distribution.
+
+The tool offers flexible splitting modes: extract every page into separate single-page documents, isolate custom page ranges (such as 1-3, 5, 8-10), or divide a document into fixed page intervals. The split files maintain the exact vector quality, font encodings, and embedded image assets of the original document without rasterization or quality loss.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Because all operations execute locally in your active browser session, your sensitive legal briefs, personal tax records, and medical files remain strictly confidential on your computer or mobile device. If your PDF is password-protected, simply unlock it first before loading it into the workspace for splitting.`,
     related: ["merge-pdf", "extract-pdf-pages", "delete-pdf-pages", "compress-pdf"],
     popular: true,
   },
@@ -663,28 +666,31 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Is the page rotation permanent in all PDF readers?",
-        a: "Yes. The rotation modifies the standard PDF internal rotation tag, meaning Adobe Acrobat, Chrome, Apple Preview, and physical printers will always display the corrected orientation.",
+        q: "Is the page rotation permanent across all PDF viewers?",
+        a: "Yes. The rotation updates the PDF document's standard page rotation dictionary, ensuring the pages open in the correct orientation in Adobe Acrobat, web browsers, and mobile readers.",
       },
       {
-        q: "Can I rotate only upside-down pages while leaving the rest untouched?",
-        a: "Yes. You can select specific individual pages from the thumbnail view and apply rotation only to those pages.",
+        q: "Can I rotate only specific pages while leaving others untouched?",
+        a: "Yes. You can rotate individual pages independently using the rotation controls on each thumbnail, or apply rotation to every page simultaneously.",
       },
       {
         q: "Does rotating pages degrade text clarity or image resolution?",
-        a: "No. Rotation is completely lossless. The underlying text layers, vector paths, and embedded images remain untouched and retain original quality.",
+        a: "No. Rotating is completely lossless. It changes the display rotation flag in the PDF metadata without re-encoding images or rasterizing vector fonts.",
       },
       {
         q: "Can I rotate pages clockwise and counter-clockwise?",
-        a: "Yes. You can rotate by 90° clockwise, 180° for upside-down pages, or 270° (90° counter-clockwise).",
+        a: "Yes. You can rotate pages 90 degrees clockwise, 90 degrees counter-clockwise, or flip them 180 degrees upside-down.",
       },
       {
         q: "Are my documents uploaded to a remote server during rotation?",
-        a: "No. All PDF orientation adjustments run locally in your web browser. Your confidential files never leave your machine.",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. All changes are saved locally.",
       },
     ],
-    about:
-      "Rotate PDF provides an effortless, visual way to correct the orientation of upside-down or sideways pages in any PDF document directly inside your browser. Whether you are dealing with inverted mobile document scans, landscape spreadsheets oriented incorrectly in a portrait binder, or mixed-orientation legal filings, you can rotate pages with pixel-perfect precision.\n\nThe interactive interface displays high-resolution thumbnails for every page in your document. You can rotate individual pages 90 degrees clockwise or counterclockwise, flip upside-down sheets 180 degrees, or apply orientation adjustments across all pages simultaneously with a single click.\n\nIXDocs processes your PDF entirely within your browser using local PDF manipulation engines. Unlike traditional online converters that upload your files to remote servers, IXDocs never sends your document over the internet. This zero-upload privacy model guarantees complete confidentiality for personal bank statements, medical records, and confidential business documents. Once you adjust the page orientation, you can save and download your reoriented document instantly without watermarks, registration, or quality loss.",
+    about: `Rotate PDF allows you to correct the orientation of upside-down or sideways pages in any PDF document directly in your browser. It is particularly useful when multi-page document scans arrive inverted, landscape financial spreadsheets appear rotated vertically in portrait files, or mobile camera captures need alignment before filing.
+
+The interactive workspace displays clear visual thumbnails for every page in your document. You can rotate individual pages 90 degrees clockwise or counterclockwise, flip upside-down sheets 180 degrees, or apply rotation adjustments across all pages at once with a single click. Because the tool modifies page rotation metadata directly, it executes losslessly without re-compressing graphics or altering vector text.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. After aligning your pages, download your reoriented document immediately with full visual fidelity and zero platform watermarks. The rotation flags are saved directly into the PDF specification structure, ensuring that your pages display correctly in all third-party PDF readers and mobile apps.`,
     related: ["reorder-pdf-pages", "pdf-page-size-converter", "split-pdf", "print-ready-pdf"],
     popular: true,
   },
@@ -979,32 +985,31 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Is this PDF editor free to use?",
-        a: "Yes, IXDocs Edit PDF is 100% free with no file limits, watermarks, or account registration required.",
+        q: "Can I edit or re-flow existing text in a PDF document?",
+        a: "PDF files store fixed visual glyphs rather than reflowable paragraphs. You can overlay new text, mask out old content with whiteout boxes, and annotate pages, but not re-flow existing body text like a word processor.",
       },
       {
-        q: "Are my files uploaded to a server?",
-        a: "No. All PDF viewing, text additions, content removal, and export processing happen locally in your browser. Your files never leave your device.",
+        q: "Can I add images, stamps, or signatures to my PDF?",
+        a: "Yes. You can insert signature graphics, custom text stamps, colored shapes, and freehand drawings directly onto any page.",
       },
       {
-        q: "How does Remove Text work?",
-        a: "Remove Text covers the selected area with a clean vector mask. It does not modify or delete underlying native PDF objects.",
+        q: "How does the whiteout or redaction feature work?",
+        a: "You can draw opaque color-matched rectangles over sensitive information to mask it visually before exporting the flattened document.",
       },
       {
-        q: "Can I add images or signatures to my PDF?",
-        a: "Yes. You can insert PNG, JPG, or WebP images, reposition and resize them anywhere on any page, and draw signatures using the freehand pen tool.",
+        q: "Does this editor require an account or software installation?",
+        a: "No. The editor runs entirely in your web browser with no account creation, sign-in, or software installation required.",
       },
       {
-        q: "Can I add or change text in a PDF?",
-        a: "You can add new text labels, callouts, and typed content on top of any page. This tool does not reflow or alter the existing PDF text layer — it adds text as an overlay annotation.",
-      },
-      {
-        q: "Can I edit a PDF without installing any software?",
-        a: "Yes. This tool runs entirely in your browser with no installation required. Open the page, upload your PDF, make your edits, and download.",
+        q: "Are my edited documents uploaded to an IXDocs server?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. All edits are applied locally.",
       },
     ],
-    about:
-      "Edit PDF is a browser-based tool for making common modifications to PDF documents without installing any software and without uploading your file to a server. The editor loads your document locally in your browser, so your content stays on your device throughout the session.\n\nThe toolbar supports several editing actions: adding text labels, covering unwanted content with a clean white mask (sometimes called whiteout or redaction), inserting images, drawing freehand, highlighting sections, and adding basic shapes. Any element you add can be repositioned and resized before you export.\n\nThis is useful for everyday tasks like filling in a PDF form that has no interactive fields, adding a signature image, annotating a draft document before review, or covering sensitive information before sharing.\n\nNote that this tool adds annotations on top of the existing PDF structure — it does not edit the underlying PDF text flow or reflow text around changes. For more specific operations like adding a watermark, signing with a drawn signature, or numbering pages, dedicated tools for those tasks are available.",
+    about: `Edit PDF is a client-side document editor that lets you add text annotations, place shapes, highlight content, draw freehand notes, insert signatures, and redact sensitive sections without installing desktop software. It is ideal for filling non-interactive application forms, signing agreements, adding notes to study materials, or whiting out private information before sharing.
+
+Because PDF is a fixed-layout presentation format rather than a word processing document, this tool works by applying non-destructive visual overlays and redaction masks on top of your existing page layout. You can adjust font styles, sizing, text colors, and box borders with visual drag handles, ensuring that additions align neatly with existing form fields and margins.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. When you finish editing, your modifications are flattened securely into a standard, universally viewable PDF document ready for immediate download. Please note that while you can easily mask and overlay text, you cannot re-flow existing body paragraphs like in a traditional text editor.`,
     related: ["compress-pdf", "add-text-to-pdf", "annotate-pdf", "sign-pdf", "merge-pdf"],
   },
   {
@@ -1163,28 +1168,31 @@ const ALL_TOOLS: Tool[] = [
     faqs: [
       {
         q: "Are electronic signatures created with this tool legally binding?",
-        a: "Yes. Standard electronic signatures created by signing or typing your name are recognized as legally binding for general commercial contracts, leases, and service agreements under the US ESIGN Act and EU eIDAS regulations.",
+        a: "In many jurisdictions, standard electronic signatures are legally valid for everyday agreements, rental contracts, and business forms under laws like the US ESIGN Act and EU eIDAS regulations for basic electronic signatures.",
       },
       {
         q: "Can I draw my signature using a smartphone or tablet touch screen?",
-        a: "Yes. The drawing canvas supports touch, stylus, and mouse input, making it easy to create a natural handwritten signature on any device.",
+        a: "Yes. The signature pad works smoothly with finger touch and stylus pens on smartphones, iPads, tablets, and touch-enabled laptops.",
       },
       {
-        q: "What signature styles and ink colors can I choose?",
-        a: "You can choose between a drawn signature or an elegant typed script signature, with options for classic blue ink or formal black ink.",
+        q: "What signature creation methods are available?",
+        a: "You can draw your signature by hand, type your name using a cursive font preset, or upload an image file of your existing handwritten signature.",
       },
       {
-        q: "Is my signature saved or transmitted over the internet?",
-        a: "No. The signature is drawn on a local browser canvas and embedded directly into the PDF on your device. It is never stored on an external server.",
+        q: "Does this tool provide cryptographic X.509 digital certificates?",
+        a: "No. This tool creates standard electronic visual signatures. If your transaction specifically mandates a cryptographic PKI certificate with token-based authentication, check your recipient's compliance rules.",
       },
       {
-        q: "Can I position my signature on specific pages?",
-        a: "Yes. You can select the target page and pick standard anchor placements or position it precisely where the document's signature line appears.",
+        q: "Is my signature saved on any remote database or server?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Your signature data exists only in your active browser session.",
       },
     ],
-    about:
-      "Sign PDF enables you to add legally sound, professional digital signatures and initials to your PDF documents directly from your browser without printing, scanning, or purchasing expensive software licenses. It is ideal for signing employment contracts, non-disclosure agreements, real estate forms, purchase orders, and rental leases in seconds.\n\nThe built-in signature canvas provides multiple intuitive signing options: draw your signature smoothly using your mouse, trackpad, or touchscreen stylus; type your name and select an elegant script font style; or upload an existing signature image with automatic background removal. Once placed, your signature can be resized, positioned precisely on signature lines, and complemented with date stamps and printed name tags across any page of the document.\n\nPrivacy and document security are fundamental to IXDocs. Your PDF file and your personal signature are processed exclusively in client-side browser memory. Nothing is ever uploaded to a remote server or saved in external databases, ensuring your signature remains strictly under your control. Download your finalized, signed document immediately with full visual fidelity and zero platform watermarks.",
-    related: ["watermark-pdf", "flatten-pdf", "pdf-metadata-cleaner", "compress-pdf"],
+    about: `Sign PDF allows you to add electronic signatures, initials, and date stamps to PDF contracts, leases, agreements, and forms directly from your web browser. It eliminates the tedious cycle of printing paper documents, signing by hand, and re-scanning them back to your computer.
+
+The tool provides flexible signature creation methods: draw your signature naturally using a mouse, trackpad, or touchscreen; type your name and select a clean handwritten script font; or upload a pre-made transparent signature image. Once created, you can resize your signature, position it precisely on any signature line, and place it across single or multiple pages as required.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. This tool creates standard electronic signatures suitable for everyday commercial agreements, non-disclosure forms, and approvals. If your transaction requires cryptographic digital certificates (X.509 PKI), verify whether your recipient requires that specific credential before signing. After positioning your signature, download your finalized document instantly.`,
+    related: ["edit-pdf", "add-text-to-pdf", "annotate-pdf", "flatten-pdf"],
   },
   {
     slug: "annotate-pdf",
@@ -1536,37 +1544,31 @@ const ALL_TOOLS: Tool[] = [
     faqs: [
       {
         q: "Why did my file barely shrink?",
-        a: "Text-only PDFs are already compact. The biggest savings come from scans and documents full of photographs.",
+        a: "PDFs that consist entirely of selectable vector text and shapes already have very compact file sizes. The compressor shrinks documents primarily by downsampling embedded raster images and scanned pages, so text-only documents have little redundant image data to compress.",
       },
       {
-        q: "Does compression lose quality?",
-        a: "Levels other than Structure only re-encode pages as images, so there is some quality loss. Start with Balanced and step up if you need more.",
-      },
-      {
-        q: "Can I reduce PDF file size without changing the format?",
-        a: "Yes. The output is always a PDF file. Compression reduces the size of embedded images and page rendering — the file stays in PDF format throughout.",
-      },
-      {
-        q: "What affects how much a PDF can be compressed?",
-        a: "The main factor is content type. PDFs that consist primarily of photographs or scanned pages compress significantly. Documents built from text, vectors, and line art compress very little because they are already efficient.",
+        q: "Does compression reduce visual quality?",
+        a: "Low compression preserves sharp text and clear graphics. High compression applies stronger image downsampling and JPEG re-encoding, which reduces file size more aggressively while introducing slight softness to high-resolution photos.",
       },
       {
         q: "Can I compress a PDF entirely in my browser?",
-        a: "Yes. IXDocs processes the file locally using browser rendering technology. Your document is never sent to a remote server.",
+        a: "Yes. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. All rendering and re-encoding run locally in your device's memory.",
       },
       {
         q: "What should I do if the compressed PDF is still too large?",
-        a: "Try the Strong compression level, or use Compress PDF to Target Size if you need to meet a specific file size limit such as 200 KB or 1 MB.",
+        a: "If standard compression does not reach your required file size limit, use our Compress PDF to Target Size tool to specify an exact ceiling, or use Split PDF to remove unnecessary pages.",
+      },
+      {
+        q: "Can I reduce PDF file size without changing the format?",
+        a: "Yes. The output is a standard PDF document that opens in Adobe Acrobat, web browsers, and any standard PDF reader without requiring special decompression software.",
       },
     ],
-    about:
-      "Compress PDF reduces the file size of a PDF document by re-rendering its pages at a lower image resolution. This is most effective on documents that contain scanned pages, photographs, or high-resolution images — these are the primary source of large file sizes in most PDFs.\n\nIXDocs offers four compression levels. Light preserves the most detail while achieving modest size reductions. Balanced is the default and works well for most documents. Strong applies more aggressive compression for the smallest possible output. Structure only (lossless) restructures the PDF without re-rendering pages, which keeps text selectable but offers limited size reduction.\n\nThe tool reports the actual file sizes before and after compression — not projected estimates. If compression produces minimal savings, that result is shown honestly.\n\nAll processing happens in your browser. Your PDF is never uploaded to a server. If you need to meet a specific file size limit, such as a 200 KB upload cap on a government form, try the Compress PDF to Target Size tool instead.",
-    related: [
-      "compress-pdf-to-target-size",
-      "pdf-health-checker",
-      "application-pdf-optimizer",
-      "pdf-page-size-converter",
-    ],
+    about: `Compress PDF reduces the file size of a PDF document by re-rendering its pages at a lower image resolution and applying controlled JPEG compression to raster elements. This is especially useful when preparing documents for email attachments, online job application portals, university submissions, or government forms that enforce strict maximum file upload limits.
+
+Because compression re-samples page content, documents that contain high-resolution photos, full-page scanner images, or large embedded figures will see substantial reductions in overall file size. In contrast, documents composed purely of vector text and standard system fonts already store minimal data, so re-rendering them may yield minimal size savings or occasionally increase file size slightly due to rasterization.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. To achieve the best balance between small file size and sharp readability, choose Low compression for everyday text-heavy documents, Medium for typical reports with diagrams, or High when you must meet an aggressive size ceiling. Always inspect the generated document to verify that text and graphics remain clear before submitting.`,
+    related: ["compress-pdf-to-target-size", "merge-pdf", "split-pdf", "pdf-to-jpg"],
     popular: true,
   },
   {
@@ -1621,28 +1623,31 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "How does the target-size compressor find the closest file size?",
-        a: "The tool tests multiple compression levels and resolution scales in sequence, measuring the actual output size at each step to select the setting that best satisfies your target threshold.",
+        q: "How does the target-size compressor reach the target limit?",
+        a: "The tool analyzes embedded images and page elements, iteratively adjusting resolution downsampling and JPEG quality settings to get as close as possible to your chosen file size limit.",
       },
       {
-        q: "Why can some PDFs not reach very aggressive targets like 100 KB?",
-        a: "If a document contains numerous high-resolution scanned pages or extensive embedded images, compressing below 100 KB may require dropping resolution below legibility. IXDocs preserves readable text rather than outputting a corrupt or unreadable file.",
+        q: "Why can some PDFs not reach aggressive targets like 100 KB?",
+        a: "A multi-page document has a structural baseline of bytes for fonts, page objects, and layout data. If a PDF contains 20 pages, that baseline data alone may exceed 100 KB even with maximum image compression.",
       },
       {
-        q: "What target size should I select for official portal uploads?",
-        a: "Check the exact file size limit stated in the portal's upload instructions. Common government and job portal limits are 200 KB, 500 KB, or 1 MB. You can select a preset or enter a custom limit in KB.",
+        q: "Which target size should I pick for official portal uploads?",
+        a: "Check the exact requirement of the portal you are submitting to. Most government and visa application systems specify either 200 KB, 500 KB, or 1 MB maximum upload sizes.",
       },
       {
         q: "Does target-size compression compromise text clarity?",
-        a: "Vector text remains sharp and selectable whenever possible. For scanned pages containing raster images, resolution is optimized to keep characters distinct and legible.",
+        a: "Text remains legible at standard sizes, but aggressive targets apply stronger downsampling to images and scans. Check fine details like passport photos and signatures before submitting.",
       },
       {
         q: "Is my document uploaded to a remote server for compression testing?",
-        a: "No. The entire multi-pass compression analysis runs locally inside your browser memory. Your personal documents are never transmitted across the network.",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. All size calculations execute locally.",
       },
     ],
-    about:
-      "Compress PDF to Target Size helps reduce your PDF to a chosen maximum size limit—such as 100 KB, 200 KB, 500 KB, or 1 MB—directly in your browser. This specialized tool solves the common frustration of uploading documents to government portals, job application boards, visa application systems, and university admissions websites that enforce strict upper file size limits.\n\nInstead of guessing generic compression percentages, you simply enter your required maximum file size in kilobytes or select a popular preset. The intelligent client-side optimization algorithm performs iterative compression passes, dynamically adjusting image resolution, color subsampling, and stream compression to meet your specified size ceiling while maintaining the highest possible legibility for text and scanned imagery. If a document carries too much detail to reach an aggressive ceiling without becoming illegible, the tool reports the closest achievable size honestly.\n\nBecause the entire multi-pass compression analysis runs locally inside your browser memory using WebAssembly and client-side canvas engines, your personal documents—such as passports, tax filings, and diplomas—are never transmitted over the internet. You can prepare documents for portal upload limits with confidence, complete privacy, and zero subscriptions.",
+    about: `Compress PDF to Target Size helps reduce your PDF file size to fit strict upload limits—such as 100 KB, 200 KB, 500 KB, or 1 MB—demanded by government portals, university admissions desks, and job application systems. Rather than manually guessing compression percentages, you select your target ceiling and let the engine calculate the optimal balance.
+
+The tool analyzes your document's internal structure and iteratively adjusts raster image downsampling and JPEG quality to get as close as possible to your desired file size. While documents containing heavy raster images can often be compressed significantly, documents that already consist of minimal vector text or contain dozens of pages cannot physically shrink below the minimum bytes required to represent the text and page catalog.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Always preview the output to ensure text clarity and barcode readability meet your submission requirements before final upload. If an aggressive target causes excessive blurriness on important details, consider using Split PDF to separate supplementary attachments into a second document.`,
     related: [
       "compress-pdf",
       "application-pdf-optimizer",
@@ -1964,28 +1969,31 @@ const ALL_TOOLS: Tool[] = [
     faqs: [
       {
         q: "How does PDF OCR make scanned documents searchable?",
-        a: "The OCR engine analyzes pixel patterns to recognize letters, words, and sentences, then creates a searchable text overlay aligned with the original scan imagery so you can search and copy text.",
+        a: "The OCR engine identifies character shapes on each image page and overlays an invisible text layer directly on top of the original scan, allowing you to highlight, search, and copy text.",
       },
       {
         q: "Which languages does the OCR tool support?",
-        a: "The tool supports English, Spanish, French, German, Portuguese, and Hindi recognition models.",
+        a: "The client-side engine supports multiple major languages, including English, Spanish, French, German, Italian, Portuguese, and more, which you can select before running OCR.",
       },
       {
-        q: "What scan quality provides the highest OCR recognition accuracy?",
-        a: "Clear, evenly lit documents scanned at 300 DPI with minimal skew and high contrast between text and background yield the most accurate character recognition.",
+        q: "What factors provide the highest OCR recognition accuracy?",
+        a: "Clean, high-contrast scans at 300 DPI with clear printed typography, proper orientation, and minimal background bleed deliver the highest accuracy.",
       },
       {
-        q: "Can I export OCR results as plain text instead of a PDF?",
-        a: "Yes. You can choose to download a searchable PDF or a clean plain text (.txt) file containing all recognized words.",
+        q: "Can I extract the recognized content as plain text?",
+        a: "Yes. You can choose 'Plain Text' mode to download an editable text file containing all recognized words organized by page number.",
       },
       {
         q: "Does OCR processing upload my files to an external cloud service?",
-        a: "No. OCR execution runs locally in your browser using web assembly engines. Your files never leave your computer or phone.",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. The Tesseract WebAssembly engine runs strictly on your device.",
       },
     ],
-    about:
-      "PDF OCR (Optical Character Recognition) extracts editable, searchable text from scanned paper documents, mobile camera photos, and image-only PDF files directly inside your web browser. This tool is essential for converting unsearchable archival scans, historical records, paper receipts, printed invoices, and photographed book pages into selectable text that you can copy, edit, or index in document management systems.\n\nPowered by client-side OCR technology running via WebAssembly, the recognition engine identifies alphanumeric characters across multiple languages and outputs both raw formatted text and searchable PDF layers. You can inspect extracted text side-by-side with original page images, copy excerpts directly to your clipboard, or download the compiled text for word processing.\n\nBecause the entire OCR inference pipeline runs locally on your computer or mobile device, your sensitive scanned paperwork—including medical summaries, tax documentation, identity cards, and commercial contracts—never leaves your browser. You get enterprise-grade text recognition without exposing confidential data to cloud servers, and without incurring subscription fees, page limits, or third-party data tracking.",
-    related: ["document-scanner", "pdf-to-word", "smart-pdf-analyzer", "compress-pdf"],
+    about: `PDF OCR (Optical Character Recognition) recognizes and extracts text from scanned paper documents, mobile camera photos, and image-only PDF files directly inside your web browser. This tool transforms flat, unsearchable bitmap scans into selectable text that you can search, copy, and archive across all modern document readers.
+
+Powered by client-side Tesseract.js running via WebAssembly, the recognition engine processes document pages locally on your device. You can choose to export the recognized content as a searchable PDF (where transparent text is aligned over the original scan image) or download the output as a clean, plain text file for editing in a text editor or word processor.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. OCR accuracy depends directly on the quality of the source scan: crisp, upright 300 DPI scans with good contrast yield the highest recognition rates, whereas blurry, skewed, or handwritten pages may produce occasional errors. You can select your document's primary language prior to running the recognition pass to maximize accuracy.`,
+    related: ["pdf-to-text", "edit-pdf", "pdf-to-jpg", "document-scanner"],
   },
   {
     slug: "application-pdf-optimizer",
@@ -2115,29 +2123,32 @@ const ALL_TOOLS: Tool[] = [
     ],
     faqs: [
       {
-        q: "Which photo dimensions should I pick for US vs European passports?",
-        a: "Choose 51 × 51 mm (2 × 2 inches) for US passports and visas. Choose 35 × 45 mm for UK, European Schengen Area, Australian, and Indian passports.",
+        q: "Which photo dimensions should I choose for US vs European passports?",
+        a: "US passports and immigrant visas require 2×2 inch (51×51 mm) square photos. UK, Schengen, and European identity documents require 35×45 mm rectangular photos.",
       },
       {
-        q: "How should I print the generated photo sheet to ensure correct sizing?",
-        a: "Print at 100% scale ('Actual Size') without fit-to-page or borderless expansion. Any automatic scaling will distort the physical millimeter dimensions required by government authorities.",
+        q: "How should I print the generated sheet to guarantee correct physical sizing?",
+        a: "Print on 4×6 inch photo paper with your printer dialog set to '100% scale' or 'Actual size'. Never use 'Fit to printable area' or 'Shrink to fit', as that distorts official measurements.",
       },
       {
-        q: "Why does IXDocs include cutting guides on the sheet?",
-        a: "Light cutting guidelines make it easy to slice the individual photos cleanly with scissors or a paper trimmer to exact official dimensions.",
+        q: "Why does IXDocs include cutting lines on the sheet?",
+        a: "Light cutting guidelines mark the exact boundaries of each photo so you can cut them cleanly with a paper trimmer or scissors without guessing edges.",
       },
       {
-        q: "Does this tool automatically cut out or change the photo background?",
-        a: "No. Automated background removal algorithms often create ragged edges that cause passport authorities to reject photos. Upload a photo already taken against an appropriate plain background.",
+        q: "Does this tool automatically remove or replace the photo background?",
+        a: "No. The tool accurately centers, crops, and tiles your photograph. You should capture your photo in front of a plain white or light-grey wall with neutral lighting.",
       },
       {
-        q: "Is my personal passport photo uploaded or stored anywhere?",
-        a: "No. The photo sheet PDF is created directly inside your browser memory. Your biometric portrait is never uploaded or saved to any server.",
+        q: "Is my personal photo uploaded or stored on any server?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. Your facial images remain strictly on your local device.",
       },
     ],
-    about:
-      "Passport Photo Creator allows you to generate compliant, professional passport, visa, and identity card photographs directly from your browser without visiting a physical photo studio. Whether you are applying for an international passport, Schengen visa, US immigrant visa, green card, national ID card, or driving license, you can create the exact photo dimensions required by official immigration authorities.\n\nThe tool provides pre-configured dimension presets for standard global guidelines, including standard 2×2 inch (51×51 mm) US passport formats and 35×45 mm UK and European Schengen standards. You can easily center your face with biometric alignment overlays, crop to exact proportions, adjust lighting and contrast, and tile multiple photos onto standard 4×6 inch photo paper for budget-friendly at-home printing or local pharmacy printing.\n\nYour biometric images never touch external servers or cloud storage. All cropping, background adjustments, and tiling calculations execute strictly in your device's browser memory. This guarantees that your biometric data, facial imagery, and personal identity photographs remain 100% private, secure, and under your direct control at all times.",
-    related: ["document-scanner", "jpg-to-pdf", "application-pdf-optimizer", "print-ready-pdf"],
+    about: `Passport Photo Creator generates correctly dimensioned passport, visa, and identity card photographs tiled onto standard photo print sheets directly in your browser. Whether you are submitting an application for a US passport, Schengen visa, national ID card, or driver's license, you can format your portrait to meet official photographic standards.
+
+The tool offers pre-configured dimension standards, including 2×2 inch (51×51 mm) for US passports and 35×45 mm for UK, European Schengen, and Australian passports. The portrait is centered and cropped to the exact required aspect ratio, then arranged in a printable grid with clean cutting guidelines on standard 4×6 inch (10×15 cm) photo sheets for convenient printing at home or at a local photo kiosk.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. When printing the output, always select '100% scale' or 'Actual size' in your printer dialog, as any automatic 'Fit to page' scaling will alter the physical millimeter dimensions required by immigration authorities. Be sure to use a high-resolution, front-facing portrait taken in front of an even, neutral background.`,
+    related: ["document-scanner", "jpg-to-pdf", "compress-pdf", "print-ready-pdf"],
   },
   {
     slug: "document-scanner",
@@ -2186,28 +2197,31 @@ const ALL_TOOLS: Tool[] = [
     faqs: [
       {
         q: "How do I scan documents using my phone camera?",
-        a: "Open Document Scanner on your mobile browser, grant camera access when prompted, capture your document pages, apply the enhancement filter, and download your consolidated PDF.",
+        a: "Click 'Use camera' on a mobile device or tablet to take photos of your document pages one by one. The images are loaded directly into the scanner workspace.",
       },
       {
         q: "Which enhancement filter works best for receipts and contracts?",
-        a: "The 'Scan' filter brightens the background and increases text contrast for standard documents. For dense text receipts or monochrome forms, the 'Black and white' mode provides maximum readability.",
+        a: "The 'Clean scan' filter enhances contrast while preserving color elements, making it ideal for receipts. The 'Black & White' filter removes background grain and paper tint, perfect for formal text agreements.",
       },
       {
-        q: "Can I combine multiple photographed pages into a single PDF document?",
-        a: "Yes. You can snap or upload multiple pages in sequence and Document Scanner compiles them into an ordered multi-page PDF.",
+        q: "Can I combine multiple photographed pages into a single PDF?",
+        a: "Yes. Take or upload multiple photos in sequence. The tool automatically orders and compiles them into a unified, multi-page PDF document.",
       },
       {
-        q: "What page sizes can I export my scanned documents in?",
-        a: "You can standardize pages to international A4, North American Letter size, or retain the original camera photo aspect ratio.",
+        q: "What standard page formats can I export to?",
+        a: "You can choose standard A4, US Letter, or 'Fit to image' mode, which adjusts page dimensions to match the aspect ratio of your camera captures.",
       },
       {
-        q: "Are my camera captures or scanned papers stored online?",
-        a: "No. Photos captured through your camera are processed entirely in browser memory and are never uploaded, logged, or stored by IXDocs.",
+        q: "Are my camera photos or scanned documents transmitted over the internet?",
+        a: "No. Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. All filtering and PDF compilation happen locally on your device.",
       },
     ],
-    about:
-      "Document Scanner transforms your smartphone camera, tablet, or webcam into a versatile portable document scanner right inside your web browser. It is designed for students, remote professionals, and freelancers who need to capture crisp, professional digital scans of paper receipts, handwritten meeting notes, whiteboard diagrams, government forms, and multi-page paper documents on the go.\n\nThe scanner features automatic perspective correction, edge detection, and smart contrast filters—such as grayscale conversion, high-contrast black-and-white mode, and color enhancement—to ensure scanned pages look like authentic flatbed scans rather than phone photos. You can capture multiple consecutive pages, rearrange them effortlessly, and compile the entire series into a clean, standardized PDF file.\n\nAll image processing, perspective transformation, and PDF compilation take place locally within your browser using HTML5 and WebAssembly APIs. None of your photos, camera frames, or generated PDF documents are transmitted over the internet or stored on external servers. This client-only privacy model guarantees total protection for confidential business receipts, tax forms, and identity documents.",
-    related: ["jpg-to-pdf", "pdf-ocr", "compress-pdf", "passport-photo"],
+    about: `Document Scanner turns your smartphone camera, tablet, or webcam into a portable document digitizer right inside your web browser. It is built for scanning paper receipts, printed contracts, handwritten notes, whiteboard sketches, and application forms when you do not have access to a traditional flatbed scanner.
+
+You can snap photos page-by-page or upload pictures from your photo library. The tool applies custom image enhancement filters—including a clean scan mode that optimizes brightness and contrast, and a pure black-and-white mode that sharpens text and strips away paper shadows—before compiling all pages into a standardized A4 or Letter PDF document.
+
+Your files are processed directly in your browser and are not uploaded to an IXDocs server for processing. For optimal scan clarity, capture documents on a flat, contrasting background with even, diffuse lighting to prevent harsh shadows across text lines. Once compiled, you can review, reorder, and download your finished multi-page PDF immediately without account registration or file storage.`,
+    related: ["jpg-to-pdf", "compress-pdf", "pdf-ocr", "passport-photo"],
   },
   {
     slug: "smart-pdf-analyzer",
