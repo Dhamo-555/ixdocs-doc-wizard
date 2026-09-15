@@ -2712,6 +2712,188 @@ Your files are processed directly in your browser and are not uploaded to an IXD
       "Adding formal headers and footers transforms informal drafts and raw exports into polished, production-ready documentation suitable for business, legal, and educational distribution. Whether inserting confidentiality disclaimers, document revision numbers, date stamps, or standard page numbering, headers and footers provide critical orienting context for readers and archiving systems. IXDocs Add Header & Footer provides intuitive control over margin typography without requiring heavyweight desktop publishing suites or subscription software.\n\nOur client-side engine embeds high-legibility Helvetica typography directly into your document structure while dynamically evaluating tokens such as {page} and {date}. Margins and alignment coordinates are calculated precisely against each page's native dimensions, ensuring uniform appearance across mixed portrait and landscape documents. Because processing takes place entirely within your browser sandbox, sensitive contracts, academic transcripts, and internal memos remain strictly confidential on your machine. You can effortlessly combine custom headers on top with numbered footers below, tailoring margins, alignments, and font sizes to your organization's exact document standards.",
     related: ["pdf-page-numbering", "watermark-pdf", "annotate-pdf", "add-text-to-pdf"],
   },
+  {
+    slug: "fill-pdf-form",
+    name: "Fill PDF Form",
+    metaTitle: "Fill PDF Form Online — Complete & Sign Interactive Forms | IXDocs",
+    metaDescription:
+      "Fill interactive PDF forms online directly in your browser. Complete text fields, checkboxes, dropdowns, and radio options privately. Free on IXDocs.",
+    short: "Fill interactive form fields, checkboxes, dropdowns, and radio buttons.",
+    intro:
+      "Fill interactive PDF forms directly in your browser. Complete text inputs, checkboxes, dropdown lists, and radio options locally with optional form flattening.",
+    category: "Edit PDF",
+    icon: FileCheck2,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF files (.pdf)",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "flatten",
+        label: "Flatten form fields after filling",
+        type: "toggle",
+        default: false,
+        help: "Lock form values into permanent page content to prevent further editing (note: does not provide cryptographic tamper protection).",
+      },
+    ],
+    actionLabel: "Fill & Download PDF",
+    steps: [
+      "Upload your interactive PDF form.",
+      "Fill in the detected text boxes, check needed options, and choose dropdown values.",
+      "Optionally enable form flattening if you want to prevent further edits.",
+      "Click Fill & Download PDF to save your completed document.",
+    ],
+    faqs: [
+      {
+        q: "Can I fill interactive PDF forms directly in my browser?",
+        a: "Yes. IXDocs Fill PDF Form automatically detects standard AcroForm fields including text boxes, checkboxes, dropdown menus, and radio buttons, allowing you to fill them online without downloading desktop software.",
+      },
+      {
+        q: "Are my form answers uploaded or saved on a server?",
+        a: "No. All form detection, input management, and document generation take place 100% inside your web browser using client-side JavaScript. Your personal information never leaves your computer.",
+      },
+      {
+        q: "What does flattening form fields mean?",
+        a: "Flattening locks your completed inputs permanently into the document's visual content. This prevents subsequent viewers from accidentally changing your answers, though it does not provide cryptographic tamper protection.",
+      },
+      {
+        q: "Does this tool support dynamic Adobe XFA forms?",
+        a: "No. Dynamic XFA forms use Adobe's proprietary XML Forms Architecture, which is incompatible with standard AcroForms and standard web browsers. To complete XFA documents, please use Adobe Acrobat Reader.",
+      },
+      {
+        q: "Does filling a form reduce document quality or rasterize text?",
+        a: "No. Normal form filling preserves the original vector typography, embedded fonts, and page layouts of your PDF. Only the values of interactive form fields are updated.",
+      },
+    ],
+    about:
+      "Filling interactive PDF forms is essential for submitting tax filings, visa applications, employment contracts, insurance claims, and government paperwork. Many users struggle when forms open as read-only previews in basic web browsers, forcing them to print sheets, write answers by hand, and scan them back to digital files. IXDocs Fill PDF Form solves this challenge by detecting standard AcroForm fields and providing an accessible web interface to complete text boxes, checkboxes, dropdown lists, and radio options directly.\n\nBecause form completion runs entirely inside your browser using client-side JavaScript, your sensitive personal identifiers, bank details, and confidential answers are never uploaded to remote servers or stored in the cloud. After populating your details, you can optionally flatten the completed form fields. Flattening embeds your answers directly into permanent vector page content, preventing subsequent accidental modification by viewers while preserving sharp typography for high-resolution printing. Note that dynamic Adobe XFA forms use proprietary XML data models that require dedicated desktop viewers and are distinct from standard interactive AcroForms.",
+    related: ["edit-pdf", "sign-pdf", "add-text-to-pdf", "flatten-pdf"],
+  },
+  {
+    slug: "extract-pdf-images",
+    name: "Extract PDF Images",
+    metaTitle: "Extract Images from PDF — Save Embedded Pictures Online | IXDocs",
+    metaDescription:
+      "Extract embedded images, photos, and figures from PDF files at their original source resolution entirely in your browser. Free on IXDocs.",
+    short: "Extract original embedded photos, diagrams, and figures from your PDF.",
+    intro:
+      "Extract original embedded image assets from your PDF documents without rasterizing complete pages. Download pictures individually or save all at once.",
+    category: "Convert",
+    icon: FileImage,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF files (.pdf)",
+    multiple: false,
+    pageMode: "none",
+    options: [
+      {
+        key: "format",
+        label: "Preferred image format",
+        type: "select",
+        default: "png",
+        choices: [
+          { value: "png", label: "PNG (lossless)" },
+          { value: "jpeg", label: "JPEG (smaller size)" },
+        ],
+        help: "Extracted bitmap images will be saved in your selected graphic format.",
+      },
+    ],
+    actionLabel: "Extract Images",
+    steps: [
+      "Upload your PDF document containing embedded images or diagrams.",
+      "Choose your preferred export image format (PNG or JPEG).",
+      "Click Extract Images to scan the document object streams.",
+      "Download individual images or click Download all to save every graphic.",
+    ],
+    faqs: [
+      {
+        q: "How is image extraction different from converting PDF to JPG?",
+        a: "Converting a PDF to JPG renders the entire document page into a single screenshot. In contrast, image extraction isolates the original embedded photograph or bitmap graphic files at their native source resolution without page backgrounds.",
+      },
+      {
+        q: "Are extracted images uploaded to any remote server?",
+        a: "No. The inspection of PDF operator lists and image decoding happen entirely in your local browser sandbox. No images or documents are ever transmitted over the network.",
+      },
+      {
+        q: "What image formats can I export the extracted files to?",
+        a: "You can choose to export extracted graphic assets in either lossless PNG format to preserve maximum visual fidelity, or compressed JPEG format for smaller image file sizes.",
+      },
+      {
+        q: "Why were some illustrations or icons in my PDF not extracted?",
+        a: "This tool extracts embedded raster bitmap images (XObjects). Vector line drawings, charts drawn with PDF paths, and font-based icons are vector shapes rather than bitmap pictures and cannot be extracted as image assets.",
+      },
+      {
+        q: "Can I download all extracted images together?",
+        a: "Yes. If your document contains multiple pictures, IXDocs provides convenient individual download buttons for each image along with a 'Download all' option to save every image sequentially.",
+      },
+    ],
+    about:
+      "Extracting embedded graphic assets from PDF documents is crucial for designers, researchers, journalists, and archivists who need original source photographs, charts, diagrams, or corporate logos without taking blurry screen captures. Standard page-to-image converters rasterize entire document sheets, forcing you to crop backgrounds and losing original bitmap resolution. IXDocs Extract PDF Images inspects the low-level object operator stream of your document to discover, isolate, and export embedded image XObjects directly at their native stored resolutions.\n\nOur privacy-preserving browser engine handles extraction sequentially to ensure smooth performance without consuming excessive system memory on multi-page files. Because all processing executes 100% locally within your browser sandbox, proprietary technical diagrams, medical scans, and private family photos never leave your device. You can download individual pictures or save all detected visual assets at once in lossless PNG or compressed JPEG formats. Keep in mind that vector illustrations drawn using native PDF path instructions are vector layout objects rather than embedded bitmap XObjects and are not extracted as standalone picture files.",
+    related: ["pdf-to-jpg", "pdf-to-png", "pdf-to-text", "compress-pdf"],
+  },
+  {
+    slug: "remove-blank-pages-pdf",
+    name: "Remove Blank Pages from PDF",
+    metaTitle: "Remove Blank Pages from PDF — Delete Empty Sheets Online | IXDocs",
+    metaDescription:
+      "Automatically detect and remove blank pages from PDF documents in your browser. Review detected empty sheets before deletion. Free on IXDocs.",
+    short: "Automatically detect and remove empty or blank pages from your PDF.",
+    intro:
+      "Scan your PDF for blank pages using text analysis and visual luminance detection. Review detected empty sheets in a thumbnail grid before deleting.",
+    category: "Organize",
+    icon: Trash2,
+    ready: true,
+    accept: PDF,
+    acceptLabel: "PDF files (.pdf)",
+    multiple: false,
+    pageMode: "select",
+    options: [
+      {
+        key: "threshold",
+        label: "Detection sensitivity",
+        type: "select",
+        default: "conservative",
+        choices: [
+          { value: "conservative", label: "Conservative (safer, fewer false positives)" },
+          { value: "aggressive", label: "Aggressive (removes sheets with faint marks)" },
+        ],
+        help: "Conservative mode requires text-free pages with over 99.2% white pixels.",
+      },
+    ],
+    actionLabel: "Remove Selected Blank Pages",
+    steps: [
+      "Upload your PDF document.",
+      "Review the thumbnail gallery where detected blank pages are automatically highlighted.",
+      "Click on any thumbnail to uncheck pages you want to keep.",
+      "Click Remove Selected Blank Pages to generate a clean document without empty sheets.",
+    ],
+    faqs: [
+      {
+        q: "How does the tool determine which pages are blank?",
+        a: "The tool employs a conservative two-stage detection method. First, it inspects the document's text layer for characters. For pages without text, it renders a low-resolution preview and computes pixel luminance to flag sheets that are overwhelmingly white.",
+      },
+      {
+        q: "Does the tool automatically delete blank pages without asking?",
+        a: "No. Detected pages are presented in an interactive visual review grid with page numbers. You have full control to review every candidate and uncheck any page you wish to retain before clicking remove.",
+      },
+      {
+        q: "Can scanning noise, dust, or shadows cause a blank page to be missed?",
+        a: "Yes. Because scanner glass specks, bleed-through from reverse pages, or faint background shadows generate dark pixels, a page may not meet the conservative white-pixel threshold. You can manually select or deselect any page in the review grid.",
+      },
+      {
+        q: "Does removing blank pages alter the layout or order of remaining pages?",
+        a: "No. Pages are removed strictly in reverse index order using pdf-lib, ensuring the exact sequence, page dimensions, text fonts, and content of all remaining pages remain intact.",
+      },
+      {
+        q: "Is my document uploaded to external servers for blank page analysis?",
+        a: "No. Both the text extraction and luminance analysis run 100% locally inside your browser session. Your document never leaves your machine.",
+      },
+    ],
+    about:
+      "Scanned documents, duplex print batches, and exported digital publications often contain accidental blank pages that increase file sizes, disrupt sequential numbering, and create an unprofessional impression. Deleting these empty pages manually across hundreds of sheets is tedious and prone to human oversight. IXDocs Remove Blank Pages provides an automated, conservative two-stage analysis pipeline that inspects your document directly in your browser. First, it extracts text streams to verify whether meaningful character content exists; next, for text-free pages, it evaluates pixel luminance across low-resolution renderings to identify overwhelmingly white sheets.\n\nBecause scanner glass dust, punch holes, faint bleed-through, or subtle shadows can occasionally appear on otherwise empty pages, our tool treats detection as 'likely blank' rather than an infallible guarantee. Identified pages are highlighted in an interactive visual thumbnail gallery, giving you complete manual control to review and uncheck any page before final removal. Deletion occurs safely in reverse index order using client-side WebAssembly, ensuring that remaining pages, annotations, and vector elements remain perfectly preserved without any data leaving your device.",
+    related: ["delete-pdf-pages", "split-pdf", "extract-pdf-pages", "pdf-health-checker"],
+  },
 ];
 
 export const TOOLS: Tool[] = ALL_TOOLS.filter((t) => t.ready !== false);
@@ -3016,6 +3198,35 @@ const SEARCH_ALIASES: Record<string, string[]> = {
     "bates",
     "title",
     "confidential header",
+  ],
+  "fill-pdf-form": [
+    "fill pdf form",
+    "fill form",
+    "fill out pdf",
+    "fill pdf online",
+    "acroform",
+    "pdf form filler",
+    "complete pdf form",
+    "interactive form",
+    "flatten form",
+  ],
+  "extract-pdf-images": [
+    "extract images",
+    "extract photos",
+    "pdf image extractor",
+    "rip images from pdf",
+    "get pictures from pdf",
+    "save images from pdf",
+    "export images pdf",
+  ],
+  "remove-blank-pages-pdf": [
+    "remove blank pages",
+    "delete blank pages",
+    "clean blank pages",
+    "blank page remover",
+    "remove empty pages",
+    "delete empty pages",
+    "filter blank pages",
   ],
 };
 

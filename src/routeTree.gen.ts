@@ -38,8 +38,10 @@ import { Route as DiscountCalculatorRouteImport } from './routes/discount-calcul
 import { Route as DocumentScannerRouteImport } from './routes/document-scanner'
 import { Route as EditPdfRouteImport } from './routes/edit-pdf'
 import { Route as EmiCalculatorRouteImport } from './routes/emi-calculator'
+import { Route as ExtractPdfImagesRouteImport } from './routes/extract-pdf-images'
 import { Route as ExtractPdfPagesRouteImport } from './routes/extract-pdf-pages'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FillPdfFormRouteImport } from './routes/fill-pdf-form'
 import { Route as FlattenPdfRouteImport } from './routes/flatten-pdf'
 import { Route as FractionCalculatorRouteImport } from './routes/fraction-calculator'
 import { Route as FuelCostCalculatorRouteImport } from './routes/fuel-cost-calculator'
@@ -77,6 +79,7 @@ import { Route as QrGeneratorRouteImport } from './routes/qr-generator'
 import { Route as RandomPasswordGeneratorRouteImport } from './routes/random-password-generator'
 import { Route as RatioCalculatorRouteImport } from './routes/ratio-calculator'
 import { Route as RedactPdfRouteImport } from './routes/redact-pdf'
+import { Route as RemoveBlankPagesPdfRouteImport } from './routes/remove-blank-pages-pdf'
 import { Route as ReorderPdfPagesRouteImport } from './routes/reorder-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
 import { Route as SalesTaxCalculatorRouteImport } from './routes/sales-tax-calculator'
@@ -245,6 +248,11 @@ const EmiCalculatorRoute = EmiCalculatorRouteImport.update({
   path: '/emi-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExtractPdfImagesRoute = ExtractPdfImagesRouteImport.update({
+  id: '/extract-pdf-images',
+  path: '/extract-pdf-images',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExtractPdfPagesRoute = ExtractPdfPagesRouteImport.update({
   id: '/extract-pdf-pages',
   path: '/extract-pdf-pages',
@@ -253,6 +261,11 @@ const ExtractPdfPagesRoute = ExtractPdfPagesRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FillPdfFormRoute = FillPdfFormRouteImport.update({
+  id: '/fill-pdf-form',
+  path: '/fill-pdf-form',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FlattenPdfRoute = FlattenPdfRouteImport.update({
@@ -440,6 +453,11 @@ const RedactPdfRoute = RedactPdfRouteImport.update({
   path: '/redact-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RemoveBlankPagesPdfRoute = RemoveBlankPagesPdfRouteImport.update({
+  id: '/remove-blank-pages-pdf',
+  path: '/remove-blank-pages-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReorderPdfPagesRoute = ReorderPdfPagesRouteImport.update({
   id: '/reorder-pdf-pages',
   path: '/reorder-pdf-pages',
@@ -576,8 +594,10 @@ export interface FileRoutesByFullPath {
   '/document-scanner': typeof DocumentScannerRoute
   '/edit-pdf': typeof EditPdfRoute
   '/emi-calculator': typeof EmiCalculatorRoute
+  '/extract-pdf-images': typeof ExtractPdfImagesRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
+  '/fill-pdf-form': typeof FillPdfFormRoute
   '/flatten-pdf': typeof FlattenPdfRoute
   '/fraction-calculator': typeof FractionCalculatorRoute
   '/fuel-cost-calculator': typeof FuelCostCalculatorRoute
@@ -615,6 +635,7 @@ export interface FileRoutesByFullPath {
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/ratio-calculator': typeof RatioCalculatorRoute
   '/redact-pdf': typeof RedactPdfRoute
+  '/remove-blank-pages-pdf': typeof RemoveBlankPagesPdfRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
@@ -667,8 +688,10 @@ export interface FileRoutesByTo {
   '/document-scanner': typeof DocumentScannerRoute
   '/edit-pdf': typeof EditPdfRoute
   '/emi-calculator': typeof EmiCalculatorRoute
+  '/extract-pdf-images': typeof ExtractPdfImagesRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
+  '/fill-pdf-form': typeof FillPdfFormRoute
   '/flatten-pdf': typeof FlattenPdfRoute
   '/fraction-calculator': typeof FractionCalculatorRoute
   '/fuel-cost-calculator': typeof FuelCostCalculatorRoute
@@ -706,6 +729,7 @@ export interface FileRoutesByTo {
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/ratio-calculator': typeof RatioCalculatorRoute
   '/redact-pdf': typeof RedactPdfRoute
+  '/remove-blank-pages-pdf': typeof RemoveBlankPagesPdfRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
@@ -759,8 +783,10 @@ export interface FileRoutesById {
   '/document-scanner': typeof DocumentScannerRoute
   '/edit-pdf': typeof EditPdfRoute
   '/emi-calculator': typeof EmiCalculatorRoute
+  '/extract-pdf-images': typeof ExtractPdfImagesRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/faq': typeof FaqRoute
+  '/fill-pdf-form': typeof FillPdfFormRoute
   '/flatten-pdf': typeof FlattenPdfRoute
   '/fraction-calculator': typeof FractionCalculatorRoute
   '/fuel-cost-calculator': typeof FuelCostCalculatorRoute
@@ -798,6 +824,7 @@ export interface FileRoutesById {
   '/random-password-generator': typeof RandomPasswordGeneratorRoute
   '/ratio-calculator': typeof RatioCalculatorRoute
   '/redact-pdf': typeof RedactPdfRoute
+  '/remove-blank-pages-pdf': typeof RemoveBlankPagesPdfRoute
   '/reorder-pdf-pages': typeof ReorderPdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/sales-tax-calculator': typeof SalesTaxCalculatorRoute
@@ -852,8 +879,10 @@ export interface FileRouteTypes {
     | '/document-scanner'
     | '/edit-pdf'
     | '/emi-calculator'
+    | '/extract-pdf-images'
     | '/extract-pdf-pages'
     | '/faq'
+    | '/fill-pdf-form'
     | '/flatten-pdf'
     | '/fraction-calculator'
     | '/fuel-cost-calculator'
@@ -891,6 +920,7 @@ export interface FileRouteTypes {
     | '/random-password-generator'
     | '/ratio-calculator'
     | '/redact-pdf'
+    | '/remove-blank-pages-pdf'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
@@ -943,8 +973,10 @@ export interface FileRouteTypes {
     | '/document-scanner'
     | '/edit-pdf'
     | '/emi-calculator'
+    | '/extract-pdf-images'
     | '/extract-pdf-pages'
     | '/faq'
+    | '/fill-pdf-form'
     | '/flatten-pdf'
     | '/fraction-calculator'
     | '/fuel-cost-calculator'
@@ -982,6 +1014,7 @@ export interface FileRouteTypes {
     | '/random-password-generator'
     | '/ratio-calculator'
     | '/redact-pdf'
+    | '/remove-blank-pages-pdf'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
@@ -1034,8 +1067,10 @@ export interface FileRouteTypes {
     | '/document-scanner'
     | '/edit-pdf'
     | '/emi-calculator'
+    | '/extract-pdf-images'
     | '/extract-pdf-pages'
     | '/faq'
+    | '/fill-pdf-form'
     | '/flatten-pdf'
     | '/fraction-calculator'
     | '/fuel-cost-calculator'
@@ -1073,6 +1108,7 @@ export interface FileRouteTypes {
     | '/random-password-generator'
     | '/ratio-calculator'
     | '/redact-pdf'
+    | '/remove-blank-pages-pdf'
     | '/reorder-pdf-pages'
     | '/rotate-pdf'
     | '/sales-tax-calculator'
@@ -1126,8 +1162,10 @@ export interface RootRouteChildren {
   DocumentScannerRoute: typeof DocumentScannerRoute
   EditPdfRoute: typeof EditPdfRoute
   EmiCalculatorRoute: typeof EmiCalculatorRoute
+  ExtractPdfImagesRoute: typeof ExtractPdfImagesRoute
   ExtractPdfPagesRoute: typeof ExtractPdfPagesRoute
   FaqRoute: typeof FaqRoute
+  FillPdfFormRoute: typeof FillPdfFormRoute
   FlattenPdfRoute: typeof FlattenPdfRoute
   FractionCalculatorRoute: typeof FractionCalculatorRoute
   FuelCostCalculatorRoute: typeof FuelCostCalculatorRoute
@@ -1165,6 +1203,7 @@ export interface RootRouteChildren {
   RandomPasswordGeneratorRoute: typeof RandomPasswordGeneratorRoute
   RatioCalculatorRoute: typeof RatioCalculatorRoute
   RedactPdfRoute: typeof RedactPdfRoute
+  RemoveBlankPagesPdfRoute: typeof RemoveBlankPagesPdfRoute
   ReorderPdfPagesRoute: typeof ReorderPdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
   SalesTaxCalculatorRoute: typeof SalesTaxCalculatorRoute
@@ -1393,6 +1432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmiCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/extract-pdf-images': {
+      id: '/extract-pdf-images'
+      path: '/extract-pdf-images'
+      fullPath: '/extract-pdf-images'
+      preLoaderRoute: typeof ExtractPdfImagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/extract-pdf-pages': {
       id: '/extract-pdf-pages'
       path: '/extract-pdf-pages'
@@ -1405,6 +1451,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fill-pdf-form': {
+      id: '/fill-pdf-form'
+      path: '/fill-pdf-form'
+      fullPath: '/fill-pdf-form'
+      preLoaderRoute: typeof FillPdfFormRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/flatten-pdf': {
@@ -1666,6 +1719,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RedactPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/remove-blank-pages-pdf': {
+      id: '/remove-blank-pages-pdf'
+      path: '/remove-blank-pages-pdf'
+      fullPath: '/remove-blank-pages-pdf'
+      preLoaderRoute: typeof RemoveBlankPagesPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reorder-pdf-pages': {
       id: '/reorder-pdf-pages'
       path: '/reorder-pdf-pages'
@@ -1846,8 +1906,10 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentScannerRoute: DocumentScannerRoute,
   EditPdfRoute: EditPdfRoute,
   EmiCalculatorRoute: EmiCalculatorRoute,
+  ExtractPdfImagesRoute: ExtractPdfImagesRoute,
   ExtractPdfPagesRoute: ExtractPdfPagesRoute,
   FaqRoute: FaqRoute,
+  FillPdfFormRoute: FillPdfFormRoute,
   FlattenPdfRoute: FlattenPdfRoute,
   FractionCalculatorRoute: FractionCalculatorRoute,
   FuelCostCalculatorRoute: FuelCostCalculatorRoute,
@@ -1885,6 +1947,7 @@ const rootRouteChildren: RootRouteChildren = {
   RandomPasswordGeneratorRoute: RandomPasswordGeneratorRoute,
   RatioCalculatorRoute: RatioCalculatorRoute,
   RedactPdfRoute: RedactPdfRoute,
+  RemoveBlankPagesPdfRoute: RemoveBlankPagesPdfRoute,
   ReorderPdfPagesRoute: ReorderPdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
   SalesTaxCalculatorRoute: SalesTaxCalculatorRoute,

@@ -20,6 +20,7 @@ import {
   Eraser,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
@@ -39,6 +40,7 @@ import {
   ToolError,
   baseName,
   formatBytes,
+  loadPdfDoc,
   openRenderDoc,
   renderPageToCanvas,
   type RunResult,
@@ -351,9 +353,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   // Dynamic preview aspect ratio and dimensions preserving page geometry (portrait/landscape)
   const currentThumb = thumbs[editorPage - 1];
   const pageAspect =
-    currentThumb?.width && currentThumb?.height
-      ? currentThumb.width / currentThumb.height
-      : 3 / 4;
+    currentThumb?.width && currentThumb?.height ? currentThumb.width / currentThumb.height : 3 / 4;
   const isLandscapePage = pageAspect > 1;
   const previewWidth = isLandscapePage ? 560 : Math.round(560 * pageAspect);
   const previewHeight = isLandscapePage ? Math.round(560 / pageAspect) : 560;
@@ -379,6 +379,22 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
   const [cropRight, setCropRight] = useState(36);
   const [cropTop, setCropTop] = useState(36);
   const [cropBottom, setCropBottom] = useState(36);
+
+  // Fill PDF Form states
+  interface DetectedFormField {
+    name: string;
+    type: "text" | "checkbox" | "dropdown" | "radio";
+    value: string | boolean;
+    options?: string[];
+    multiline?: boolean;
+  }
+  const [formFields, setFormFields] = useState<DetectedFormField[]>([]);
+  const [formValues, setFormValues] = useState<Record<string, string | boolean>>({});
+  const [formIsXfa, setFormIsXfa] = useState(false);
+  const [formScanLoading, setFormScanLoading] = useState(false);
+
+  // Remove Blank Pages states
+  const [detectedBlanks, setDetectedBlanks] = useState<number | null>(null);
 
   const sigCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const annotCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -504,17 +520,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     const scaleX = rect.width ? canvas.width / rect.width : 1;
     const scaleY = rect.height ? canvas.height / rect.height : 1;
     const clientX =
-      "touches" in e && e.touches[0]
-        ? e.touches[0].clientX
-        : "clientX" in e
-          ? e.clientX
-          : 0;
+      "touches" in e && e.touches[0] ? e.touches[0].clientX : "clientX" in e ? e.clientX : 0;
     const clientY =
-      "touches" in e && e.touches[0]
-        ? e.touches[0].clientY
-        : "clientY" in e
-          ? e.clientY
-          : 0;
+      "touches" in e && e.touches[0] ? e.touches[0].clientY : "clientY" in e ? e.clientY : 0;
     const x = (clientX - rect.left) * scaleX;
     const y = (clientY - rect.top) * scaleY;
 
@@ -548,17 +556,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     const scaleX = rect.width ? canvas.width / rect.width : 1;
     const scaleY = rect.height ? canvas.height / rect.height : 1;
     const clientX =
-      "touches" in e && e.touches[0]
-        ? e.touches[0].clientX
-        : "clientX" in e
-          ? e.clientX
-          : 0;
+      "touches" in e && e.touches[0] ? e.touches[0].clientX : "clientX" in e ? e.clientX : 0;
     const clientY =
-      "touches" in e && e.touches[0]
-        ? e.touches[0].clientY
-        : "clientY" in e
-          ? e.clientY
-          : 0;
+      "touches" in e && e.touches[0] ? e.touches[0].clientY : "clientY" in e ? e.clientY : 0;
     const x = (clientX - rect.left) * scaleX;
     const y = (clientY - rect.top) * scaleY;
 
@@ -648,6 +648,10 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     setOrder([]);
     setProgress(null);
     setCustomNames({});
+    setFormFields([]);
+    setFormValues({});
+    setFormIsXfa(false);
+    setDetectedBlanks(null);
   }, []);
 
   const addFiles = useCallback(
@@ -706,6 +710,8 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
         const doc = await openRenderDoc(file);
         const pages: Thumb[] = [];
         const limit = Math.min(doc.numPages, 60);
+        const detectedBlankPages: number[] = [];
+
         for (let i = 1; i <= limit; i++) {
           const canvas = await renderPageToCanvas(doc, i, 0.28);
           if (cancelled) return;
@@ -716,9 +722,50 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
             height: canvas.height,
           });
           setThumbs([...pages]);
+
+          if (tool.slug === "remove-blank-pages-pdf") {
+            try {
+              const pageObj = await doc.getPage(i);
+              const textContent = await pageObj.getTextContent();
+              const text = textContent.items
+                .map((it: unknown) =>
+                  typeof it === "object" && it !== null && "str" in it
+                    ? String((it as { str: unknown }).str)
+                    : "",
+                )
+                .join("")
+                .trim();
+              if (text.length === 0) {
+                const ctx = canvas.getContext("2d");
+                if (ctx) {
+                  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                  let whitePixels = 0;
+                  const totalPixels = canvas.width * canvas.height;
+                  for (let p = 0; p < imgData.length; p += 4) {
+                    const r = imgData[p]!;
+                    const g = imgData[p + 1]!;
+                    const b = imgData[p + 2]!;
+                    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                    if (lum >= 250) whitePixels++;
+                  }
+                  const thresholdRatio = options["threshold"] === "aggressive" ? 0.985 : 0.992;
+                  if (whitePixels / totalPixels >= thresholdRatio) {
+                    detectedBlankPages.push(i);
+                  }
+                }
+              }
+            } catch {
+              // Ignore page error
+            }
+          }
         }
         if (!cancelled) {
-          setSelected(Array.from({ length: doc.numPages }, (_, i) => i + 1));
+          if (tool.slug === "remove-blank-pages-pdf") {
+            setSelected(detectedBlankPages);
+            setDetectedBlanks(detectedBlankPages.length);
+          } else {
+            setSelected(Array.from({ length: doc.numPages }, (_, i) => i + 1));
+          }
           setOrder(Array.from({ length: doc.numPages }, (_, i) => i));
         }
       } catch {
@@ -728,7 +775,102 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
     return () => {
       cancelled = true;
     };
-  }, [files, tool.pageMode, tool.slug]);
+  }, [files, tool.pageMode, tool.slug, options["threshold"]]);
+
+  // Inspect AcroForm fields for Fill PDF Form tool
+  useEffect(() => {
+    let cancelled = false;
+    const file = files[0];
+    if (tool.slug !== "fill-pdf-form" || !file || !file.type.includes("pdf")) {
+      setFormFields([]);
+      setFormValues({});
+      setFormIsXfa(false);
+      return;
+    }
+
+    (async () => {
+      setFormScanLoading(true);
+      try {
+        const { PDFTextField, PDFCheckBox, PDFDropdown, PDFRadioGroup, PDFName, PDFDict } =
+          await import("pdf-lib");
+        const doc = await loadPdfDoc(file);
+        if (cancelled) return;
+
+        let isXfa = false;
+        try {
+          const acroForm = doc.catalog.get(PDFName.of("AcroForm"));
+          if (acroForm instanceof PDFDict && acroForm.has(PDFName.of("XFA"))) {
+            isXfa = true;
+          }
+        } catch {
+          // catalog inspection fallback
+        }
+
+        if (isXfa) {
+          setFormIsXfa(true);
+          setFormFields([]);
+          setFormScanLoading(false);
+          return;
+        }
+
+        let form;
+        try {
+          form = doc.getForm();
+        } catch {
+          form = null;
+        }
+
+        if (!form) {
+          setFormFields([]);
+          setFormScanLoading(false);
+          return;
+        }
+
+        const rawFields = form.getFields();
+        const detected: DetectedFormField[] = [];
+        const initVals: Record<string, string | boolean> = {};
+
+        for (const f of rawFields) {
+          const name = f.getName();
+          if (f instanceof PDFTextField) {
+            const val = f.getText() ?? "";
+            detected.push({ name, type: "text", value: val, multiline: f.isMultiline() });
+            initVals[name] = val;
+          } else if (f instanceof PDFCheckBox) {
+            const val = f.isChecked();
+            detected.push({ name, type: "checkbox", value: val });
+            initVals[name] = val;
+          } else if (f instanceof PDFDropdown) {
+            const selected = f.getSelected();
+            const val = selected[0] ?? "";
+            detected.push({ name, type: "dropdown", value: val, options: f.getOptions() });
+            initVals[name] = val;
+          } else if (f instanceof PDFRadioGroup) {
+            const val = f.getSelected() ?? "";
+            detected.push({ name, type: "radio", value: val, options: f.getOptions() });
+            initVals[name] = val;
+          }
+        }
+
+        if (!cancelled) {
+          setFormFields(detected);
+          setFormValues(initVals);
+          setFormIsXfa(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setFormFields([]);
+          setFormValues({});
+        }
+      } finally {
+        if (!cancelled) setFormScanLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [files, tool.slug]);
 
   const process = async () => {
     const runner = RUNNERS[tool.slug];
@@ -742,6 +884,7 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
         files,
         options: {
           ...options,
+          formValues,
           // Sign PDF
           sigImage: drawCanvasData,
           sigX,
@@ -1115,9 +1258,23 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
 
           {thumbs.length && tool.pageMode === "select" ? (
             <div>
+              {tool.slug === "remove-blank-pages-pdf" && detectedBlanks !== null ? (
+                <div className="mb-4 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs sm:text-sm">
+                  <p className="font-semibold text-foreground">
+                    {detectedBlanks > 0
+                      ? `Detected ${detectedBlanks} likely blank page${detectedBlanks === 1 ? "" : "s"} pre-selected for removal.`
+                      : "No blank pages were detected in this document."}
+                  </p>
+                  <p className="mt-0.5 text-muted-foreground">
+                    Review the thumbnail gallery below before removing. You can click any page to
+                    uncheck or select it.
+                  </p>
+                </div>
+              ) : null}
+
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold">
-                  Select pages{" "}
+                  {tool.slug === "remove-blank-pages-pdf" ? "Pages to remove" : "Select pages"}{" "}
                   <span className="text-muted-foreground">({selected.length} selected)</span>
                 </h3>
                 <div className="flex gap-2">
@@ -1541,9 +1698,9 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                         <strong className="text-foreground block font-semibold mb-1">
                           Permanent Client-Side Redaction
                         </strong>
-                        Draw solid black bars over sensitive names, account numbers, or text.
-                        During processing, the page is rasterised so underlying vector text is
-                        permanently destroyed.
+                        Draw solid black bars over sensitive names, account numbers, or text. During
+                        processing, the page is rasterised so underlying vector text is permanently
+                        destroyed.
                       </div>
 
                       <div className="space-y-2">
@@ -1673,6 +1830,157 @@ export function ToolWorkspace({ tool }: { tool: Tool }) {
                   ) : null}
                 </div>
               </div>
+            </div>
+          ) : null}
+
+          {/* Fill PDF Form Interactive Fields */}
+          {tool.slug === "fill-pdf-form" ? (
+            <div className="rounded-2xl border border-border bg-surface/50 p-4 sm:p-6 mb-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <h3 className="text-base font-semibold">Interactive Form Fields</h3>
+                {formFields.length > 0 ? (
+                  <span className="text-xs font-medium text-muted-foreground bg-muted px-2.5 py-1 rounded-full">
+                    {formFields.length} field{formFields.length === 1 ? "" : "s"} detected
+                  </span>
+                ) : null}
+              </div>
+
+              {formScanLoading ? (
+                <div className="flex items-center gap-3 py-6 text-muted-foreground">
+                  <Loader2 className="size-5 animate-spin text-primary" />
+                  <span className="text-sm">Scanning document for AcroForm fields…</span>
+                </div>
+              ) : formIsXfa ? (
+                <div className="rounded-xl border border-warning/40 bg-warning/10 p-4 text-warning-foreground">
+                  <p className="text-sm font-semibold">Adobe XFA Dynamic Form Detected</p>
+                  <p className="mt-1 text-xs sm:text-sm">
+                    This document uses dynamic Adobe XFA forms. XFA relies on proprietary XML
+                    architecture that standard web browsers and standard PDF libraries cannot edit.
+                    To fill this document, please open it in Adobe Acrobat Reader.
+                  </p>
+                </div>
+              ) : formFields.length === 0 ? (
+                <div className="rounded-xl border border-border bg-muted/30 p-4 text-muted-foreground">
+                  <p className="text-sm font-medium text-foreground">
+                    No Interactive Form Fields Found
+                  </p>
+                  <p className="mt-1 text-xs sm:text-sm">
+                    This PDF does not appear to contain standard fillable AcroForm fields. It may be
+                    a scanned document or a flattened PDF. If you need to add text onto this
+                    document, you can use our{" "}
+                    <Link to="/add-text-to-pdf" className="text-primary underline">
+                      Add Text to PDF
+                    </Link>{" "}
+                    tool.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {formFields.map((field) => {
+                    const val = formValues[field.name];
+                    return (
+                      <div
+                        key={field.name}
+                        className={cn(
+                          "rounded-xl border border-border bg-surface p-3.5 space-y-2",
+                          field.multiline && "sm:col-span-2",
+                        )}
+                      >
+                        <Label
+                          htmlFor={`field-${field.name}`}
+                          className="text-xs font-semibold text-foreground break-words block"
+                        >
+                          {field.name}
+                        </Label>
+
+                        {field.type === "text" ? (
+                          field.multiline ? (
+                            <textarea
+                              id={`field-${field.name}`}
+                              rows={3}
+                              value={String(val ?? "")}
+                              onChange={(e) =>
+                                setFormValues((prev) => ({ ...prev, [field.name]: e.target.value }))
+                              }
+                              className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                              placeholder={`Enter ${field.name}…`}
+                            />
+                          ) : (
+                            <Input
+                              id={`field-${field.name}`}
+                              type="text"
+                              value={String(val ?? "")}
+                              onChange={(e) =>
+                                setFormValues((prev) => ({ ...prev, [field.name]: e.target.value }))
+                              }
+                              placeholder={`Enter ${field.name}…`}
+                              className="h-10 text-sm"
+                            />
+                          )
+                        ) : field.type === "checkbox" ? (
+                          <div className="flex items-center gap-2 pt-1">
+                            <Checkbox
+                              id={`field-${field.name}`}
+                              checked={Boolean(val)}
+                              onCheckedChange={(checked) =>
+                                setFormValues((prev) => ({
+                                  ...prev,
+                                  [field.name]: Boolean(checked),
+                                }))
+                              }
+                            />
+                            <label
+                              htmlFor={`field-${field.name}`}
+                              className="text-xs text-muted-foreground cursor-pointer select-none"
+                            >
+                              {val ? "Checked" : "Unchecked"}
+                            </label>
+                          </div>
+                        ) : field.type === "dropdown" ? (
+                          <Select
+                            value={String(val ?? "")}
+                            onValueChange={(v) =>
+                              setFormValues((prev) => ({ ...prev, [field.name]: v }))
+                            }
+                          >
+                            <SelectTrigger id={`field-${field.name}`} className="h-10 text-sm">
+                              <SelectValue placeholder="Select option…" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {field.options?.map((opt) => (
+                                <SelectItem key={opt} value={opt}>
+                                  {opt}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : field.type === "radio" ? (
+                          <div className="flex flex-wrap gap-3 pt-1">
+                            {field.options?.map((opt) => (
+                              <label
+                                key={opt}
+                                className="flex items-center gap-1.5 text-xs text-foreground cursor-pointer select-none"
+                              >
+                                <input
+                                  type="radio"
+                                  name={`radio-${field.name}`}
+                                  value={opt}
+                                  checked={String(val) === opt}
+                                  onChange={() =>
+                                    setFormValues((prev) => ({ ...prev, [field.name]: opt }))
+                                  }
+                                  className="accent-primary size-4"
+                                />
+                                <span>{opt}</span>
+                              </label>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           ) : null}
 

@@ -5,6 +5,7 @@ import {
   canvasToBlob,
   fileToImage,
   formatBytes,
+  getPdfjs,
   loadPdfDoc,
   openRenderDoc,
   parseRanges,
@@ -442,8 +443,8 @@ const compressToTarget: Runner = async (ctx) => {
     message: grew
       ? `This document is already well optimized — compression produced a larger file (${formatBytes(out.size)}), so your original is already the smallest version.`
       : met
-      ? `The file now fits inside your ${formatBytes(targetBytes)} limit.`
-      : `We could not reach ${formatBytes(targetBytes)} while keeping the pages readable. This is the smallest version we produced at ${formatBytes(out.size)} — the document carries more detail than that limit allows. Removing pages first usually helps.`,
+        ? `The file now fits inside your ${formatBytes(targetBytes)} limit.`
+        : `We could not reach ${formatBytes(targetBytes)} while keeping the pages readable. This is the smallest version we produced at ${formatBytes(out.size)} — the document carries more detail than that limit allows. Removing pages first usually helps.`,
   };
 };
 
@@ -859,7 +860,6 @@ const smartAnalyzer: Runner = async (ctx) => {
   };
 };
 
-
 /* ---------------------------------------------------------------- New Tools */
 
 const pdfToText: Runner = async (ctx) => {
@@ -1142,8 +1142,8 @@ const signPdf: Runner = async (ctx) => {
 
   // If interactive signature is provided
   if (sigImage && sigX !== -1 && sigY !== -1 && signPageNum !== -1) {
-    const base64Data = sigImage.split(',')[1];
-    const pngBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+    const base64Data = sigImage.split(",")[1];
+    const pngBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
     const embeddedPng = await doc.embedPng(pngBytes);
 
     const pageCount = doc.getPageCount();
@@ -1155,8 +1155,8 @@ const signPdf: Runner = async (ctx) => {
     const sigW = 150 * scaleVal;
     const sigH = 50 * scaleVal;
 
-    const x = (sigX / 100) * pW - (sigW / 2);
-    const y = (sigY / 100) * pH - (sigH / 2);
+    const x = (sigX / 100) * pW - sigW / 2;
+    const y = (sigY / 100) * pH - sigH / 2;
 
     page.drawImage(embeddedPng, { x, y, width: sigW, height: sigH });
 
@@ -1224,9 +1224,7 @@ const signPdf: Runner = async (ctx) => {
     targetPageIndex = Math.min(pageCount - 1, Math.max(0, customPageNum - 1));
 
   const targetPages =
-    targetPageOption === "all"
-      ? Array.from({ length: pageCount }, (_, i) => i)
-      : [targetPageIndex];
+    targetPageOption === "all" ? Array.from({ length: pageCount }, (_, i) => i) : [targetPageIndex];
 
   let sigW = 160;
   let sigH = 53.33;
@@ -1287,7 +1285,11 @@ const annotatePdf: Runner = async (ctx) => {
 
   const annotationsMap = ctx.options["annotationsMap"];
   // If interactive drawing annotations are present
-  if (annotationsMap && typeof annotationsMap === 'object' && Object.keys(annotationsMap).length > 0) {
+  if (
+    annotationsMap &&
+    typeof annotationsMap === "object" &&
+    Object.keys(annotationsMap).length > 0
+  ) {
     const pageCount = doc.getPageCount();
     let markedCount = 0;
 
@@ -1298,10 +1300,10 @@ const annotatePdf: Runner = async (ctx) => {
       const page = doc.getPage(pageNum - 1);
       const { width: pW, height: pH } = page.getSize();
 
-      const base64Data = (dataUrl as string).split(',')[1];
+      const base64Data = (dataUrl as string).split(",")[1];
       if (!base64Data) continue;
 
-      const pngBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+      const pngBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
       const embeddedPng = await doc.embedPng(pngBytes);
 
       page.drawImage(embeddedPng, { x: 0, y: 0, width: pW, height: pH });
@@ -1531,8 +1533,6 @@ const addTextToPdf: Runner = async (ctx) => {
   };
 };
 
-
-
 const pdfOcr: Runner = async (ctx) => {
   const file = requireOne(ctx);
   const lang = str(ctx.options["language"], "eng");
@@ -1549,26 +1549,25 @@ const pdfOcr: Runner = async (ctx) => {
 
   if (outputMode === "text") {
     for (let i = 1; i <= totalPages; i++) {
-      ctx.onProgress(
-        (i - 1) / totalPages,
-        `Rendering page ${i} of ${totalPages} for analysis...`
-      );
+      ctx.onProgress((i - 1) / totalPages, `Rendering page ${i} of ${totalPages} for analysis...`);
       const canvas = await renderPageToCanvas(src, i, 1.5);
 
       ctx.onProgress(
         (i - 0.5) / totalPages,
-        `Running OCR on page ${i} of ${totalPages} (${lang})...`
+        `Running OCR on page ${i} of ${totalPages} (${lang})...`,
       );
 
-      const { data: { text } } = await Tesseract.recognize(canvas, lang, {
+      const {
+        data: { text },
+      } = await Tesseract.recognize(canvas, lang, {
         logger: (m) => {
           if (m.status === "recognizing text") {
             ctx.onProgress(
-              ((i - 1) + m.progress) / totalPages,
-              `Page ${i}: Recognizing text (${Math.round(m.progress * 100)}%)...`
+              (i - 1 + m.progress) / totalPages,
+              `Page ${i}: Recognizing text (${Math.round(m.progress * 100)}%)...`,
             );
           }
-        }
+        },
       });
 
       fullText += `--- Page ${i} ---\n${text}\n\n`;
@@ -1589,7 +1588,10 @@ const pdfOcr: Runner = async (ctx) => {
           rows: [
             { label: "Source file", value: file.name },
             { label: "Detected pages", value: String(totalPages) },
-            { label: "Total words recognized", value: String(fullText.split(/\s+/).filter(Boolean).length) },
+            {
+              label: "Total words recognized",
+              value: String(fullText.split(/\s+/).filter(Boolean).length),
+            },
             { label: "OCR Engine", value: "Tesseract.js (WebAssembly)" },
           ],
         },
@@ -1604,24 +1606,21 @@ const pdfOcr: Runner = async (ctx) => {
     for (let i = 1; i <= totalPages; i++) {
       ctx.onProgress(
         (i - 1) / totalPages,
-        `Rendering page ${i} of ${totalPages} for searchable overlay...`
+        `Rendering page ${i} of ${totalPages} for searchable overlay...`,
       );
       const canvas = await renderPageToCanvas(src, i, 1.5);
 
-      ctx.onProgress(
-        (i - 0.5) / totalPages,
-        `Running layout OCR on page ${i} of ${totalPages}...`
-      );
+      ctx.onProgress((i - 0.5) / totalPages, `Running layout OCR on page ${i} of ${totalPages}...`);
 
       const { data } = await Tesseract.recognize(canvas, lang, {
         logger: (m) => {
           if (m.status === "recognizing text") {
             ctx.onProgress(
-              ((i - 1) + m.progress) / totalPages,
-              `Page ${i}: Analyzing layout (${Math.round(m.progress * 100)}%)...`
+              (i - 1 + m.progress) / totalPages,
+              `Page ${i}: Analyzing layout (${Math.round(m.progress * 100)}%)...`,
             );
           }
-        }
+        },
       });
 
       const imgBlob = await canvasToBlob(canvas, "image/jpeg", 0.85);
@@ -1639,7 +1638,7 @@ const pdfOcr: Runner = async (ctx) => {
           const wW = (x1 - x0) * scaleX;
           const wH = (y1 - y0) * scaleY;
           const wX = x0 * scaleX;
-          const wY = img.height - (y1 * scaleY);
+          const wY = img.height - y1 * scaleY;
 
           try {
             page.drawText(word.text, {
@@ -1684,7 +1683,6 @@ const pdfOcr: Runner = async (ctx) => {
   }
 };
 
-
 const editPdf: Runner = async (ctx) => {
   const file = requireOne(ctx);
   const { rgb, StandardFonts } = await import("pdf-lib");
@@ -1722,7 +1720,13 @@ const editPdf: Runner = async (ctx) => {
 
     const elements: any[] = pageData.elements || [];
     const sorted = [...elements].sort((a, b) => {
-      const order: Record<string, number> = { whiteout: 1, rectangle: 2, line: 3, image: 4, text: 5 };
+      const order: Record<string, number> = {
+        whiteout: 1,
+        rectangle: 2,
+        line: 3,
+        image: 4,
+        text: 5,
+      };
       return (order[a.type] || 5) - (order[b.type] || 5);
     });
 
@@ -1730,7 +1734,7 @@ const editPdf: Runner = async (ctx) => {
       const elX = (el.x / 100) * pW;
       const elW = (el.width / 100) * pW;
       const elH = (el.height / 100) * pH;
-      const elY = pH - ((el.y / 100) * pH) - elH;
+      const elY = pH - (el.y / 100) * pH - elH;
 
       if (el.type === "whiteout") {
         const [r, g, b] = hexToRgb(el.bgColor || "#ffffff");
@@ -1751,7 +1755,9 @@ const editPdf: Runner = async (ctx) => {
           y: elY,
           width: elW,
           height: elH,
-          ...(noBorder ? {} : { borderColor: rgb(...hexToRgb(el.color!)), borderWidth: el.lineWidth || 2 }),
+          ...(noBorder
+            ? {}
+            : { borderColor: rgb(...hexToRgb(el.color!)), borderWidth: el.lineWidth || 2 }),
           ...(rectBgColor ? { color: rectBgColor } : {}),
           opacity: el.opacity ?? 1,
         });
@@ -1811,7 +1817,7 @@ const editPdf: Runner = async (ctx) => {
 
         page.drawText(el.text, {
           x: elX,
-          y: elY + (elH * 0.15),
+          y: elY + elH * 0.15,
           size: fontSize,
           font,
           color: rgb(r, g, b),
@@ -1898,7 +1904,7 @@ const redactPdf: Runner = async (ctx) => {
 
   if (!hasRects && !hasAnnotations) {
     throw new ToolError(
-      "No redaction areas were selected. Use the blackout brush or draw redaction boxes on at least one page before processing."
+      "No redaction areas were selected. Use the blackout brush or draw redaction boxes on at least one page before processing.",
     );
   }
 
@@ -2023,7 +2029,7 @@ const splitPdfBySize: Runner = async (ctx) => {
 
   if (singleBytes > targetBytes) {
     throw new ToolError(
-      `A single page of this document serialises to approximately ${formatBytes(singleBytes)}, which already exceeds your ${formatBytes(targetBytes)} limit. Try compressing the PDF first, or raise the target size.`
+      `A single page of this document serialises to approximately ${formatBytes(singleBytes)}, which already exceeds your ${formatBytes(targetBytes)} limit. Try compressing the PDF first, or raise the target size.`,
     );
   }
 
@@ -2104,7 +2110,11 @@ const splitPdfBySize: Runner = async (ctx) => {
       { label: "Original file", value: formatBytes(file.size) },
       { label: "Target per part", value: formatBytes(targetBytes) },
       { label: "Parts created", value: String(outputs.length), tone: "success" },
-      { label: "Largest part", value: formatBytes(largestPart), tone: allMeetTarget ? "success" : "warning" },
+      {
+        label: "Largest part",
+        value: formatBytes(largestPart),
+        tone: allMeetTarget ? "success" : "warning",
+      },
     ],
     message: allMeetTarget
       ? `Split into ${outputs.length} parts. Every part is at or below ${formatBytes(targetBytes)}.`
@@ -2150,16 +2160,10 @@ const addHeaderFooter: Runner = async (ctx) => {
 
   /** Safe token substitution — no dynamic code execution. */
   function applyTokens(template: string, pageNumber: number): string {
-    return template
-      .replace(/\{page\}/g, String(pageNumber))
-      .replace(/\{date\}/g, today);
+    return template.replace(/\{page\}/g, String(pageNumber)).replace(/\{date\}/g, today);
   }
 
-  function calcX(
-    textStr: string,
-    position: string,
-    pageWidth: number
-  ): number {
+  function calcX(textStr: string, position: string, pageWidth: number): number {
     const textWidth = font.widthOfTextAtSize(textStr, fontSize);
     if (position === "left") return margin;
     if (position === "right") return Math.max(margin, pageWidth - margin - textWidth);
@@ -2221,8 +2225,305 @@ const addHeaderFooter: Runner = async (ctx) => {
   };
 };
 
-export const RUNNERS: Record<string, Runner> = {
+/* ------------------------------------------------------------- Stage 3 Batch 2 */
 
+const fillPdfForm: Runner = async (ctx) => {
+  const { PDFTextField, PDFCheckBox, PDFDropdown, PDFRadioGroup, PDFName, PDFDict } =
+    await import("pdf-lib");
+  const file = requireOne(ctx);
+  const doc = await loadPdfDoc(file);
+
+  const formValues = (ctx.options["formValues"] as Record<string, string | boolean>) ?? {};
+  const flatten = Boolean(ctx.options["flatten"]);
+
+  let form;
+  try {
+    form = doc.getForm();
+  } catch {
+    form = null;
+  }
+
+  // Check XFA dynamic forms
+  let isXfa = false;
+  try {
+    const acroForm = doc.catalog.get(PDFName.of("AcroForm"));
+    if (acroForm instanceof PDFDict && acroForm.has(PDFName.of("XFA"))) {
+      isXfa = true;
+    }
+  } catch {
+    // Ignore catalog inspection error
+  }
+
+  if (isXfa) {
+    throw new ToolError(
+      "This document uses dynamic Adobe XFA forms, which are proprietary XML forms unsupported by standard web browsers. Please open this file in Adobe Acrobat Reader.",
+    );
+  }
+
+  if (!form) {
+    throw new ToolError("No interactive AcroForm structure could be accessed in this PDF.");
+  }
+
+  const fields = form.getFields();
+  if (fields.length === 0) {
+    throw new ToolError(
+      "No interactive form fields were detected in this document. If this is a static scan or flattened form, you can use our Add Text to PDF tool to add text directly onto pages.",
+    );
+  }
+
+  let filledCount = 0;
+  for (const field of fields) {
+    const name = field.getName();
+    if (!(name in formValues)) continue;
+    const val = formValues[name];
+
+    try {
+      if (field instanceof PDFTextField) {
+        field.setText(str(val, ""));
+        filledCount++;
+      } else if (field instanceof PDFCheckBox) {
+        if (val) {
+          field.check();
+        } else {
+          field.uncheck();
+        }
+        filledCount++;
+      } else if (field instanceof PDFDropdown) {
+        if (val) {
+          field.select(str(val));
+          filledCount++;
+        }
+      } else if (field instanceof PDFRadioGroup) {
+        if (val) {
+          field.select(str(val));
+          filledCount++;
+        }
+      }
+    } catch {
+      // Gracefully continue if an individual field rejects a value
+    }
+  }
+
+  if (flatten) {
+    try {
+      form.flatten();
+    } catch {
+      // Gracefully continue if partial fields throw on flattening
+    }
+  }
+
+  ctx.onProgress(1);
+  const out = await saveDoc(doc, `${baseName(file.name)}-filled.pdf`);
+
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Detected fields", value: String(fields.length) },
+      { label: "Fields updated", value: String(filledCount), tone: "success" as const },
+      { label: "Form flattening", value: flatten ? "Enabled (locked)" : "Disabled (interactive)" },
+    ],
+    message: flatten
+      ? `Updated ${filledCount} field${filledCount === 1 ? "" : "s"} and flattened the document to lock values.`
+      : `Updated ${filledCount} field${filledCount === 1 ? "" : "s"}. Form remains interactive.`,
+  };
+};
+
+async function imageObjectToBlob(
+  imgObj: Record<string, unknown> | null,
+  mimeType: string,
+): Promise<Blob | null> {
+  if (!imgObj) return null;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  if (typeof ImageBitmap !== "undefined" && imgObj instanceof ImageBitmap) {
+    canvas.width = imgObj.width;
+    canvas.height = imgObj.height;
+    ctx.drawImage(imgObj, 0, 0);
+    return await canvasToBlob(canvas, mimeType);
+  }
+
+  const width = Number(imgObj.width);
+  const height = Number(imgObj.height);
+  if (!width || !height || width <= 0 || height <= 0 || width > 16384 || height > 16384) {
+    return null;
+  }
+
+  canvas.width = width;
+  canvas.height = height;
+
+  const data = imgObj.data as Uint8Array | Uint8ClampedArray | undefined;
+  if (!data) {
+    if (
+      imgObj.bitmap &&
+      typeof ImageBitmap !== "undefined" &&
+      imgObj.bitmap instanceof ImageBitmap
+    ) {
+      ctx.drawImage(imgObj.bitmap, 0, 0);
+      return await canvasToBlob(canvas, mimeType);
+    }
+    return null;
+  }
+
+  const kind = Number(imgObj.kind);
+  const imgData = ctx.createImageData(width, height);
+  const rgba = imgData.data;
+
+  if (kind === 3 || data.length === width * height * 4) {
+    rgba.set(data.subarray(0, width * height * 4));
+  } else if (kind === 2 || data.length === width * height * 3) {
+    for (let i = 0, j = 0; i < width * height * 3; i += 3, j += 4) {
+      rgba[j] = data[i]!;
+      rgba[j + 1] = data[i + 1]!;
+      rgba[j + 2] = data[i + 2]!;
+      rgba[j + 3] = 255;
+    }
+  } else if (kind === 1 || data.length === width * height) {
+    for (let i = 0, j = 0; i < width * height; i++, j += 4) {
+      const v = data[i]!;
+      rgba[j] = v;
+      rgba[j + 1] = v;
+      rgba[j + 2] = v;
+      rgba[j + 3] = 255;
+    }
+  } else if (data.length >= width * height * 4) {
+    rgba.set(data.subarray(0, width * height * 4));
+  } else {
+    return null;
+  }
+
+  ctx.putImageData(imgData, 0, 0);
+  return await canvasToBlob(canvas, mimeType);
+}
+
+const extractPdfImages: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const preferredFormat = str(ctx.options["format"], "png");
+  const mimeType = preferredFormat === "jpeg" ? "image/jpeg" : "image/png";
+  const ext = preferredFormat === "jpeg" ? "jpg" : "png";
+
+  const pdfjs = await getPdfjs();
+  const arrayBuffer = await file.arrayBuffer();
+  const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer) });
+  const doc = await loadingTask.promise;
+  const numPages = doc.numPages;
+
+  const OPS = pdfjs.OPS;
+  const outputs: OutputFile[] = [];
+  const seenObjIds = new Set<string>();
+
+  for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+    ctx.onProgress(pageNum / (numPages + 1), `Scanning page ${pageNum} of ${numPages}…`);
+    const page = await doc.getPage(pageNum);
+    const ops = await page.getOperatorList();
+
+    for (let i = 0; i < ops.fnArray.length; i++) {
+      const fn = ops.fnArray[i];
+
+      if (fn === OPS.paintImageXObject) {
+        const objId = ops.argsArray[i]?.[0];
+        if (!objId || seenObjIds.has(objId)) continue;
+        seenObjIds.add(objId);
+
+        try {
+          const imgObj = await new Promise<Record<string, unknown> | null>((resolve) => {
+            page.objs.get(objId, (obj: unknown) => resolve(obj as Record<string, unknown> | null));
+          });
+
+          if (!imgObj) continue;
+
+          const blob = await imageObjectToBlob(imgObj, mimeType);
+          if (blob && blob.size > 0) {
+            const index = outputs.length + 1;
+            outputs.push({
+              name: `${baseName(file.name)}-img-${index}.${ext}`,
+              blob,
+              size: blob.size,
+              kind: "image",
+            });
+          }
+        } catch {
+          // Gracefully skip corrupted image
+        }
+      } else if (fn === OPS.paintInlineImageXObject) {
+        const imgObj = ops.argsArray[i]?.[0] as Record<string, unknown> | null;
+        if (!imgObj) continue;
+
+        try {
+          const blob = await imageObjectToBlob(imgObj, mimeType);
+          if (blob && blob.size > 0) {
+            const index = outputs.length + 1;
+            outputs.push({
+              name: `${baseName(file.name)}-inline-img-${index}.${ext}`,
+              blob,
+              size: blob.size,
+              kind: "image",
+            });
+          }
+        } catch {
+          // Gracefully skip corrupted inline image
+        }
+      }
+    }
+  }
+
+  ctx.onProgress(1);
+
+  if (outputs.length === 0) {
+    return {
+      outputs: [],
+      partial: true,
+      message: "No embedded images were found in this PDF.",
+      stats: [
+        { label: "Pages scanned", value: String(numPages) },
+        { label: "Images found", value: "0", tone: "warning" as const },
+      ],
+    };
+  }
+
+  return {
+    outputs,
+    stats: [
+      { label: "Pages scanned", value: String(numPages) },
+      { label: "Images extracted", value: String(outputs.length), tone: "success" as const },
+      { label: "Format", value: preferredFormat.toUpperCase() },
+    ],
+    message: `Extracted ${outputs.length} embedded image${outputs.length === 1 ? "" : "s"} at original resolution.`,
+  };
+};
+
+const removeBlankPagesPdf: Runner = async (ctx) => {
+  const file = requireOne(ctx);
+  const doc = await loadPdfDoc(file);
+  const total = doc.getPageCount();
+  const remove = ctx.selectedPages;
+
+  if (!remove.length) {
+    throw new ToolError("Select at least one blank page to remove.");
+  }
+  if (remove.length >= total) {
+    throw new ToolError("A PDF must keep at least one page — deselect at least one page.");
+  }
+
+  // Remove pages in reverse index order to preserve preceding indexes
+  [...remove].sort((a, b) => b - a).forEach((p) => doc.removePage(p - 1));
+
+  ctx.onProgress(1);
+  const out = await saveDoc(doc, `${baseName(file.name)}-no-blanks.pdf`);
+
+  return {
+    outputs: [out],
+    stats: [
+      { label: "Original pages", value: String(total) },
+      { label: "Pages removed", value: String(remove.length), tone: "success" as const },
+      { label: "Pages remaining", value: String(total - remove.length) },
+    ],
+    message: `Removed ${remove.length} blank page${remove.length === 1 ? "" : "s"}. Document now has ${total - remove.length} page${total - remove.length === 1 ? "" : "s"}.`,
+  };
+};
+
+export const RUNNERS: Record<string, Runner> = {
   "edit-pdf": editPdf,
   "jpg-to-pdf": jpgToPdf,
   "pdf-to-jpg": renderRunner("image/jpeg"),
@@ -2256,6 +2557,9 @@ export const RUNNERS: Record<string, Runner> = {
   "redact-pdf": redactPdf,
   "split-pdf-by-size": splitPdfBySize,
   "add-header-footer-pdf": addHeaderFooter,
+  "fill-pdf-form": fillPdfForm,
+  "extract-pdf-images": extractPdfImages,
+  "remove-blank-pages-pdf": removeBlankPagesPdf,
 };
 
 export type { RunResult };
